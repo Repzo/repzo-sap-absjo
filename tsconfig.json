@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "es2018",
+    "module": "ES6",
+    "declaration": true,
+    "outDir": "./lib",
+    "strict": true,
+    "noImplicitThis": false,
+    "esModuleInterop": true,
+    "moduleResolution": "Node"
+  },
+  "ts-node": { "esm": true },
+  "include": ["src"],
+  "exclude": ["node_modules", "**/__tests__/*", "*test*"]
+}
