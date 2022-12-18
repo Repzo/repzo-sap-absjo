@@ -52,8 +52,8 @@ export const join = async (commandEvent: CommandEvent) => {
           action: "create_proforma",
           event: "salesorder.approve",
           join:
-            commandEvent?.app?.formData?.payments?.createApprovedProformaHook ||
-            false,
+            commandEvent?.app?.formData?.proformas
+              ?.createApprovedProformaHook || false,
         },
         // transfer
         {
@@ -61,8 +61,8 @@ export const join = async (commandEvent: CommandEvent) => {
           action: "create_transfer",
           event: "transfer.approve",
           join:
-            commandEvent?.app?.formData?.payments?.createApprovedTransferHook ||
-            false,
+            commandEvent?.app?.formData?.transfers
+              ?.createApprovedTransferHook || false,
         },
       ],
     };

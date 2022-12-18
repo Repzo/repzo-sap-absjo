@@ -19,7 +19,24 @@ export const basic = async (commandEvent: CommandEvent) => {
     await commandLog.load(commandEvent.sync_id);
     await commandLog.addDetail("Repzo SAP: Basic Sync").commit();
 
-    const required_syncing_commands: string[] = [];
+    const required_syncing_commands: string[] = [
+      "join",
+      "warehouse",
+      "rep",
+      "tax",
+      "tag",
+      "measureunit",
+      "measureunit_family",
+      "category",
+      "channel",
+      "payment_term",
+      "bank",
+      "product",
+      "disabled_product",
+      "price_list",
+      "client",
+      "disabled_client",
+    ];
 
     for (let i = 0; i < required_syncing_commands.length; i++) {
       const command = required_syncing_commands[i];
