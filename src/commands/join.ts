@@ -20,7 +20,51 @@ export const join = async (commandEvent: CommandEvent) => {
     await commandLog.addDetail("Repzo SAP: Join").commit();
 
     const body: Service.JoinActionsWeHook.Data = {
-      data: [],
+      data: [
+        // invoice
+        {
+          app: "repzo-sap",
+          action: "create_invoice",
+          event: "invoiceItems.create",
+          join:
+            commandEvent?.app?.formData?.invoices?.createInvoiceHook || false,
+        },
+        // return_invoice
+        {
+          app: "repzo-sap",
+          action: "create_return_invoice",
+          event: "returnItems.create",
+          join:
+            commandEvent?.app?.formData?.invoices?.createReturnInvoiceHook ||
+            false,
+        },
+        // payment
+        {
+          app: "repzo-sap",
+          action: "create_payment",
+          event: "payment.create",
+          join:
+            commandEvent?.app?.formData?.payments?.createPaymentHook || false,
+        },
+        // proforma
+        {
+          app: "repzo-sap",
+          action: "create_proforma",
+          event: "salesorder.approve",
+          join:
+            commandEvent?.app?.formData?.proformas
+              ?.createApprovedProformaHook || false,
+        },
+        // transfer
+        {
+          app: "repzo-sap",
+          action: "create_transfer",
+          event: "transfer.approve",
+          join:
+            commandEvent?.app?.formData?.transfers
+              ?.createApprovedTransferHook || false,
+        },
+      ],
     };
 
     const result = await repzo.joinActionsWebHook.update(null, body);

@@ -1,5 +1,6 @@
 import axios from "axios";
 import Repzo from "repzo";
+import moment from "moment-timezone";
 
 interface Params {
   [key: string]: any;
@@ -37,7 +38,11 @@ export const _create = async (
   try {
     const res = await axios.post(baseUrl + path, body, {
       params,
-      headers,
+      headers: {
+        ...(headers ? headers : {}),
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
     });
     return res.data;
   } catch (e) {
@@ -85,13 +90,16 @@ export const update_bench_time = async (
   app_id: string,
   key: string,
   value: string,
+  format?: string,
 ): Promise<void> => {
   try {
+    if (format) {
+      value = moment(value).format(format);
+    }
     const res = await repzo.integrationApp.update(app_id, {
       // options_formData: { [key]: value },
       [`options_formData.${key}`]: value,
     });
-    // console.log(res);
   } catch (e) {
     throw e;
   }
@@ -151,6 +159,46 @@ export const set_error = (error_res: any): any => {
       }
     }
     return error_res;
+  } catch (e) {
+    throw e;
+  }
+};
+
+export const date_formatting = (
+  date: string | number | undefined,
+  format: string,
+) => {
+  try {
+    if (!date && date !== 0) return date;
+    const result = moment(date).format(format);
+    if (result == "Invalid date") return date;
+    return result;
+  } catch (e) {
+    console.error(e);
+    return date;
+    throw e;
+  }
+};
+
+export const get_data = async (
+  service: any,
+  key: string,
+  query_array: any[],
+  extra_query: { [key: string]: any } = {},
+) => {
+  try {
+    const all_data = [];
+    const per_page = 200;
+    const pages = Math.ceil(query_array.length / per_page);
+    for (let i = 0; i < pages; i += per_page) {
+      const repzo_data = await service.find({
+        per_page: 50000,
+        [key]: query_array.slice(i, i + per_page),
+        ...extra_query,
+      });
+      if (repzo_data?.data?.length) all_data.push(...repzo_data.data);
+    }
+    return all_data;
   } catch (e) {
     throw e;
   }
