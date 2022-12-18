@@ -41,7 +41,7 @@ export const sync_warehouse = async (commandEvent: CommandEvent) => {
   const commandLog = new Repzo.CommandLog(
     repzo,
     commandEvent.app,
-    commandEvent.command,
+    commandEvent.command
   );
   try {
     console.log("sync_warehouse");
@@ -69,7 +69,7 @@ export const sync_warehouse = async (commandEvent: CommandEvent) => {
         updateAt:
           commandEvent.app.formData.warehouseDefaultUpdateDate ||
           commandEvent.app.options_formData[bench_time_key],
-      },
+      }
     );
     result.sap_total = sap_warehouses?.Warehouses?.length;
 
@@ -79,7 +79,7 @@ export const sync_warehouse = async (commandEvent: CommandEvent) => {
           commandEvent.app.formData.warehouseDefaultUpdateDate ||
           commandEvent.app.options_formData[bench_time_key] ||
           "ever"
-        }`,
+        }`
       )
       .commit();
 
@@ -101,7 +101,7 @@ export const sync_warehouse = async (commandEvent: CommandEvent) => {
       const repzo_warehouse = repzo_warehouses.data.find(
         (r_warehouse) =>
           r_warehouse.code == sap_warehouse.WAREHOUSECODE ||
-          r_warehouse.name == sap_warehouse.WAREHOUSENAME,
+          r_warehouse.name == sap_warehouse.WAREHOUSENAME
       );
 
       const body: WarehouseBody = {
@@ -141,7 +141,7 @@ export const sync_warehouse = async (commandEvent: CommandEvent) => {
         try {
           const updated_warehouse = await repzo.warehouse.update(
             repzo_warehouse._id,
-            body,
+            body
           );
           result.updated++;
         } catch (e) {
@@ -164,12 +164,12 @@ export const sync_warehouse = async (commandEvent: CommandEvent) => {
       commandEvent.app._id,
       bench_time_key,
       new_bench_time,
-      "YYYY-MM-DD",
+      "YYYY-MM-DD"
     );
     await commandLog
       .setStatus(
         "success",
-        failed_docs_report.length ? failed_docs_report : null,
+        failed_docs_report.length ? failed_docs_report : null
       )
       .setBody(result)
       .commit();
@@ -185,7 +185,7 @@ export const sync_warehouse = async (commandEvent: CommandEvent) => {
 
 const get_sap_warehouses = async (
   serviceEndPoint: string,
-  query?: { updateAt?: string },
+  query?: { updateAt?: string }
 ): Promise<SAPWarehouses> => {
   try {
     const sap_warehouses: SAPWarehouses = await _create(
@@ -195,7 +195,7 @@ const get_sap_warehouses = async (
         UpdateAt: date_formatting(query?.updateAt, "YYYYMMDD"),
         Inactive: "N",
         Locked: "N",
-      },
+      }
     );
     return sap_warehouses;
   } catch (e: any) {

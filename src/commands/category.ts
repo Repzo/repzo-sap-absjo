@@ -31,7 +31,7 @@ export const sync_category = async (commandEvent: CommandEvent) => {
   const commandLog = new Repzo.CommandLog(
     repzo,
     commandEvent.app,
-    commandEvent.command,
+    commandEvent.command
   );
   try {
     console.log("sync_category");
@@ -56,7 +56,7 @@ export const sync_category = async (commandEvent: CommandEvent) => {
 
     const sap_categories: SAPCategory[] = await get_sap_categories(
       commandEvent.app.formData.sapHostUrl,
-      {},
+      {}
     );
     result.sap_total = sap_categories?.length;
 
@@ -76,8 +76,7 @@ export const sync_category = async (commandEvent: CommandEvent) => {
       const sap_category: SAPCategory = sap_categories[i];
       const repzo_category = repzo_categories.data.find(
         (r_cat) =>
-          r_cat.integration_meta?.id ==
-          `${nameSpace}_${sap_category.GROUPCODE}`,
+          r_cat.integration_meta?.id == `${nameSpace}_${sap_category.GROUPCODE}`
       );
 
       const body: Service.Category.Create.Body | Service.Category.Update.Body =
@@ -92,7 +91,7 @@ export const sync_category = async (commandEvent: CommandEvent) => {
         // Create
         try {
           const created_category = await repzo.category.create(
-            body as Service.Category.Create.Body,
+            body as Service.Category.Create.Body
           );
           result.created++;
         } catch (e: any) {
@@ -116,14 +115,14 @@ export const sync_category = async (commandEvent: CommandEvent) => {
         try {
           const updated_category = await repzo.category.update(
             repzo_category._id,
-            body as Service.Category.Update.Body,
+            body as Service.Category.Update.Body
           );
           result.updated++;
         } catch (e: any) {
           console.log(
             "Update Product Category Failed >> ",
             e?.response?.data,
-            body,
+            body
           );
           failed_docs_report.push({
             method: "update",
@@ -142,12 +141,12 @@ export const sync_category = async (commandEvent: CommandEvent) => {
       repzo,
       commandEvent.app._id,
       bench_time_key,
-      new_bench_time,
+      new_bench_time
     );
     await commandLog
       .setStatus(
         "success",
-        failed_docs_report.length ? failed_docs_report : null,
+        failed_docs_report.length ? failed_docs_report : null
       )
       .setBody(result)
       .commit();
@@ -162,13 +161,13 @@ export const sync_category = async (commandEvent: CommandEvent) => {
 
 const get_sap_categories = async (
   serviceEndPoint: string,
-  query?: { updateAt?: string },
+  query?: { updateAt?: string }
 ): Promise<SAPCategory[]> => {
   try {
     const sap_categories: SAPCategories = await _create(
       serviceEndPoint,
       "/ItemGroup",
-      {},
+      {}
     );
     return sap_categories.ItemGroup;
   } catch (e: any) {

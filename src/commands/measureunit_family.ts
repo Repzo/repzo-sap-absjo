@@ -23,7 +23,7 @@ export const sync_measureunit_family = async (commandEvent: CommandEvent) => {
   const commandLog = new Repzo.CommandLog(
     repzo,
     commandEvent.app,
-    commandEvent.command,
+    commandEvent.command
   );
   try {
     console.log("sync_measureunit_family");
@@ -50,7 +50,7 @@ export const sync_measureunit_family = async (commandEvent: CommandEvent) => {
 
     const sap_UoMs: SAPUoM[] = await get_sap_UoMs(
       commandEvent.app.formData.sapHostUrl,
-      {},
+      {}
     );
     result.sap_UoM_total = sap_UoMs?.length;
 
@@ -80,7 +80,7 @@ export const sync_measureunit_family = async (commandEvent: CommandEvent) => {
     result.repzo_total = repzo_UoMs_family?.data?.length;
     await commandLog
       .addDetail(
-        `${repzo_UoMs_family?.data?.length} Measure Units Family in Repzo`,
+        `${repzo_UoMs_family?.data?.length} Measure Units Family in Repzo`
       )
       .commit();
 
@@ -104,14 +104,14 @@ export const sync_measureunit_family = async (commandEvent: CommandEvent) => {
     for (let key in sap_unique_family) {
       const sap_family = sap_unique_family[key];
       const repzo_family = repzo_UoMs_family.data.find(
-        (r_family) => r_family.integration_meta?.id == `${nameSpace}_${key}`,
+        (r_family) => r_family.integration_meta?.id == `${nameSpace}_${key}`
       );
 
       let measureunits: string[] = [];
       Object.keys(sap_family).forEach((unit) => {
         {
           const UoM = repzo_UoMs?.data?.find(
-            (repzo_uom) => repzo_uom?.integration_meta?.id == unit,
+            (repzo_uom) => repzo_uom?.integration_meta?.id == unit
           );
           if (UoM) {
             measureunits.push(UoM._id.toString());
@@ -133,14 +133,14 @@ export const sync_measureunit_family = async (commandEvent: CommandEvent) => {
         // Create
         try {
           const created_UoM = await repzo.measureunitFamily.create(
-            body as Service.MeasureUnit.Create.Body,
+            body as Service.MeasureUnit.Create.Body
           );
           result.created++;
         } catch (e: any) {
           console.log(
             "Create Measure Unit Family Failed >> ",
             e?.response,
-            body,
+            body
           );
           failed_docs_report.push({
             method: "create",
@@ -154,7 +154,7 @@ export const sync_measureunit_family = async (commandEvent: CommandEvent) => {
           repzo_family.name == body.name &&
           !_.difference(
             repzo_family?.measureunits?.map((m) => m?.toString()) || [],
-            body?.measureunits || [],
+            body?.measureunits || []
           )?.length
         ) {
           continue;
@@ -164,14 +164,14 @@ export const sync_measureunit_family = async (commandEvent: CommandEvent) => {
         try {
           const updated_UoM = await repzo.measureunitFamily.update(
             repzo_family._id,
-            body as Service.MeasureUnit.Update.Body,
+            body as Service.MeasureUnit.Update.Body
           );
           result.updated++;
         } catch (e: any) {
           console.log(
             "Update Measure Unit Family Failed >> ",
             e?.response?.data,
-            body,
+            body
           );
           failed_docs_report.push({
             method: "update",
@@ -190,12 +190,12 @@ export const sync_measureunit_family = async (commandEvent: CommandEvent) => {
       repzo,
       commandEvent.app._id,
       bench_time_key,
-      new_bench_time,
+      new_bench_time
     );
     await commandLog
       .setStatus(
         "success",
-        failed_docs_report.length ? failed_docs_report : null,
+        failed_docs_report.length ? failed_docs_report : null
       )
       .setBody(result)
       .commit();

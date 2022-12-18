@@ -36,7 +36,7 @@ export const sync_price_list = async (commandEvent: CommandEvent) => {
   const commandLog = new Repzo.CommandLog(
     repzo,
     commandEvent.app,
-    commandEvent.command,
+    commandEvent.command
   );
   try {
     console.log("sync_price_list");
@@ -64,7 +64,7 @@ export const sync_price_list = async (commandEvent: CommandEvent) => {
     // Get SAP Price Lists
     const sap_price_lists: SAPPriceListItem[] = await get_sap_price_list(
       commandEvent.app.formData.sapHostUrl,
-      { updateAt: commandEvent.app.options_formData[bench_time_key] },
+      { updateAt: commandEvent.app.options_formData[bench_time_key] }
     );
     result.sap_total = sap_price_lists?.length;
 
@@ -72,14 +72,14 @@ export const sync_price_list = async (commandEvent: CommandEvent) => {
       .addDetail(
         `${result.sap_total} Price Lists in SAP changed since ${
           commandEvent.app.options_formData[bench_time_key] || "ever"
-        }`,
+        }`
       )
       .commit();
 
     // Get SAP UoMs
     const sap_UoMs: SAPUoM[] = await get_sap_UoMs(
       commandEvent.app.formData.sapHostUrl,
-      {},
+      {}
     );
     result.sap_UoMs_total = sap_UoMs?.length;
 
@@ -141,14 +141,14 @@ export const sync_price_list = async (commandEvent: CommandEvent) => {
       };
 
       const repzo_price_list = repzo_price_lists?.data?.find(
-        (pl) => pl?.integration_meta?.id == body?.integration_meta?.id,
+        (pl) => pl?.integration_meta?.id == body?.integration_meta?.id
       );
 
       if (!repzo_price_list) {
         // Create
         try {
           const created_price_list = await repzo.priceList.create(
-            body as Service.PriceList.Create.Body,
+            body as Service.PriceList.Create.Body
           );
           result.PL.created++;
         } catch (e: any) {
@@ -166,7 +166,7 @@ export const sync_price_list = async (commandEvent: CommandEvent) => {
         try {
           const updated_price_list = await repzo.priceList.update(
             repzo_price_list._id,
-            body as Service.PriceList.Update.Body,
+            body as Service.PriceList.Update.Body
           );
           result.PL.updated++;
         } catch (e: any) {
@@ -200,17 +200,17 @@ export const sync_price_list = async (commandEvent: CommandEvent) => {
 
     for (let priceList_name in priceLists_withItems) {
       const repzo_PriceList = repzo_all_priceLists?.data?.find(
-        (pl) => pl.integration_meta?.id == `${nameSpace}_${priceList_name}`,
+        (pl) => pl.integration_meta?.id == `${nameSpace}_${priceList_name}`
       );
       if (!repzo_PriceList) {
         console.log(
-          `Price list with PLDID: ${priceList_name} was not created or disabled`,
+          `Price list with PLDID: ${priceList_name} was not created or disabled`
         );
         failed_docs_report.push({
           method: "create",
           // doc: priceLists_withItems[priceList_name],
           error_message: set_error(
-            `Failed Create PriceList Items: number of PL items: ${priceLists_withItems[priceList_name].length} => Because Price list with PLDID: ${priceList_name} was not created or disabled`,
+            `Failed Create PriceList Items: number of PL items: ${priceLists_withItems[priceList_name].length} => Because Price list with PLDID: ${priceList_name} was not created or disabled`
           ),
         });
         result.PL_items.failed +=
@@ -231,13 +231,13 @@ export const sync_price_list = async (commandEvent: CommandEvent) => {
       priceLists_withItems[priceList_name].forEach((doc: any) => {
         if (!sap_unique_UoMs[`${doc.PLITEMID}__${doc.PLITEMUNIT}`]) {
           console.log(
-            `error => ${doc.PLITEMID}__${doc.PLITEMUNIT} was not found on the Uom`,
+            `error => ${doc.PLITEMID}__${doc.PLITEMUNIT} was not found on the Uom`
           );
           failed_docs_report.push({
             method: "create",
             // doc: priceLists_withItems[priceList_name],
             error_message: set_error(
-              `Create PL items => PLITEMID: ${doc.PLITEMID}, PLITEMUNIT:${doc.PLITEMUNIT} was not found on the Uom`,
+              `Create PL items => PLITEMID: ${doc.PLITEMID}, PLITEMUNIT:${doc.PLITEMUNIT} was not found on the Uom`
             ),
           });
           result.PL_items.failed++;
@@ -263,7 +263,7 @@ export const sync_price_list = async (commandEvent: CommandEvent) => {
             method: "create",
             // doc: priceLists_withItems[priceList_name],
             error_message: set_error(
-              `Price List: ${item.PLDID} of Product with PLITEMID: ${item.PLITEMID} does not have Uom`,
+              `Price List: ${item.PLDID} of Product with PLITEMID: ${item.PLITEMID} does not have Uom`
             ),
           });
           result.PL_items.failed++;
@@ -272,7 +272,7 @@ export const sync_price_list = async (commandEvent: CommandEvent) => {
 
         const repzo_product = repzo_products?.data?.find(
           (product) =>
-            product?.integration_meta?.id == `${nameSpace}_${item.PLITEMID}`,
+            product?.integration_meta?.id == `${nameSpace}_${item.PLITEMID}`
         );
 
         if (!repzo_product) {
@@ -280,7 +280,7 @@ export const sync_price_list = async (commandEvent: CommandEvent) => {
             method: "create",
             // doc: priceLists_withItems[priceList_name],
             error_message: set_error(
-              `Price List: ${item.PLDID} of Product with PLITEMID: ${item.PLITEMID} was not found or disabled`,
+              `Price List: ${item.PLDID} of Product with PLITEMID: ${item.PLITEMID} was not found or disabled`
             ),
           });
           result.PL_items.failed++;
@@ -289,7 +289,7 @@ export const sync_price_list = async (commandEvent: CommandEvent) => {
 
         const repzo_product_uom = repzo_UoMs?.data?.find(
           (uom) =>
-            uom?._id?.toString() == repzo_product?.sv_measureUnit?.toString(),
+            uom?._id?.toString() == repzo_product?.sv_measureUnit?.toString()
         );
 
         if (!repzo_product_uom) {
@@ -299,7 +299,7 @@ export const sync_price_list = async (commandEvent: CommandEvent) => {
             error_message: set_error(
               `Price List: ${
                 item.PLDID
-              } of MeasureUnit with _id: ${repzo_product?.sv_measureUnit?.toString()} was not found or disabled`,
+              } of MeasureUnit with _id: ${repzo_product?.sv_measureUnit?.toString()} was not found or disabled`
             ),
           });
           result.PL_items.failed++;
@@ -310,22 +310,22 @@ export const sync_price_list = async (commandEvent: CommandEvent) => {
           repzo_product_uom && repzo_product_uom?.factor == 1
             ? Math.round(item.PLITEMPRICEVALUE * 1000)
             : Math.round(
-                (item.PLITEMPRICEVALUE * 1000) / repzo_product_uom.factor,
+                (item.PLITEMPRICEVALUE * 1000) / repzo_product_uom.factor
               );
 
         const variant = repzo_product?.variants?.find(
           (variant) =>
-            variant?.integration_meta?.id == `${nameSpace}_${item.PLITEMID}`,
+            variant?.integration_meta?.id == `${nameSpace}_${item.PLITEMID}`
         );
         if (!variant) {
           console.log(
-            `Price List: ${item.PLDID} of Variant with PLITEMID: ${item.PLITEMID} was not found`,
+            `Price List: ${item.PLDID} of Variant with PLITEMID: ${item.PLITEMID} was not found`
           );
           failed_docs_report.push({
             method: "create",
             // doc: priceLists_withItems[priceList_name],
             error_message: set_error(
-              `Price List: ${item.PLDID} of Variant with PLITEMID: ${item.PLITEMID} was not found`,
+              `Price List: ${item.PLDID} of Variant with PLITEMID: ${item.PLITEMID} was not found`
             ),
           });
           result.PL_items.failed++;
@@ -345,7 +345,7 @@ export const sync_price_list = async (commandEvent: CommandEvent) => {
         // console.log(data);
 
         const is_found_in_repzo_db = repzo_price_list_items?.data?.find(
-          (item) => item?.integration_meta?.id == body?.integration_meta?.id,
+          (item) => item?.integration_meta?.id == body?.integration_meta?.id
         );
 
         // console.log(`${data.integration_meta?.id} => ${is_found_in_repzo_db ? "create" : "update"}`)
@@ -354,7 +354,7 @@ export const sync_price_list = async (commandEvent: CommandEvent) => {
           // Create
           try {
             const created_PL_item = await repzo.priceListItem.create(
-              body as Service.PriceListItem.Create.Body,
+              body as Service.PriceListItem.Create.Body
             );
             result.PL_items.created++;
           } catch (e: any) {
@@ -372,14 +372,14 @@ export const sync_price_list = async (commandEvent: CommandEvent) => {
           try {
             const updated_PL_item = await repzo.priceListItem.update(
               is_found_in_repzo_db._id,
-              body as Service.PriceListItem.Update.Body,
+              body as Service.PriceListItem.Update.Body
             );
             result.PL_items.updated++;
           } catch (e: any) {
             console.log(
               "Update Price List Item Failed >> ",
               e?.response?.data,
-              body,
+              body
             );
             failed_docs_report.push({
               method: "update",
@@ -399,12 +399,12 @@ export const sync_price_list = async (commandEvent: CommandEvent) => {
       repzo,
       commandEvent.app._id,
       bench_time_key,
-      new_bench_time,
+      new_bench_time
     );
     await commandLog
       .setStatus(
         "success",
-        failed_docs_report.length ? failed_docs_report : null,
+        failed_docs_report.length ? failed_docs_report : null
       )
       .setBody(result)
       .commit();
@@ -419,13 +419,13 @@ export const sync_price_list = async (commandEvent: CommandEvent) => {
 
 const get_sap_price_list = async (
   serviceEndPoint: string,
-  query?: { updateAt?: string },
+  query?: { updateAt?: string }
 ): Promise<SAPPriceListItem[]> => {
   try {
     const sap_price_lists: SAPPriceListItems = await _create(
       serviceEndPoint,
       "/PriceList",
-      { UpdateAt: query?.updateAt },
+      { UpdateAt: query?.updateAt }
     );
     return sap_price_lists.PriceList;
   } catch (e: any) {

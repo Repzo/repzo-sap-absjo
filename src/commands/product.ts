@@ -55,7 +55,7 @@ export const sync_product = async (commandEvent: CommandEvent) => {
   const commandLog = new Repzo.CommandLog(
     repzo,
     commandEvent.app,
-    commandEvent.command,
+    commandEvent.command
   );
   try {
     console.log("sync_product");
@@ -83,7 +83,7 @@ export const sync_product = async (commandEvent: CommandEvent) => {
 
     const sap_products: SAPProduct[] = await get_sap_products(
       commandEvent.app.formData.sapHostUrl,
-      { updateAt: commandEvent.app.options_formData[bench_time_key] },
+      { updateAt: commandEvent.app.options_formData[bench_time_key] }
     );
     result.sap_total = sap_products?.length;
 
@@ -91,7 +91,7 @@ export const sync_product = async (commandEvent: CommandEvent) => {
       .addDetail(
         `${result.sap_total} Items in SAP changed since ${
           commandEvent.app.options_formData[bench_time_key] || "ever"
-        }`,
+        }`
       )
       .commit();
 
@@ -131,14 +131,14 @@ export const sync_product = async (commandEvent: CommandEvent) => {
         const repzo_product = repzo_products.data.find(
           (r_product) =>
             r_product?.integration_meta?.id ==
-            `${nameSpace}_${sap_product.ITEMCODE}`,
+            `${nameSpace}_${sap_product.ITEMCODE}`
         );
 
         // Tax
         const tax = repzo_taxes?.data?.find(
           (tax) =>
             tax?.integration_meta?.id ==
-            `${nameSpace}_${sap_product.ITEMTAXCODE}`,
+            `${nameSpace}_${sap_product.ITEMTAXCODE}`
         );
         if (!tax) {
           throw `Tax not found => ITEMTAXCODE: ${sap_product.ITEMTAXCODE}`;
@@ -150,7 +150,7 @@ export const sync_product = async (commandEvent: CommandEvent) => {
         const category = repzo_categories?.data?.find(
           (category) =>
             category?.integration_meta?.id ==
-            `${nameSpace}_${sap_product.ITEMGROUPCODE}`,
+            `${nameSpace}_${sap_product.ITEMGROUPCODE}`
         );
         if (!category) {
           throw `Category not found => ITEMGROUPCODE: ${sap_product.ITEMGROUPCODE}`;
@@ -217,7 +217,7 @@ export const sync_product = async (commandEvent: CommandEvent) => {
           // Create
           try {
             const created_product = await repzo.product.create(
-              body as Service.Product.Create.Body,
+              body as Service.Product.Create.Body
             );
             result.created++;
           } catch (e: any) {
@@ -237,7 +237,7 @@ export const sync_product = async (commandEvent: CommandEvent) => {
           if (repzo_product?.variants?.length) {
             body?.variants?.forEach((variant) => {
               const hasMatch = repzo_product?.variants?.find(
-                (v) => v.integration_meta?.id == variant?.integration_meta?.id,
+                (v) => v.integration_meta?.id == variant?.integration_meta?.id
               );
               if (hasMatch) {
                 variant._id = hasMatch._id;
@@ -249,7 +249,7 @@ export const sync_product = async (commandEvent: CommandEvent) => {
           try {
             const updated_product = await repzo.product.update(
               repzo_product._id,
-              body as Service.Product.Update.Body,
+              body as Service.Product.Update.Body
             );
             result.updated++;
           } catch (e: any) {
@@ -280,12 +280,12 @@ export const sync_product = async (commandEvent: CommandEvent) => {
       repzo,
       commandEvent.app._id,
       bench_time_key,
-      new_bench_time,
+      new_bench_time
     );
     await commandLog
       .setStatus(
         "success",
-        failed_docs_report.length ? failed_docs_report : null,
+        failed_docs_report.length ? failed_docs_report : null
       )
       .setBody(result)
       .commit();
@@ -300,7 +300,7 @@ export const sync_product = async (commandEvent: CommandEvent) => {
 
 const get_sap_products = async (
   serviceEndPoint: string,
-  query?: { updateAt?: string },
+  query?: { updateAt?: string }
 ): Promise<SAPProduct[]> => {
   try {
     const sap_products: SAPProducts = await _create(serviceEndPoint, "/Items", {
@@ -315,7 +315,7 @@ const get_sap_products = async (
 
 const is_matched = (
   body_1: { [keys: string]: any },
-  body_2: { [keys: string]: any },
+  body_2: { [keys: string]: any }
 ) => {
   try {
     const keys = [

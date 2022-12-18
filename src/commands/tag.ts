@@ -30,7 +30,7 @@ export const sync_tag = async (commandEvent: CommandEvent) => {
   const commandLog = new Repzo.CommandLog(
     repzo,
     commandEvent.app,
-    commandEvent.command,
+    commandEvent.command
   );
   try {
     console.log("sync_tag");
@@ -53,7 +53,7 @@ export const sync_tag = async (commandEvent: CommandEvent) => {
 
     const sap_tags: SAPTags = await get_sap_tags(
       commandEvent.app.formData.sapHostUrl,
-      {},
+      {}
     );
     result.sap_total = sap_tags?.Territories?.length;
 
@@ -78,7 +78,7 @@ export const sync_tag = async (commandEvent: CommandEvent) => {
       const sap_tag: SAPTag = sap_tags.Territories[i];
       const repzo_tag = repzo_tags.data.find(
         (r_tag) =>
-          r_tag.integration_meta?.id == `${nameSpace}_${sap_tag.TerritoryID}`,
+          r_tag.integration_meta?.id == `${nameSpace}_${sap_tag.TerritoryID}`
       );
 
       const body: Service.Tag.Create.Body | Service.Tag.Update.Body = {
@@ -96,7 +96,7 @@ export const sync_tag = async (commandEvent: CommandEvent) => {
         // Create
         try {
           const created_tag = await repzo.tag.create(
-            body as Service.Tag.Create.Body,
+            body as Service.Tag.Create.Body
           );
           result.created++;
         } catch (e: any) {
@@ -118,7 +118,7 @@ export const sync_tag = async (commandEvent: CommandEvent) => {
         try {
           const updated_tag = await repzo.tag.update(
             repzo_tag._id,
-            body as Service.Tag.Update.Body,
+            body as Service.Tag.Update.Body
           );
           result.updated++;
         } catch (e: any) {
@@ -140,12 +140,12 @@ export const sync_tag = async (commandEvent: CommandEvent) => {
       repzo,
       commandEvent.app._id,
       bench_time_key,
-      new_bench_time,
+      new_bench_time
     );
     await commandLog
       .setStatus(
         "success",
-        failed_docs_report.length ? failed_docs_report : null,
+        failed_docs_report.length ? failed_docs_report : null
       )
       .setBody(result)
       .commit();
@@ -160,7 +160,7 @@ export const sync_tag = async (commandEvent: CommandEvent) => {
 
 const get_sap_tags = async (
   serviceEndPoint: string,
-  query?: { updateAt?: string },
+  query?: { updateAt?: string }
 ): Promise<SAPTags> => {
   try {
     const sap_tags: SAPTags = await _create(serviceEndPoint, "/Territories", {

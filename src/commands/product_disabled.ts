@@ -21,7 +21,7 @@ export const sync_disabled_product = async (commandEvent: CommandEvent) => {
   const commandLog = new Repzo.CommandLog(
     repzo,
     commandEvent.app,
-    commandEvent.command,
+    commandEvent.command
   );
   try {
     console.log("sync_disabled_product");
@@ -46,7 +46,7 @@ export const sync_disabled_product = async (commandEvent: CommandEvent) => {
 
     const sap_products: SAPProduct[] = await get_sap_disabled_products(
       commandEvent.app.formData.sapHostUrl,
-      { updateAt: commandEvent.app.options_formData[bench_time_key] },
+      { updateAt: commandEvent.app.options_formData[bench_time_key] }
     );
     result.sap_total = sap_products?.length;
 
@@ -54,12 +54,12 @@ export const sync_disabled_product = async (commandEvent: CommandEvent) => {
       .addDetail(
         `${result.sap_total} Disabled Products in SAP changed since ${
           commandEvent.app.options_formData[bench_time_key] || "ever"
-        }`,
+        }`
       )
       .commit();
 
     const sap_product_query = sap_products?.map(
-      (product) => `${nameSpace}_${product.ITEMCODE}`,
+      (product) => `${nameSpace}_${product.ITEMCODE}`
     );
 
     const repzo_products = [];
@@ -78,7 +78,7 @@ export const sync_disabled_product = async (commandEvent: CommandEvent) => {
     result.repzo_total = repzo_products?.length;
     await commandLog
       .addDetail(
-        `${result.repzo_total} Active Products in Repzo should be disabled`,
+        `${result.repzo_total} Active Products in Repzo should be disabled`
       )
       .commit();
 
@@ -87,14 +87,14 @@ export const sync_disabled_product = async (commandEvent: CommandEvent) => {
       const repzo_product = repzo_products.find(
         (r_product) =>
           r_product?.integration_meta?.id ==
-          `${nameSpace}_${sap_product.ITEMCODE}`,
+          `${nameSpace}_${sap_product.ITEMCODE}`
       );
 
       if (repzo_product) {
         // Update
         try {
           const disabled_product = await repzo.product.remove(
-            repzo_product._id,
+            repzo_product._id
           );
           result.updated++;
         } catch (e: any) {
@@ -118,12 +118,12 @@ export const sync_disabled_product = async (commandEvent: CommandEvent) => {
       repzo,
       commandEvent.app._id,
       bench_time_key,
-      new_bench_time,
+      new_bench_time
     );
     await commandLog
       .setStatus(
         "success",
-        failed_docs_report.length ? failed_docs_report : null,
+        failed_docs_report.length ? failed_docs_report : null
       )
       .setBody(result)
       .commit();
@@ -138,7 +138,7 @@ export const sync_disabled_product = async (commandEvent: CommandEvent) => {
 
 const get_sap_disabled_products = async (
   serviceEndPoint: string,
-  query?: { updateAt?: string },
+  query?: { updateAt?: string }
 ): Promise<SAPProduct[]> => {
   try {
     const sap_products: SAPProducts = await _create(serviceEndPoint, "/Items", {

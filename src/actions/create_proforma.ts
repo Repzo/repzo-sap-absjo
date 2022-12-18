@@ -47,7 +47,7 @@ export const create_proforma = async (event: EVENT, options: Config) => {
 
     await actionLog
       .addDetail(
-        `Repzo => SAP: Started Create SalesOrder - ${repzo_serial_number}`,
+        `Repzo => SAP: Started Create SalesOrder - ${repzo_serial_number}`
       )
       .commit();
 
@@ -85,17 +85,17 @@ export const create_proforma = async (event: EVENT, options: Config) => {
     const repzo_taxes = await get_data(
       repzo.tax,
       "_id",
-      Object.keys(repzo_tax_ids),
+      Object.keys(repzo_tax_ids)
     );
     const repzo_measureunits = await get_data(
       repzo.measureunit,
       "_id",
-      Object.keys(repzo_measureunit_ids),
+      Object.keys(repzo_measureunit_ids)
     );
     const repzo_products = await get_data(
       repzo.product,
       "_id",
-      Object.keys(repzo_product_ids),
+      Object.keys(repzo_product_ids)
     );
 
     // Prepare SAP_invoice_items
@@ -106,20 +106,20 @@ export const create_proforma = async (event: EVENT, options: Config) => {
 
       // Get Repzo Tax
       const repzo_tax = repzo_taxes?.find(
-        (t) => t._id?.toString() == item.tax?._id?.toString(),
+        (t) => t._id?.toString() == item.tax?._id?.toString()
       );
       if (!repzo_tax) throw `Tax with _id: ${item.tax._id} not found in Repzo`;
 
       // Get Repzo UoM
       const repzo_measureunit = repzo_measureunits?.find(
-        (m) => m._id?.toString() == item.measureunit?._id?.toString(),
+        (m) => m._id?.toString() == item.measureunit?._id?.toString()
       );
       if (!repzo_measureunit)
         throw `Uom with _id: ${item.measureunit?._id} not found in Repzo`;
 
       // Get Repzo Product
       const repzo_product = repzo_products?.find(
-        (p) => p._id?.toString() == item.variant?.product_id?.toString(),
+        (p) => p._id?.toString() == item.variant?.product_id?.toString()
       );
       if (!repzo_product)
         throw `Product with _id: ${item.measureunit._id} not found in Repzo`;
@@ -146,10 +146,10 @@ export const create_proforma = async (event: EVENT, options: Config) => {
         ? repzo_rep.integration_id
         : options.data?.SalPersCode, // "111",
       DocDate: moment(repzo_proforma.issue_date, "YYYY-MM-DD").format(
-        "YYYYMMDD",
+        "YYYYMMDD"
       ),
       DocDueDate: moment(repzo_proforma.issue_date, "YYYY-MM-DD").format(
-        "YYYYMMDD",
+        "YYYYMMDD"
       ),
       ClientCode: repzo_client.client_code,
       DiscountPerc: "0",
@@ -163,7 +163,7 @@ export const create_proforma = async (event: EVENT, options: Config) => {
     await actionLog
       .addDetail(
         `Repzo => SAP: SalesOrder - ${repzo_serial_number}`,
-        sap_invoice,
+        sap_invoice
       )
       .commit();
 

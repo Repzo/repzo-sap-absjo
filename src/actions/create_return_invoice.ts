@@ -55,7 +55,7 @@ export const create_return_invoice = async (event: EVENT, options: Config) => {
 
     await actionLog
       .addDetail(
-        `Repzo => SAP: Started Create Return Invoice - ${repzo_serial_number}`,
+        `Repzo => SAP: Started Create Return Invoice - ${repzo_serial_number}`
       )
       .commit();
 
@@ -87,7 +87,7 @@ export const create_return_invoice = async (event: EVENT, options: Config) => {
 
     // Get Repzo Warehouse
     const repzo_warehouse = await repzo.warehouse.get(
-      repzo_invoice.origin_warehouse,
+      repzo_invoice.origin_warehouse
     );
     if (!repzo_warehouse)
       throw `warehouse with _id: ${repzo_invoice.origin_warehouse} not found in Repzo`;
@@ -107,17 +107,17 @@ export const create_return_invoice = async (event: EVENT, options: Config) => {
     const repzo_taxes = await get_data(
       repzo.tax,
       "_id",
-      Object.keys(repzo_tax_ids),
+      Object.keys(repzo_tax_ids)
     );
     const repzo_measureunits = await get_data(
       repzo.measureunit,
       "_id",
-      Object.keys(repzo_measureunit_ids),
+      Object.keys(repzo_measureunit_ids)
     );
     const repzo_products = await get_data(
       repzo.product,
       "_id",
-      Object.keys(repzo_product_ids),
+      Object.keys(repzo_product_ids)
     );
 
     // Prepare SAP_invoice_items
@@ -128,27 +128,27 @@ export const create_return_invoice = async (event: EVENT, options: Config) => {
 
       // Get Repzo Tax
       const repzo_tax = repzo_taxes?.find(
-        (t) => t._id?.toString() == item.tax?._id?.toString(),
+        (t) => t._id?.toString() == item.tax?._id?.toString()
       );
       if (!repzo_tax) throw `Tax with _id: ${item.tax._id} not found in Repzo`;
 
       // Get Repzo UoM
       const repzo_measureunit = repzo_measureunits?.find(
-        (m) => m._id?.toString() == item.measureunit?._id?.toString(),
+        (m) => m._id?.toString() == item.measureunit?._id?.toString()
       );
       if (!repzo_measureunit)
         throw `Uom with _id: ${item.measureunit?._id} not found in Repzo`;
 
       // Get Repzo Product
       const repzo_product = repzo_products?.find(
-        (p) => p._id?.toString() == item.variant?.product_id?.toString(),
+        (p) => p._id?.toString() == item.variant?.product_id?.toString()
       );
       if (!repzo_product)
         throw `Product with _id: ${item.measureunit._id} not found in Repzo`;
 
       // Get SAP return_reason
       const item_return_reason = return_reasons?.find(
-        (r) => r.repzo_id === item.return_reason,
+        (r) => r.repzo_id === item.return_reason
       );
 
       return_items.push({
@@ -172,10 +172,10 @@ export const create_return_invoice = async (event: EVENT, options: Config) => {
       RefNum: repzo_invoice.serial_number.formatted,
       SalPersCode: repzo_rep?.integration_id,
       DocDate: moment(repzo_invoice.issue_date, "YYYY-MM-DD").format(
-        "YYYYMMDD",
+        "YYYYMMDD"
       ),
       DocDueDate: moment(repzo_invoice.due_date, "YYYY-MM-DD").format(
-        "YYYYMMDD",
+        "YYYYMMDD"
       ),
       ClientCode: repzo_client.client_code,
       DiscountPerc: "0",
@@ -189,14 +189,14 @@ export const create_return_invoice = async (event: EVENT, options: Config) => {
     await actionLog
       .addDetail(
         `Repzo => SAP: Invoice - ${repzo_serial_number}`,
-        sap_return_invoice,
+        sap_return_invoice
       )
       .commit();
 
     const result = await _create(
       SAP_HOST_URL,
       "/AddCreditMemo",
-      sap_return_invoice,
+      sap_return_invoice
     );
 
     // console.log(result);

@@ -34,7 +34,7 @@ export const adjust_inventory = async (commandEvent: CommandEvent) => {
   const commandLog = new Repzo.CommandLog(
     repzo,
     commandEvent.app,
-    commandEvent.command,
+    commandEvent.command
   );
   try {
     console.log("adjust_inventory");
@@ -57,7 +57,7 @@ export const adjust_inventory = async (commandEvent: CommandEvent) => {
 
     const sap_inventories_items: SAPStoresBalance[] = await get_sap_inventories(
       commandEvent.app.formData.sapHostUrl,
-      {},
+      {}
     );
     result.sap_total = sap_inventories_items?.length;
 
@@ -115,7 +115,7 @@ export const adjust_inventory = async (commandEvent: CommandEvent) => {
       try {
         const sap_inventory = sap_inventories[i];
         const repzo_warehouse = repzo_warehouses?.data?.find(
-          (wh) => wh.code == sap_inventory.STOREID,
+          (wh) => wh.code == sap_inventory.STOREID
         );
         if (!repzo_warehouse) {
           throw `Warehouse with code: ${sap_inventory.STOREID} was not found in Repzo`;
@@ -137,11 +137,11 @@ export const adjust_inventory = async (commandEvent: CommandEvent) => {
               try {
                 const variant = repzo_variants?.data?.find(
                   (variant) =>
-                    variant.integration_meta?.ITEMCODE == sap_item.ITEMID,
+                    variant.integration_meta?.ITEMCODE == sap_item.ITEMID
                 );
                 if (!variant) {
                   console.log(
-                    `Variant with ITEMCODE: ${sap_item.ITEMID} was not found`,
+                    `Variant with ITEMCODE: ${sap_item.ITEMID} was not found`
                   );
                   throw `Variant with ITEMCODE: ${sap_item.ITEMID} was not found`;
                 }
@@ -151,11 +151,11 @@ export const adjust_inventory = async (commandEvent: CommandEvent) => {
                     measure_unit._id.toString() ==
                     (
                       variant.product as Service.Product.ProductSchema
-                    )?.sv_measureUnit?.toString(),
+                    )?.sv_measureUnit?.toString()
                 );
                 if (!measureUnit) {
                   console.log(
-                    `MeasureUnit with UNITNAME: ${sap_item.UNITNAME} & ALTUOMID: ${sap_item.UNITID} was not found`,
+                    `MeasureUnit with UNITNAME: ${sap_item.UNITNAME} & ALTUOMID: ${sap_item.UNITID} was not found`
                   );
                   throw `MeasureUnit with UNITNAME: ${sap_item.UNITNAME} & ALTUOMID: ${sap_item.UNITID} was not found`;
                 }
@@ -165,8 +165,7 @@ export const adjust_inventory = async (commandEvent: CommandEvent) => {
                 const match_item_in_repzo_inventory =
                   repzo_inventory?.data?.find(
                     (repzo_item) =>
-                      repzo_item.variant_id.toString() ==
-                      variant._id.toString(),
+                      repzo_item.variant_id.toString() == variant._id.toString()
                   );
 
                 if (match_item_in_repzo_inventory) {
@@ -196,7 +195,7 @@ export const adjust_inventory = async (commandEvent: CommandEvent) => {
                 ?.filter((item) => !item.has_match_in_SAP)
                 .map((item) => {
                   return { variant: item.variant_id, qty: -1 * item.qty };
-                }),
+                })
             )
             .filter((item) => item && item.qty),
         };
@@ -221,7 +220,7 @@ export const adjust_inventory = async (commandEvent: CommandEvent) => {
     await commandLog
       .setStatus(
         "success",
-        failed_docs_report.length ? failed_docs_report : null,
+        failed_docs_report.length ? failed_docs_report : null
       )
       .setBody(result)
       .commit();
@@ -236,13 +235,13 @@ export const adjust_inventory = async (commandEvent: CommandEvent) => {
 
 const get_sap_inventories = async (
   serviceEndPoint: string,
-  query?: { updateAt?: string },
+  query?: { updateAt?: string }
 ): Promise<SAPStoresBalance[]> => {
   try {
     const sap_inventories: SAPStoresBalances = await _create(
       serviceEndPoint,
       "/StoresBalance",
-      {},
+      {}
     );
     return sap_inventories.StoresBalance;
   } catch (e: any) {

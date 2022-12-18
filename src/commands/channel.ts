@@ -57,7 +57,7 @@ export const sync_channel = async (commandEvent: CommandEvent) => {
   const commandLog = new Repzo.CommandLog(
     repzo,
     commandEvent.app,
-    commandEvent.command,
+    commandEvent.command
   );
   try {
     console.log("sync_channel");
@@ -85,7 +85,7 @@ export const sync_channel = async (commandEvent: CommandEvent) => {
       {
         updateAt: commandEvent.app.options_formData[bench_time_key],
         GroupCode: commandEvent.app.formData.GroupCode,
-      },
+      }
     );
 
     const sap_unique_channels: { [key: string]: true } = {};
@@ -101,7 +101,7 @@ export const sync_channel = async (commandEvent: CommandEvent) => {
       .addDetail(
         `${result.sap_total} Client Channels in SAP  changed since ${
           commandEvent.app.options_formData[bench_time_key] || "ever"
-        }`,
+        }`
       )
       .commit();
 
@@ -115,7 +115,7 @@ export const sync_channel = async (commandEvent: CommandEvent) => {
       const sap_channel: string = sap_channels[i];
       const repzo_channel = repzo_channels.data.find(
         (r_channel) =>
-          r_channel.integration_meta?.id == `${nameSpace}_${sap_channel}`,
+          r_channel.integration_meta?.id == `${nameSpace}_${sap_channel}`
       );
 
       const body: Service.Channel.Create.Body | Service.Channel.Update.Body = {
@@ -131,7 +131,7 @@ export const sync_channel = async (commandEvent: CommandEvent) => {
         // Create
         try {
           const created_channel = await repzo.channel.create(
-            body as Service.Channel.Create.Body,
+            body as Service.Channel.Create.Body
           );
           result.created++;
         } catch (e: any) {
@@ -153,14 +153,14 @@ export const sync_channel = async (commandEvent: CommandEvent) => {
         try {
           const updated_channel = await repzo.channel.update(
             repzo_channel._id,
-            body as Service.Channel.Update.Body,
+            body as Service.Channel.Update.Body
           );
           result.updated++;
         } catch (e: any) {
           console.log(
             "Update Client Channel Failed >> ",
             e?.response?.data,
-            body,
+            body
           );
           failed_docs_report.push({
             method: "update",
@@ -179,12 +179,12 @@ export const sync_channel = async (commandEvent: CommandEvent) => {
       repzo,
       commandEvent.app._id,
       bench_time_key,
-      new_bench_time,
+      new_bench_time
     );
     await commandLog
       .setStatus(
         "success",
-        failed_docs_report.length ? failed_docs_report : null,
+        failed_docs_report.length ? failed_docs_report : null
       )
       .setBody(result)
       .commit();
@@ -199,7 +199,7 @@ export const sync_channel = async (commandEvent: CommandEvent) => {
 
 const get_sap_clients = async (
   serviceEndPoint: string,
-  query?: { updateAt?: string; GroupCode?: string },
+  query?: { updateAt?: string; GroupCode?: string }
 ): Promise<SAPClient[]> => {
   try {
     const sap_clients: SAPClients = await _create(
@@ -210,7 +210,7 @@ const get_sap_clients = async (
         Frozen: "N",
         UpdateAt: date_formatting(query?.updateAt, "YYYYMMDD:HHmmss"),
         GroupCode: query?.GroupCode || "",
-      },
+      }
     );
     return sap_clients.Customers;
   } catch (e: any) {

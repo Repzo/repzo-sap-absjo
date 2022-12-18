@@ -65,7 +65,7 @@ export const create_invoice = async (event: EVENT, options: Config) => {
 
     await actionLog
       .addDetail(
-        `Repzo => SAP: Started Create Invoice - ${repzo_serial_number}`,
+        `Repzo => SAP: Started Create Invoice - ${repzo_serial_number}`
       )
       .commit();
 
@@ -83,7 +83,7 @@ export const create_invoice = async (event: EVENT, options: Config) => {
     });
 
     const open_invoice = sap_open_invoices?.find(
-      (inv) => inv?.InvoiceNumber === repzo_serial_number,
+      (inv) => inv?.InvoiceNumber === repzo_serial_number
     );
     if (open_invoice) {
       await actionLog
@@ -106,13 +106,13 @@ export const create_invoice = async (event: EVENT, options: Config) => {
     });
 
     const closed_invoice = sap_closed_invoices?.find(
-      (inv) => inv?.InvoiceNumber === repzo_serial_number,
+      (inv) => inv?.InvoiceNumber === repzo_serial_number
     );
     if (closed_invoice) {
       await actionLog
         .addDetail(`Checked Closed Already in SAP `, closed_invoice)
         .addDetail(
-          `Invoice - ${repzo_serial_number} Checked Closed Already in SAP`,
+          `Invoice - ${repzo_serial_number} Checked Closed Already in SAP`
         )
         .setStatus("success")
         .setBody(repzo_invoice)
@@ -138,7 +138,7 @@ export const create_invoice = async (event: EVENT, options: Config) => {
 
     // Get Repzo Warehouse
     const repzo_warehouse = await repzo.warehouse.get(
-      repzo_invoice.origin_warehouse,
+      repzo_invoice.origin_warehouse
     );
     if (!repzo_warehouse)
       throw `warehouse with _id: ${repzo_invoice.origin_warehouse} not found in Repzo`;
@@ -158,17 +158,17 @@ export const create_invoice = async (event: EVENT, options: Config) => {
     const repzo_taxes = await get_data(
       repzo.tax,
       "_id",
-      Object.keys(repzo_tax_ids),
+      Object.keys(repzo_tax_ids)
     );
     const repzo_measureunits = await get_data(
       repzo.measureunit,
       "_id",
-      Object.keys(repzo_measureunit_ids),
+      Object.keys(repzo_measureunit_ids)
     );
     const repzo_products = await get_data(
       repzo.product,
       "_id",
-      Object.keys(repzo_product_ids),
+      Object.keys(repzo_product_ids)
     );
 
     // Prepare SAP_invoice_items
@@ -179,20 +179,20 @@ export const create_invoice = async (event: EVENT, options: Config) => {
 
       // Get Repzo Tax
       const repzo_tax = repzo_taxes?.find(
-        (t) => t._id?.toString() == item.tax?._id?.toString(),
+        (t) => t._id?.toString() == item.tax?._id?.toString()
       );
       if (!repzo_tax) throw `Tax with _id: ${item.tax._id} not found in Repzo`;
 
       // Get Repzo UoM
       const repzo_measureunit = repzo_measureunits?.find(
-        (m) => m._id?.toString() == item.measureunit?._id?.toString(),
+        (m) => m._id?.toString() == item.measureunit?._id?.toString()
       );
       if (!repzo_measureunit)
         throw `Uom with _id: ${item.measureunit?._id} not found in Repzo`;
 
       // Get Repzo Product
       const repzo_product = repzo_products?.find(
-        (p) => p._id?.toString() == item.variant?.product_id?.toString(),
+        (p) => p._id?.toString() == item.variant?.product_id?.toString()
       );
       if (!repzo_product)
         throw `Product with _id: ${item.measureunit._id} not found in Repzo`;
@@ -217,10 +217,10 @@ export const create_invoice = async (event: EVENT, options: Config) => {
       RefNum: repzo_invoice.serial_number.formatted,
       SalPersCode: repzo_rep?.integration_id,
       DocDate: moment(repzo_invoice.issue_date, "YYYY-MM-DD").format(
-        "YYYYMMDD",
+        "YYYYMMDD"
       ),
       DocDueDate: moment(repzo_invoice.due_date, "YYYY-MM-DD").format(
-        "YYYYMMDD",
+        "YYYYMMDD"
       ),
       ClientCode: repzo_client.client_code,
       DiscountPerc: "0",
@@ -256,7 +256,7 @@ export const create_invoice = async (event: EVENT, options: Config) => {
 
 export const get_invoice_from_sap = async (
   serviceEndPoint: string,
-  query?: { updatedAt: string; Status: string; InvoiceId: string },
+  query?: { updatedAt: string; Status: string; InvoiceId: string }
 ): Promise<SAPOpenInvoice[]> => {
   try {
     const sap_openInvoices: SAPOpenInvoices = await _create(
@@ -266,7 +266,7 @@ export const get_invoice_from_sap = async (
         updatedAt: query?.updatedAt,
         Status: query?.Status,
         InvoiceId: query?.InvoiceId,
-      },
+      }
     );
     return sap_openInvoices?.OpenInvoices;
   } catch (e: any) {

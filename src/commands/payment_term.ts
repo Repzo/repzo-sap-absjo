@@ -57,7 +57,7 @@ export const sync_payment_term = async (commandEvent: CommandEvent) => {
   const commandLog = new Repzo.CommandLog(
     repzo,
     commandEvent.app,
-    commandEvent.command,
+    commandEvent.command
   );
   try {
     console.log("sync_payment_term");
@@ -85,7 +85,7 @@ export const sync_payment_term = async (commandEvent: CommandEvent) => {
       {
         updateAt: commandEvent.app.options_formData[bench_time_key],
         GroupCode: commandEvent.app.formData.GroupCode,
-      },
+      }
     );
 
     const sap_unique_payment_terms: { [key: number]: true } = {};
@@ -101,7 +101,7 @@ export const sync_payment_term = async (commandEvent: CommandEvent) => {
       .addDetail(
         `${result.sap_total} Payments Term in SAP changed since ${
           commandEvent.app.options_formData[bench_time_key] || "ever"
-        }`,
+        }`
       )
       .commit();
 
@@ -118,7 +118,7 @@ export const sync_payment_term = async (commandEvent: CommandEvent) => {
       const repzo_payment_term = repzo_payment_terms.data.find(
         (r_payment_term) =>
           r_payment_term.integration_meta?.id ==
-          `${nameSpace}_${sap_payment_term}`,
+          `${nameSpace}_${sap_payment_term}`
       );
 
       const body:
@@ -136,7 +136,7 @@ export const sync_payment_term = async (commandEvent: CommandEvent) => {
         // Create
         try {
           const created_payment_term = await repzo.paymentTerm.create(
-            body as Service.PaymentTerm.Create.Body,
+            body as Service.PaymentTerm.Create.Body
           );
           result.created++;
         } catch (e: any) {
@@ -158,14 +158,14 @@ export const sync_payment_term = async (commandEvent: CommandEvent) => {
         try {
           const updated_payment_term = await repzo.paymentTerm.update(
             repzo_payment_term._id,
-            body as Service.PaymentTerm.Update.Body,
+            body as Service.PaymentTerm.Update.Body
           );
           result.updated++;
         } catch (e: any) {
           console.log(
             "Update Payment Term Failed >> ",
             e?.response?.data,
-            body,
+            body
           );
           failed_docs_report.push({
             method: "update",
@@ -184,12 +184,12 @@ export const sync_payment_term = async (commandEvent: CommandEvent) => {
       repzo,
       commandEvent.app._id,
       bench_time_key,
-      new_bench_time,
+      new_bench_time
     );
     await commandLog
       .setStatus(
         "success",
-        failed_docs_report.length ? failed_docs_report : null,
+        failed_docs_report.length ? failed_docs_report : null
       )
       .setBody(result)
       .commit();
@@ -204,7 +204,7 @@ export const sync_payment_term = async (commandEvent: CommandEvent) => {
 
 const get_sap_clients = async (
   serviceEndPoint: string,
-  query?: { updateAt?: string; GroupCode?: string },
+  query?: { updateAt?: string; GroupCode?: string }
 ): Promise<SAPClient[]> => {
   try {
     const sap_clients: SAPClients = await _create(
@@ -215,7 +215,7 @@ const get_sap_clients = async (
         Frozen: "N",
         UpdateAt: date_formatting(query?.updateAt, "YYYYMMDD:HHmmss"),
         GroupCode: query?.GroupCode || "",
-      },
+      }
     );
     return sap_clients.Customers;
   } catch (e: any) {

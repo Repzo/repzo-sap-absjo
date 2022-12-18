@@ -32,7 +32,7 @@ export const sync_tax = async (commandEvent: CommandEvent) => {
   const commandLog = new Repzo.CommandLog(
     repzo,
     commandEvent.app,
-    commandEvent.command,
+    commandEvent.command
   );
   try {
     console.log("sync_tax");
@@ -55,7 +55,7 @@ export const sync_tax = async (commandEvent: CommandEvent) => {
 
     const sap_taxes: SAPTaxes = await get_sap_taxes(
       commandEvent.app.formData.sapHostUrl,
-      {},
+      {}
     );
     result.sap_total = sap_taxes?.Taxes?.length;
 
@@ -80,7 +80,7 @@ export const sync_tax = async (commandEvent: CommandEvent) => {
       const sap_tax: SAPTax = sap_taxes.Taxes[i];
       const repzo_tax = repzo_taxes.data.find(
         (r_tax) =>
-          r_tax.integration_meta?.id == `${nameSpace}_${sap_tax.TaxCode}`,
+          r_tax.integration_meta?.id == `${nameSpace}_${sap_tax.TaxCode}`
       );
 
       const body: Service.Tax.Create.Body | Service.Tax.Update.Body = {
@@ -99,7 +99,7 @@ export const sync_tax = async (commandEvent: CommandEvent) => {
         // Create
         try {
           const created_tax = await repzo.tax.create(
-            body as Service.Tax.Create.Body,
+            body as Service.Tax.Create.Body
           );
           result.created++;
         } catch (e: any) {
@@ -123,7 +123,7 @@ export const sync_tax = async (commandEvent: CommandEvent) => {
         try {
           const updated_tax = await repzo.tax.update(
             repzo_tax._id,
-            body as Service.Tax.Update.Body,
+            body as Service.Tax.Update.Body
           );
           result.updated++;
         } catch (e: any) {
@@ -145,12 +145,12 @@ export const sync_tax = async (commandEvent: CommandEvent) => {
       repzo,
       commandEvent.app._id,
       bench_time_key,
-      new_bench_time,
+      new_bench_time
     );
     await commandLog
       .setStatus(
         "success",
-        failed_docs_report.length ? failed_docs_report : null,
+        failed_docs_report.length ? failed_docs_report : null
       )
       .setBody(result)
       .commit();
@@ -165,7 +165,7 @@ export const sync_tax = async (commandEvent: CommandEvent) => {
 
 const get_sap_taxes = async (
   serviceEndPoint: string,
-  query?: { updateAt?: string },
+  query?: { updateAt?: string }
 ): Promise<SAPTaxes> => {
   try {
     const sap_taxes: SAPTaxes = await _create(serviceEndPoint, "/Taxes", {

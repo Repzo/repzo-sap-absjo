@@ -22,7 +22,7 @@ export const sync_disabled_client = async (commandEvent: CommandEvent) => {
   const commandLog = new Repzo.CommandLog(
     repzo,
     commandEvent.app,
-    commandEvent.command,
+    commandEvent.command
   );
   try {
     console.log("sync_disabled_client");
@@ -50,7 +50,7 @@ export const sync_disabled_client = async (commandEvent: CommandEvent) => {
       {
         updateAt: commandEvent.app.options_formData[bench_time_key],
         GroupCode: commandEvent.app.formData.GroupCode,
-      },
+      }
     );
     result.sap_total = sap_disabled_clients?.length;
 
@@ -58,12 +58,12 @@ export const sync_disabled_client = async (commandEvent: CommandEvent) => {
       .addDetail(
         `${result.sap_total} Disabled Clients in SAP changed since ${
           commandEvent.app.options_formData[bench_time_key] || "ever"
-        }`,
+        }`
       )
       .commit();
 
     const sap_client_query = sap_disabled_clients?.map(
-      (client) => `${nameSpace}_${client.CLIENTID}`,
+      (client) => `${nameSpace}_${client.CLIENTID}`
     );
 
     const repzo_disabled_clients = [];
@@ -89,8 +89,7 @@ export const sync_disabled_client = async (commandEvent: CommandEvent) => {
       const sap_client: SAPClient = sap_disabled_clients[i];
       const repzo_client = repzo_disabled_clients?.find(
         (r_client) =>
-          r_client.integration_meta?.id ==
-          `${nameSpace}_${sap_client.CLIENTID}`,
+          r_client.integration_meta?.id == `${nameSpace}_${sap_client.CLIENTID}`
       );
 
       if (repzo_client) {
@@ -119,12 +118,12 @@ export const sync_disabled_client = async (commandEvent: CommandEvent) => {
       repzo,
       commandEvent.app._id,
       bench_time_key,
-      new_bench_time,
+      new_bench_time
     );
     await commandLog
       .setStatus(
         "success",
-        failed_docs_report.length ? failed_docs_report : null,
+        failed_docs_report.length ? failed_docs_report : null
       )
       .setBody(result)
       .commit();
@@ -139,7 +138,7 @@ export const sync_disabled_client = async (commandEvent: CommandEvent) => {
 
 const get_sap_clients = async (
   serviceEndPoint: string,
-  query?: { updateAt?: string; GroupCode?: string },
+  query?: { updateAt?: string; GroupCode?: string }
 ): Promise<SAPClient[]> => {
   try {
     const sap_clients: SAPClients = await _create(
@@ -150,7 +149,7 @@ const get_sap_clients = async (
         Frozen: "N",
         UpdateAt: date_formatting(query?.updateAt, "YYYYMMDD:HHmmss"),
         GroupCode: query?.GroupCode || "",
-      },
+      }
     );
     return sap_clients.Customers;
   } catch (e: any) {

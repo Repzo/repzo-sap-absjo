@@ -33,7 +33,7 @@ export const sync_rep = async (commandEvent: CommandEvent) => {
   const commandLog = new Repzo.CommandLog(
     repzo,
     commandEvent.app,
-    commandEvent.command,
+    commandEvent.command
   );
   try {
     console.log("sync_rep");
@@ -56,7 +56,7 @@ export const sync_rep = async (commandEvent: CommandEvent) => {
 
     const sap_reps: SAPReps = await get_sap_reps(
       commandEvent.app.formData.sapHostUrl,
-      {},
+      {}
     );
     result.sap_total = sap_reps?.Users?.length;
 
@@ -97,7 +97,7 @@ export const sync_rep = async (commandEvent: CommandEvent) => {
       const sap_rep: SAPRep = sap_reps.Users[i];
       const repzo_rep = repzo_reps.data.find(
         (r_rep) =>
-          r_rep.integration_meta?.id == `${nameSpace}_${sap_rep.USERID}`,
+          r_rep.integration_meta?.id == `${nameSpace}_${sap_rep.USERID}`
       );
 
       let warehouse;
@@ -128,7 +128,7 @@ export const sync_rep = async (commandEvent: CommandEvent) => {
         // Create
         try {
           const created_rep = await repzo.rep.create(
-            body as Service.Rep.Create.Body,
+            body as Service.Rep.Create.Body
           );
           result.created++;
         } catch (e: any) {
@@ -156,7 +156,7 @@ export const sync_rep = async (commandEvent: CommandEvent) => {
           delete body.password;
           const updated_rep = await repzo.rep.update(
             repzo_rep._id,
-            body as Service.Rep.Update.Body,
+            body as Service.Rep.Update.Body
           );
           result.updated++;
         } catch (e: any) {
@@ -178,12 +178,12 @@ export const sync_rep = async (commandEvent: CommandEvent) => {
       repzo,
       commandEvent.app._id,
       bench_time_key,
-      new_bench_time,
+      new_bench_time
     );
     await commandLog
       .setStatus(
         "success",
-        failed_docs_report.length ? failed_docs_report : null,
+        failed_docs_report.length ? failed_docs_report : null
       )
       .setBody(result)
       .commit();
@@ -198,7 +198,7 @@ export const sync_rep = async (commandEvent: CommandEvent) => {
 
 const get_sap_reps = async (
   serviceEndPoint: string,
-  query?: { updateAt?: string },
+  query?: { updateAt?: string }
 ): Promise<SAPReps> => {
   try {
     const sap_reps: SAPReps = await _create(serviceEndPoint, "/Users", {});

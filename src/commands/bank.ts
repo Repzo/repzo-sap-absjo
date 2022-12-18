@@ -32,7 +32,7 @@ export const sync_bank = async (commandEvent: CommandEvent) => {
   const commandLog = new Repzo.CommandLog(
     repzo,
     commandEvent.app,
-    commandEvent.command,
+    commandEvent.command
   );
   try {
     console.log("sync_bank");
@@ -66,7 +66,7 @@ export const sync_bank = async (commandEvent: CommandEvent) => {
 
     const sap_banks: SAPBank[] = await get_sap_banks(
       commandEvent.app.formData.sapHostUrl,
-      {},
+      {}
     );
     result.sap_total = sap_banks?.length;
 
@@ -81,7 +81,7 @@ export const sync_bank = async (commandEvent: CommandEvent) => {
     db.load(sap_banks);
 
     const sap_bank_query = sap_banks?.map(
-      (bank: SAPBank) => `${nameSpace}_${bank.BANKCODE}`,
+      (bank: SAPBank) => `${nameSpace}_${bank.BANKCODE}`
     );
 
     const repzo_banks = await repzo.bank.find({
@@ -97,7 +97,7 @@ export const sync_bank = async (commandEvent: CommandEvent) => {
       const sap_bank: SAPBank = sap_banks[i];
       const repzo_bank = repzo_banks.data.find(
         (r_bank) =>
-          r_bank.integration_meta?.id == `${nameSpace}_${sap_bank.BANKCODE}`,
+          r_bank.integration_meta?.id == `${nameSpace}_${sap_bank.BANKCODE}`
       );
 
       const country = country_translator[sap_bank.COUNTRY];
@@ -120,7 +120,7 @@ export const sync_bank = async (commandEvent: CommandEvent) => {
         // Create
         try {
           const created_bank = await repzo.bank.create(
-            body as Service.Bank.Create.Body,
+            body as Service.Bank.Create.Body
           );
           result.created++;
         } catch (e: any) {
@@ -145,7 +145,7 @@ export const sync_bank = async (commandEvent: CommandEvent) => {
         try {
           const updated_bank = await repzo.bank.update(
             repzo_bank._id,
-            body as Service.Bank.Update.Body,
+            body as Service.Bank.Update.Body
           );
           result.updated++;
         } catch (e: any) {
@@ -200,7 +200,7 @@ export const sync_bank = async (commandEvent: CommandEvent) => {
         {
           ...repzo_bank_list,
           banks: new_banks,
-        } as Service.BankList.Update.Body,
+        } as Service.BankList.Update.Body
       );
       result.repzo_bank_list_updated = true;
     } else {
@@ -212,12 +212,12 @@ export const sync_bank = async (commandEvent: CommandEvent) => {
       repzo,
       commandEvent.app._id,
       bench_time_key,
-      new_bench_time,
+      new_bench_time
     );
     await commandLog
       .setStatus(
         "success",
-        failed_docs_report.length ? failed_docs_report : null,
+        failed_docs_report.length ? failed_docs_report : null
       )
       .setBody(result)
       .commit();
@@ -232,7 +232,7 @@ export const sync_bank = async (commandEvent: CommandEvent) => {
 
 const get_sap_banks = async (
   serviceEndPoint: string,
-  query?: { updateAt?: string },
+  query?: { updateAt?: string }
 ): Promise<SAPBank[]> => {
   try {
     const sap_banks: SAPBanks = await _create(serviceEndPoint, "/Banks", {});

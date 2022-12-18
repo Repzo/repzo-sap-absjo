@@ -40,7 +40,7 @@ export const create_payment = async (event: EVENT, options: Config) => {
 
     await actionLog
       .addDetail(
-        `Repzo => SAP: Started Create Payment - ${repzo_serial_number}`,
+        `Repzo => SAP: Started Create Payment - ${repzo_serial_number}`
       )
       .commit();
 
@@ -67,7 +67,7 @@ export const create_payment = async (event: EVENT, options: Config) => {
       PaymentID: repzo_serial_number,
       ClientCode: repzo_client?.client_code,
       PaymentDate: moment(repzo_payment.paytime, "YYYY-MM-DD").format(
-        "YYYYMMDD",
+        "YYYYMMDD"
       ),
       Amount: repzo_payment.amount / 1000,
     };
@@ -102,7 +102,7 @@ export const create_payment = async (event: EVENT, options: Config) => {
         repzo_rep?.integration_meta?.USERCHECKACCTCODE;
       sap_payment.ChequeDate = moment(
         repzo_payment.check?.check_date,
-        "YYYY-MM-DD",
+        "YYYY-MM-DD"
       ).format("YYYYMMDD");
       sap_payment.ChequeNumber = repzo_payment.check?.check_number;
       sap_payment.BankCode = repzo_bank.integration_meta?.BANKCODE;

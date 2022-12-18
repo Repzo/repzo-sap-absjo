@@ -56,7 +56,7 @@ export const sync_client = async (commandEvent: CommandEvent) => {
   const commandLog = new Repzo.CommandLog(
     repzo,
     commandEvent.app,
-    commandEvent.command,
+    commandEvent.command
   );
   try {
     console.log("sync_client");
@@ -83,21 +83,21 @@ export const sync_client = async (commandEvent: CommandEvent) => {
       {
         updateAt: commandEvent.app.options_formData[bench_time_key],
         GroupCode: commandEvent.app.formData.GroupCode,
-      },
+      }
     );
     result.sap_total = sap_clients?.length;
     await commandLog
       .addDetail(
         `${result.sap_total} Customers in SAP changed since ${
           commandEvent.app.options_formData[bench_time_key] || "ever"
-        }`,
+        }`
       )
       .commit();
 
     // Get SAP CLients to be created/updated
     const sap_all_clients: SAPClient[] = await get_sap_clients(
       commandEvent.app.formData.sapHostUrl,
-      {},
+      {}
     );
     result.sap_total = sap_clients?.length;
 
@@ -139,34 +139,33 @@ export const sync_client = async (commandEvent: CommandEvent) => {
       const sap_client: SAPClient = sap_clients[i];
       const repzo_client = repzo_clients.data.find(
         (r_client) =>
-          r_client.integration_meta?.id ==
-          `${nameSpace}_${sap_client.CLIENTID}`,
+          r_client.integration_meta?.id == `${nameSpace}_${sap_client.CLIENTID}`
       );
 
       const tag = repzo_tags?.data?.find(
         (tag) =>
-          tag.integration_meta?.id == `${nameSpace}_${sap_client.TERRITORYID}`,
+          tag.integration_meta?.id == `${nameSpace}_${sap_client.TERRITORYID}`
       );
       const channel = repzo_channels?.data?.find(
         (channel) =>
           channel.integration_meta?.id ==
-          `${nameSpace}_${sap_client.CLIENTGROUP}`,
+          `${nameSpace}_${sap_client.CLIENTGROUP}`
       );
       const paymentTerm = repzo_payment_terms?.data?.find(
         (paymentTerm) =>
           paymentTerm.integration_meta?.id ==
-          `${nameSpace}_${sap_client.PAYMENTTERM}`,
+          `${nameSpace}_${sap_client.PAYMENTTERM}`
       );
       const priceList = repzo_price_lists?.data?.find(
         (pricelist) =>
           pricelist.integration_meta?.id ==
-          `${nameSpace}_${sap_client.CLIENTPRICELISTID}`,
+          `${nameSpace}_${sap_client.CLIENTPRICELISTID}`
       );
 
       let parent;
       if (sap_client.PARENTCODE) {
         parent = sap_all_clients.find(
-          (c) => c.CLIENTID == sap_client.PARENTCODE,
+          (c) => c.CLIENTID == sap_client.PARENTCODE
         );
       }
 
@@ -228,7 +227,7 @@ export const sync_client = async (commandEvent: CommandEvent) => {
         // Create
         try {
           const created_client = await repzo.client.create(
-            body as Service.Client.Create.Body,
+            body as Service.Client.Create.Body
           );
           result.created++;
         } catch (e: any) {
@@ -250,7 +249,7 @@ export const sync_client = async (commandEvent: CommandEvent) => {
         try {
           const updated_client = await repzo.client.update(
             repzo_client._id,
-            body as Service.Client.Update.Body,
+            body as Service.Client.Update.Body
           );
           result.updated++;
         } catch (e: any) {
@@ -272,12 +271,12 @@ export const sync_client = async (commandEvent: CommandEvent) => {
       repzo,
       commandEvent.app._id,
       bench_time_key,
-      new_bench_time,
+      new_bench_time
     );
     await commandLog
       .setStatus(
         "success",
-        failed_docs_report.length ? failed_docs_report : null,
+        failed_docs_report.length ? failed_docs_report : null
       )
       .setBody(result)
       .commit();
@@ -292,7 +291,7 @@ export const sync_client = async (commandEvent: CommandEvent) => {
 
 const get_sap_clients = async (
   serviceEndPoint: string,
-  query?: { updateAt?: string; GroupCode?: string },
+  query?: { updateAt?: string; GroupCode?: string }
 ): Promise<SAPClient[]> => {
   try {
     const sap_clients: SAPClients = await _create(
@@ -303,7 +302,7 @@ const get_sap_clients = async (
         Frozen: "N",
         UpdateAt: date_formatting(query?.updateAt, "YYYYMMDD:HHmmss"),
         GroupCode: query?.GroupCode || "",
-      },
+      }
     );
     return sap_clients.Customers;
   } catch (e: any) {
@@ -313,7 +312,7 @@ const get_sap_clients = async (
 
 const is_matched = (
   body_1: { [keys: string]: any },
-  body_2: { [keys: string]: any },
+  body_2: { [keys: string]: any }
 ) => {
   try {
     const keys = [

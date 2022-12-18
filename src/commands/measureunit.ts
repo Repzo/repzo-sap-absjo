@@ -39,7 +39,7 @@ export const sync_measureunit = async (commandEvent: CommandEvent) => {
   const commandLog = new Repzo.CommandLog(
     repzo,
     commandEvent.app,
-    commandEvent.command,
+    commandEvent.command
   );
   try {
     console.log("sync_measureunit");
@@ -64,7 +64,7 @@ export const sync_measureunit = async (commandEvent: CommandEvent) => {
 
     const sap_UoMs: SAPUoM[] = await get_sap_UoMs(
       commandEvent.app.formData.sapHostUrl,
-      {},
+      {}
     );
     result.sap_total = sap_UoMs?.length;
 
@@ -115,13 +115,13 @@ export const sync_measureunit = async (commandEvent: CommandEvent) => {
 
       if (max_unit.sap_product_UoMs.length > 1) {
         max_unit.default_unit = max_unit.sap_product_UoMs.find(
-          (u) => u.ALTUOMCODE == "PC",
+          (u) => u.ALTUOMCODE == "PC"
         );
         if (!max_unit.default_unit) {
           console.log(
             "Create/Update Measure Unit Failed >> ",
             `${max_unit?.sap_product_UoMs[0]?.ITEMCODE} Could not found the base_unit`,
-            units,
+            units
           );
           failed_docs_report.push({
             method: "create",
@@ -129,7 +129,7 @@ export const sync_measureunit = async (commandEvent: CommandEvent) => {
               max_unit?.sap_product_UoMs[0]?.ITEMCODE || units[0]?.ITEMCODE,
             doc: units,
             error_message: set_error(
-              `Create/Update Measure Unit Failed >> ${max_unit?.sap_product_UoMs[0]?.ITEMCODE} Could not found the base_unit`,
+              `Create/Update Measure Unit Failed >> ${max_unit?.sap_product_UoMs[0]?.ITEMCODE} Could not found the base_unit`
             ),
           });
           result.failed++;
@@ -170,7 +170,7 @@ export const sync_measureunit = async (commandEvent: CommandEvent) => {
       const repzo_UoM = repzo_UoMs.data.find(
         (r_UoM) =>
           r_UoM.integration_meta?.id ==
-          `${nameSpace}_${sap_UoM.UOMGROUPENTRY}_${sap_UoM.ALTUOMID}`,
+          `${nameSpace}_${sap_UoM.UOMGROUPENTRY}_${sap_UoM.ALTUOMID}`
       );
 
       const body:
@@ -192,7 +192,7 @@ export const sync_measureunit = async (commandEvent: CommandEvent) => {
         // Create
         try {
           const created_UoM = await repzo.measureunit.create(
-            body as Service.MeasureUnit.Create.Body,
+            body as Service.MeasureUnit.Create.Body
           );
           result.created++;
         } catch (e: any) {
@@ -216,14 +216,14 @@ export const sync_measureunit = async (commandEvent: CommandEvent) => {
         try {
           const updated_UoM = await repzo.measureunit.update(
             repzo_UoM._id,
-            body as Service.MeasureUnit.Update.Body,
+            body as Service.MeasureUnit.Update.Body
           );
           result.updated++;
         } catch (e: any) {
           console.log(
             "Update Measure Unit Failed >> ",
             e?.response?.data,
-            body,
+            body
           );
           failed_docs_report.push({
             method: "update",
@@ -242,12 +242,12 @@ export const sync_measureunit = async (commandEvent: CommandEvent) => {
       repzo,
       commandEvent.app._id,
       bench_time_key,
-      new_bench_time,
+      new_bench_time
     );
     await commandLog
       .setStatus(
         "success",
-        failed_docs_report.length ? failed_docs_report : null,
+        failed_docs_report.length ? failed_docs_report : null
       )
       .setBody(result)
       .commit();
@@ -262,7 +262,7 @@ export const sync_measureunit = async (commandEvent: CommandEvent) => {
 
 export const get_sap_UoMs = async (
   serviceEndPoint: string,
-  query?: { updateAt?: string },
+  query?: { updateAt?: string }
 ): Promise<SAPUoM[]> => {
   try {
     const sap_UoMs: SAPUoMs = await _create(serviceEndPoint, "/Uom", {
