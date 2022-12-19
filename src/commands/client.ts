@@ -103,13 +103,13 @@ export const sync_client = async (commandEvent: CommandEvent) => {
 
     // Get Repzo Tags
     const repzo_tags = await repzo.tag.find({
-      disabled: true,
+      disabled: false,
       per_page: 50000,
     });
 
     // Get Repzo Channels
     const repzo_channels = await repzo.channel.find({
-      disabled: true,
+      disabled: false,
       per_page: 50000,
     });
 

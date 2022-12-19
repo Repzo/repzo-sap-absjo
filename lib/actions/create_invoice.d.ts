@@ -17,10 +17,12 @@ export declare const create_invoice: (
 ) => Promise<any>;
 export declare const get_invoice_from_sap: (
   serviceEndPoint: string,
-  query?: {
-    updatedAt: string;
-    Status: string;
-    InvoiceId: string;
-  }
+  query?:
+    | {
+        updatedAt: string;
+        Status: string;
+        InvoiceId: string;
+      }
+    | undefined
 ) => Promise<SAPOpenInvoice[]>;
 export {};

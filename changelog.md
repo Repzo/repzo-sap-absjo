@@ -7,6 +7,7 @@
 - Prepare repo @maramalshen
 - New Commands: [warehouse, rep, tag, tax, measureunit, measureunit-family, category, channel, paymentTerm, bank, priceList, priceListItem, product, disabled_product, client, disabled_client, adjust_inventory] @maramalshen
 - New Actions: [invoice, return_invoice, proforma, payment, transfer] @maramalshen
+- fix bug in sync_client @maramalshen
 
 ### Changed
 

@@ -6,11 +6,11 @@ export interface Config {
   serviceEndPoint: string;
   env: "staging" | "local" | "production";
 }
-type DecodedScope = "admin" | "client" | "rep";
-type StringId = string;
-type Email = string;
-type NameSpaces = string[];
-export type Decoded = jwt.JwtPayload & {
+declare type DecodedScope = "admin" | "client" | "rep";
+declare type StringId = string;
+declare type Email = string;
+declare type NameSpaces = string[];
+export declare type Decoded = jwt.JwtPayload & {
   id?: StringId;
   email?: Email;
   name?: string;
@@ -24,7 +24,7 @@ interface Params {
   nameSpace: NameSpaces;
   decoded: Decoded;
 }
-export type EVENT = AWSLambda.APIGatewayEvent & {
+export declare type EVENT = AWSLambda.APIGatewayEvent & {
   params: Params;
 };
 export interface Action {
@@ -68,7 +68,7 @@ export interface Result {
   updated: number;
   failed: number;
 }
-export type FailedDocsReport = {
+export declare type FailedDocsReport = {
   method: "create" | "update" | "delete" | "fetchingData";
   doc_id?: string;
   doc?: any;
