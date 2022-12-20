@@ -29,7 +29,7 @@ interface Params {
 export type EVENT = AWSLambda.APIGatewayEvent & { params: Params };
 export interface Action {
   name: string;
-  action: ActionType;
+  action: ActionType | string;
   description: string;
 }
 
@@ -61,7 +61,7 @@ export type CommandType =
   | "adjust_inventory";
 
 export interface Command {
-  command: CommandType;
+  command: CommandType | string;
   description: string;
   name: string;
 }
@@ -78,7 +78,7 @@ export interface AvailableApp {
 
 export interface CommandEvent {
   app: Service.App.Schema_with_populated_AvailableApp;
-  command: CommandType;
+  command: CommandType | string;
   nameSpace: NameSpaces;
   meta?: any;
   sync_id?: string;
