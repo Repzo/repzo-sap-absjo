@@ -39,7 +39,7 @@ export const sync_price_list = async (commandEvent: CommandEvent) => {
     commandEvent.command
   );
   try {
-    console.log("sync_price_list");
+    // console.log("sync_price_list");
 
     const new_bench_time = new Date().toISOString();
     const bench_time_key = "bench_time_price_list";
@@ -152,7 +152,7 @@ export const sync_price_list = async (commandEvent: CommandEvent) => {
           );
           result.PL.created++;
         } catch (e: any) {
-          console.log("Create Price List Failed >> ", e?.response, body);
+          // console.log("Create Price List Failed >> ", e?.response, body);
           failed_docs_report.push({
             method: "create",
             doc: body,
@@ -170,7 +170,7 @@ export const sync_price_list = async (commandEvent: CommandEvent) => {
           );
           result.PL.updated++;
         } catch (e: any) {
-          console.log("Update Price List Failed >> ", e?.response?.data, body);
+          // console.log("Update Price List Failed >> ", e?.response?.data, body);
           failed_docs_report.push({
             method: "update",
             doc_id: repzo_price_list?._id,
@@ -203,9 +203,9 @@ export const sync_price_list = async (commandEvent: CommandEvent) => {
         (pl) => pl.integration_meta?.id == `${nameSpace}_${priceList_name}`
       );
       if (!repzo_PriceList) {
-        console.log(
-          `Price list with PLDID: ${priceList_name} was not created or disabled`
-        );
+        // console.log(
+        //   `Price list with PLDID: ${priceList_name} was not created or disabled`
+        // );
         failed_docs_report.push({
           method: "create",
           // doc: priceLists_withItems[priceList_name],
@@ -230,9 +230,9 @@ export const sync_price_list = async (commandEvent: CommandEvent) => {
       } = {};
       priceLists_withItems[priceList_name].forEach((doc: any) => {
         if (!sap_unique_UoMs[`${doc.PLITEMID}__${doc.PLITEMUNIT}`]) {
-          console.log(
-            `error => ${doc.PLITEMID}__${doc.PLITEMUNIT} was not found on the Uom`
-          );
+          // console.log(
+          //   `error => ${doc.PLITEMID}__${doc.PLITEMUNIT} was not found on the Uom`
+          // );
           failed_docs_report.push({
             method: "create",
             // doc: priceLists_withItems[priceList_name],
@@ -318,9 +318,9 @@ export const sync_price_list = async (commandEvent: CommandEvent) => {
             variant?.integration_meta?.id == `${nameSpace}_${item.PLITEMID}`
         );
         if (!variant) {
-          console.log(
-            `Price List: ${item.PLDID} of Variant with PLITEMID: ${item.PLITEMID} was not found`
-          );
+          // console.log(
+          //   `Price List: ${item.PLDID} of Variant with PLITEMID: ${item.PLITEMID} was not found`
+          // );
           failed_docs_report.push({
             method: "create",
             // doc: priceLists_withItems[priceList_name],
@@ -358,7 +358,7 @@ export const sync_price_list = async (commandEvent: CommandEvent) => {
             );
             result.PL_items.created++;
           } catch (e: any) {
-            console.log("Create PL Item Failed >> ", e?.response?.data, body);
+            // console.log("Create PL Item Failed >> ", e?.response?.data, body);
             failed_docs_report.push({
               method: "create",
               // doc: body,
@@ -376,11 +376,11 @@ export const sync_price_list = async (commandEvent: CommandEvent) => {
             );
             result.PL_items.updated++;
           } catch (e: any) {
-            console.log(
-              "Update Price List Item Failed >> ",
-              e?.response?.data,
-              body
-            );
+            // console.log(
+            //   "Update Price List Item Failed >> ",
+            //   e?.response?.data,
+            //   body
+            // );
             failed_docs_report.push({
               method: "update",
               doc_id: is_found_in_repzo_db?._id,

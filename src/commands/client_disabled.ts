@@ -25,7 +25,7 @@ export const sync_disabled_client = async (commandEvent: CommandEvent) => {
     commandEvent.command
   );
   try {
-    console.log("sync_disabled_client");
+    // console.log("sync_disabled_client");
 
     const new_bench_time = new Date().toISOString();
     const bench_time_key = "bench_time_disabled_client";
@@ -98,9 +98,9 @@ export const sync_disabled_client = async (commandEvent: CommandEvent) => {
           const disabled_client = await repzo.client.remove(repzo_client._id);
           result.updated++;
         } catch (e: any) {
-          console.log("Disable Client Failed >> ", e?.response?.data, {
-            CLIENTID: sap_client.CLIENTID,
-          });
+          // console.log("Disable Client Failed >> ", e?.response?.data, {
+          //   CLIENTID: sap_client.CLIENTID,
+          // });
           failed_docs_report.push({
             method: "delete",
             doc_id: repzo_client?._id,

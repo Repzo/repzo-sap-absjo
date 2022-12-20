@@ -46,6 +46,7 @@ export const create_proforma = async (event: EVENT, options: Config) => {
     const repzo_serial_number = body?.serial_number?.formatted;
 
     await actionLog
+      .addDetail(`SalesOrder - ${repzo_serial_number} => ${body?.sync_id}`)
       .addDetail(
         `Repzo => SAP: Started Create SalesOrder - ${repzo_serial_number}`
       )

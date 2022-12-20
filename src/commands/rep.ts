@@ -36,7 +36,7 @@ export const sync_rep = async (commandEvent: CommandEvent) => {
     commandEvent.command
   );
   try {
-    console.log("sync_rep");
+    // console.log("sync_rep");
 
     const new_bench_time = new Date().toISOString();
     const bench_time_key = "bench_time_rep";
@@ -132,7 +132,7 @@ export const sync_rep = async (commandEvent: CommandEvent) => {
           );
           result.created++;
         } catch (e: any) {
-          console.log("Create Rep Failed >> ", e?.response, body);
+          // console.log("Create Rep Failed >> ", e?.response, body);
           failed_docs_report.push({
             method: "create",
             doc: body,
@@ -160,7 +160,7 @@ export const sync_rep = async (commandEvent: CommandEvent) => {
           );
           result.updated++;
         } catch (e: any) {
-          console.log("Update Rep Failed >> ", e?.response?.data, body);
+          // console.log("Update Rep Failed >> ", e?.response?.data, body);
           failed_docs_report.push({
             method: "update",
             doc_id: repzo_rep?._id,

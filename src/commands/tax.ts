@@ -35,7 +35,7 @@ export const sync_tax = async (commandEvent: CommandEvent) => {
     commandEvent.command
   );
   try {
-    console.log("sync_tax");
+    // console.log("sync_tax");
 
     const new_bench_time = new Date().toISOString();
     const bench_time_key = "bench_time_tax";
@@ -103,7 +103,7 @@ export const sync_tax = async (commandEvent: CommandEvent) => {
           );
           result.created++;
         } catch (e: any) {
-          console.log("Create Tax Failed >> ", e?.response, body);
+          // console.log("Create Tax Failed >> ", e?.response, body);
           failed_docs_report.push({
             method: "create",
             doc: body,
@@ -127,7 +127,7 @@ export const sync_tax = async (commandEvent: CommandEvent) => {
           );
           result.updated++;
         } catch (e: any) {
-          console.log("Update Tax Failed >> ", e?.response?.data, body);
+          // console.log("Update Tax Failed >> ", e?.response?.data, body);
           failed_docs_report.push({
             method: "update",
             doc_id: repzo_tax?._id,

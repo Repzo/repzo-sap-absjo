@@ -44,7 +44,7 @@ export const sync_warehouse = async (commandEvent: CommandEvent) => {
     commandEvent.command
   );
   try {
-    console.log("sync_warehouse");
+    // console.log("sync_warehouse");
     const new_bench_time = new Date().toISOString();
     const bench_time_key = "bench_time_warehouse";
 
@@ -122,7 +122,7 @@ export const sync_warehouse = async (commandEvent: CommandEvent) => {
           const created_warehouse = await repzo.warehouse.create(body);
           result.created++;
         } catch (e: any) {
-          console.log("Create warehouse Failed >> ", e?.response, body);
+          // console.log("Create warehouse Failed >> ", e?.response, body);
           failed_docs_report.push({
             method: "create",
             doc: body,
@@ -145,7 +145,7 @@ export const sync_warehouse = async (commandEvent: CommandEvent) => {
           );
           result.updated++;
         } catch (e) {
-          console.log("Update warehouse Failed >> ", e, body);
+          // console.log("Update warehouse Failed >> ", e, body);
           failed_docs_report.push({
             method: "update",
             doc_id: repzo_warehouse?._id,

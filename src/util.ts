@@ -1,6 +1,7 @@
 import axios from "axios";
 import Repzo from "repzo";
 import moment from "moment-timezone";
+import { CommandType } from "./types";
 
 interface Params {
   [key: string]: any;
@@ -199,6 +200,43 @@ export const get_data = async (
       if (repzo_data?.data?.length) all_data.push(...repzo_data.data);
     }
     return all_data;
+  } catch (e) {
+    throw e;
+  }
+};
+
+export const send_command_to_marketplace = async ({
+  command,
+  app_id,
+  env,
+  repzoApiKey,
+}: {
+  command: CommandType;
+  app_id: string;
+  env: "production" | "staging" | "local";
+  repzoApiKey: string;
+}) => {
+  try {
+    const marketplace_url: string =
+      env === "production"
+        ? "https://marketplace.api.repzo.me"
+        : env === "staging"
+        ? "https://staging.marketplace.api.repzo.me"
+        : env === "local"
+        ? "https://staging.marketplace.api.repzo.me"
+        : "";
+
+    await _create(
+      marketplace_url,
+      "/commands",
+      {},
+      { "API-KEY": repzoApiKey },
+      {
+        app: "repzo-sap-absjo",
+        command: command,
+        app_id: app_id,
+      }
+    );
   } catch (e) {
     throw e;
   }

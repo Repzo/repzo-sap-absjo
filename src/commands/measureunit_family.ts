@@ -26,7 +26,7 @@ export const sync_measureunit_family = async (commandEvent: CommandEvent) => {
     commandEvent.command
   );
   try {
-    console.log("sync_measureunit_family");
+    // console.log("sync_measureunit_family");
 
     const new_bench_time = new Date().toISOString();
     const bench_time_key = "bench_time_measureunit_family";
@@ -137,11 +137,11 @@ export const sync_measureunit_family = async (commandEvent: CommandEvent) => {
           );
           result.created++;
         } catch (e: any) {
-          console.log(
-            "Create Measure Unit Family Failed >> ",
-            e?.response,
-            body
-          );
+          // console.log(
+          //   "Create Measure Unit Family Failed >> ",
+          //   e?.response,
+          //   body
+          // );
           failed_docs_report.push({
             method: "create",
             doc: body,
@@ -168,11 +168,11 @@ export const sync_measureunit_family = async (commandEvent: CommandEvent) => {
           );
           result.updated++;
         } catch (e: any) {
-          console.log(
-            "Update Measure Unit Family Failed >> ",
-            e?.response?.data,
-            body
-          );
+          // console.log(
+          //   "Update Measure Unit Family Failed >> ",
+          //   e?.response?.data,
+          //   body
+          // );
           failed_docs_report.push({
             method: "update",
             doc_id: repzo_family?._id,

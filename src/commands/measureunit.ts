@@ -42,7 +42,7 @@ export const sync_measureunit = async (commandEvent: CommandEvent) => {
     commandEvent.command
   );
   try {
-    console.log("sync_measureunit");
+    // console.log("sync_measureunit");
 
     const new_bench_time = new Date().toISOString();
     const bench_time_key = "bench_time_measureunit";
@@ -118,11 +118,11 @@ export const sync_measureunit = async (commandEvent: CommandEvent) => {
           (u) => u.ALTUOMCODE == "PC"
         );
         if (!max_unit.default_unit) {
-          console.log(
-            "Create/Update Measure Unit Failed >> ",
-            `${max_unit?.sap_product_UoMs[0]?.ITEMCODE} Could not found the base_unit`,
-            units
-          );
+          // console.log(
+          //   "Create/Update Measure Unit Failed >> ",
+          //   `${max_unit?.sap_product_UoMs[0]?.ITEMCODE} Could not found the base_unit`,
+          //   units
+          // );
           failed_docs_report.push({
             method: "create",
             doc_id:
@@ -196,7 +196,7 @@ export const sync_measureunit = async (commandEvent: CommandEvent) => {
           );
           result.created++;
         } catch (e: any) {
-          console.log("Create Measure Unit Failed >> ", e?.response, body);
+          // console.log("Create Measure Unit Failed >> ", e?.response, body);
           failed_docs_report.push({
             method: "create",
             doc: body,
@@ -220,11 +220,11 @@ export const sync_measureunit = async (commandEvent: CommandEvent) => {
           );
           result.updated++;
         } catch (e: any) {
-          console.log(
-            "Update Measure Unit Failed >> ",
-            e?.response?.data,
-            body
-          );
+          // console.log(
+          //   "Update Measure Unit Failed >> ",
+          //   e?.response?.data,
+          //   body
+          // );
           failed_docs_report.push({
             method: "update",
             doc_id: repzo_UoM?._id,

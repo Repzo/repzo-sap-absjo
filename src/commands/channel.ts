@@ -60,7 +60,7 @@ export const sync_channel = async (commandEvent: CommandEvent) => {
     commandEvent.command
   );
   try {
-    console.log("sync_channel");
+    // console.log("sync_channel");
 
     const new_bench_time = new Date().toISOString();
     const bench_time_key = "bench_time_channel";
@@ -135,7 +135,7 @@ export const sync_channel = async (commandEvent: CommandEvent) => {
           );
           result.created++;
         } catch (e: any) {
-          console.log("Create Client Channel Failed >> ", e?.response, body);
+          // console.log("Create Client Channel Failed >> ", e?.response, body);
           failed_docs_report.push({
             method: "create",
             doc: body,
@@ -157,11 +157,11 @@ export const sync_channel = async (commandEvent: CommandEvent) => {
           );
           result.updated++;
         } catch (e: any) {
-          console.log(
-            "Update Client Channel Failed >> ",
-            e?.response?.data,
-            body
-          );
+          // console.log(
+          //   "Update Client Channel Failed >> ",
+          //   e?.response?.data,
+          //   body
+          // );
           failed_docs_report.push({
             method: "update",
             doc_id: repzo_channel?._id,

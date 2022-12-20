@@ -37,7 +37,7 @@ export const adjust_inventory = async (commandEvent: CommandEvent) => {
     commandEvent.command
   );
   try {
-    console.log("adjust_inventory");
+    // console.log("adjust_inventory");
 
     await commandLog.load(commandEvent.sync_id);
     await commandLog
@@ -140,9 +140,9 @@ export const adjust_inventory = async (commandEvent: CommandEvent) => {
                     variant.integration_meta?.ITEMCODE == sap_item.ITEMID
                 );
                 if (!variant) {
-                  console.log(
-                    `Variant with ITEMCODE: ${sap_item.ITEMID} was not found`
-                  );
+                  // console.log(
+                  //   `Variant with ITEMCODE: ${sap_item.ITEMID} was not found`
+                  // );
                   throw `Variant with ITEMCODE: ${sap_item.ITEMID} was not found`;
                 }
 
@@ -154,9 +154,9 @@ export const adjust_inventory = async (commandEvent: CommandEvent) => {
                     )?.sv_measureUnit?.toString()
                 );
                 if (!measureUnit) {
-                  console.log(
-                    `MeasureUnit with UNITNAME: ${sap_item.UNITNAME} & ALTUOMID: ${sap_item.UNITID} was not found`
-                  );
+                  // console.log(
+                  //   `MeasureUnit with UNITNAME: ${sap_item.UNITNAME} & ALTUOMID: ${sap_item.UNITID} was not found`
+                  // );
                   throw `MeasureUnit with UNITNAME: ${sap_item.UNITNAME} & ALTUOMID: ${sap_item.UNITID} was not found`;
                 }
 
@@ -179,7 +179,7 @@ export const adjust_inventory = async (commandEvent: CommandEvent) => {
 
                 return { variant: variant._id, qty: diff_qty };
               } catch (e) {
-                console.log(e);
+                // console.log(e);
                 failed_docs_report.push({
                   method: "fetchingData",
                   doc_id: sap_item.UNITNAME,
