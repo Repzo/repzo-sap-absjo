@@ -1,5 +1,5 @@
 import Repzo from "repzo";
-import { EVENT, Config, CommandEvent } from "../types";
+import { EVENT, Config, CommandEvent, CommandType } from "../types";
 import { _fetch, _create, _update, _delete } from "../util.js";
 
 import { commands, commandsList } from "./index.js";
@@ -14,13 +14,12 @@ export const basic = async (commandEvent: CommandEvent) => {
     commandEvent.command
   );
   try {
-    console.log("basic sync");
+    // console.log("basic sync");
 
     await commandLog.load(commandEvent.sync_id);
     await commandLog.addDetail("Repzo SAP: Basic Sync").commit();
 
-    const required_syncing_commands: string[] = [
-      "join",
+    const required_syncing_commands: CommandType[] = [
       "warehouse",
       "rep",
       "tax",

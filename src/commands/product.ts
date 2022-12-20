@@ -58,7 +58,7 @@ export const sync_product = async (commandEvent: CommandEvent) => {
     commandEvent.command
   );
   try {
-    console.log("sync_product");
+    // console.log("sync_product");
 
     const new_bench_time = new Date().toISOString();
     const bench_time_key = "bench_time_product";
@@ -221,7 +221,7 @@ export const sync_product = async (commandEvent: CommandEvent) => {
             );
             result.created++;
           } catch (e: any) {
-            console.log("Create Product Failed >> ", e?.response, body);
+            // console.log("Create Product Failed >> ", e?.response, body);
             failed_docs_report.push({
               method: "create",
               doc: body,
@@ -253,7 +253,7 @@ export const sync_product = async (commandEvent: CommandEvent) => {
             );
             result.updated++;
           } catch (e: any) {
-            console.log("Update Product Failed >> ", e?.response?.data, body);
+            // console.log("Update Product Failed >> ", e?.response?.data, body);
             failed_docs_report.push({
               method: "update",
               doc_id: repzo_product?._id,
@@ -264,7 +264,7 @@ export const sync_product = async (commandEvent: CommandEvent) => {
           }
         }
       } catch (e) {
-        console.log("FetchingData Product Failed >> ", e);
+        // console.log("FetchingData Product Failed >> ", e);
         failed_docs_report.push({
           method: "fetchingData",
           doc_id: sap_product.ITEMBARCODE,

@@ -54,6 +54,7 @@ export const create_return_invoice = async (event: EVENT, options: Config) => {
     const repzo_serial_number = body?.serial_number?.formatted;
 
     await actionLog
+      .addDetail(`Return Invoice - ${repzo_serial_number} => ${body?.sync_id}`)
       .addDetail(
         `Repzo => SAP: Started Create Return Invoice - ${repzo_serial_number}`
       )

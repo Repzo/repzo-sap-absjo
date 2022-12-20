@@ -14,7 +14,7 @@ export const join = async (commandEvent: CommandEvent) => {
     commandEvent.command
   );
   try {
-    console.log("join");
+    // console.log("join");
 
     await commandLog.load(commandEvent.sync_id);
     await commandLog.addDetail("Repzo SAP: Join").commit();
@@ -23,7 +23,8 @@ export const join = async (commandEvent: CommandEvent) => {
       data: [
         // invoice
         {
-          app: "repzo-sap",
+          app: "repzo-sap-absjo",
+          app_id: commandEvent?.app?._id,
           action: "create_invoice",
           event: "invoiceItems.create",
           join:
@@ -31,7 +32,8 @@ export const join = async (commandEvent: CommandEvent) => {
         },
         // return_invoice
         {
-          app: "repzo-sap",
+          app: "repzo-sap-absjo",
+          app_id: commandEvent?.app?._id,
           action: "create_return_invoice",
           event: "returnItems.create",
           join:
@@ -40,7 +42,8 @@ export const join = async (commandEvent: CommandEvent) => {
         },
         // payment
         {
-          app: "repzo-sap",
+          app: "repzo-sap-absjo",
+          app_id: commandEvent?.app?._id,
           action: "create_payment",
           event: "payment.create",
           join:
@@ -48,7 +51,8 @@ export const join = async (commandEvent: CommandEvent) => {
         },
         // proforma
         {
-          app: "repzo-sap",
+          app: "repzo-sap-absjo",
+          app_id: commandEvent?.app?._id,
           action: "create_proforma",
           event: "salesorder.approve",
           join:
@@ -57,7 +61,8 @@ export const join = async (commandEvent: CommandEvent) => {
         },
         // transfer
         {
-          app: "repzo-sap",
+          app: "repzo-sap-absjo",
+          app_id: commandEvent?.app?._id,
           action: "create_transfer",
           event: "transfer.approve",
           join:

@@ -1,4 +1,5 @@
 import Repzo from "repzo";
+import { CommandType } from "./types";
 interface Params {
   [key: string]: any;
 }
@@ -67,4 +68,15 @@ export declare const get_data: (
     [key: string]: any;
   }
 ) => Promise<any[]>;
+export declare const send_command_to_marketplace: ({
+  command,
+  app_id,
+  env,
+  repzoApiKey,
+}: {
+  command: CommandType;
+  app_id: string;
+  env: "production" | "staging" | "local";
+  repzoApiKey: string;
+}) => Promise<void>;
 export {};

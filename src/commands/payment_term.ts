@@ -60,7 +60,7 @@ export const sync_payment_term = async (commandEvent: CommandEvent) => {
     commandEvent.command
   );
   try {
-    console.log("sync_payment_term");
+    // console.log("sync_payment_term");
 
     const new_bench_time = new Date().toISOString();
     const bench_time_key = "bench_time_payment_term";
@@ -140,7 +140,7 @@ export const sync_payment_term = async (commandEvent: CommandEvent) => {
           );
           result.created++;
         } catch (e: any) {
-          console.log("Create Payment Term Failed >> ", e?.response, body);
+          // console.log("Create Payment Term Failed >> ", e?.response, body);
           failed_docs_report.push({
             method: "create",
             doc: body,
@@ -162,11 +162,11 @@ export const sync_payment_term = async (commandEvent: CommandEvent) => {
           );
           result.updated++;
         } catch (e: any) {
-          console.log(
-            "Update Payment Term Failed >> ",
-            e?.response?.data,
-            body
-          );
+          // console.log(
+          //   "Update Payment Term Failed >> ",
+          //   e?.response?.data,
+          //   body
+          // );
           failed_docs_report.push({
             method: "update",
             doc_id: repzo_payment_term?._id,

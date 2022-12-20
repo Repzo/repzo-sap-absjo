@@ -1,6 +1,13 @@
 import Repzo from "repzo";
 import { EVENT, Config } from "../types";
-import { _fetch, _create, _update, _delete, get_data } from "../util.js";
+import {
+  _fetch,
+  _create,
+  _update,
+  _delete,
+  get_data,
+  send_command_to_marketplace,
+} from "../util.js";
 import { Service } from "repzo/src/types";
 import { v4 as uuid } from "uuid";
 import moment from "moment-timezone";
@@ -37,6 +44,7 @@ export const create_transfer = async (event: EVENT, options: Config) => {
     const repzo_serial_number = body?.serial_number?.formatted;
 
     await actionLog
+      .addDetail(`Transfer - ${repzo_serial_number} => ${body?.sync_id}`)
       .addDetail(
         `Repzo => SAP: Started Create Transfer - ${repzo_serial_number}`
       )
@@ -84,9 +92,9 @@ export const create_transfer = async (event: EVENT, options: Config) => {
         (p) => p._id.toString() == repzo_transfer_item.product_id?.toString()
       );
       if (!repzo_product) {
-        console.log(
-          `Product with _id: ${repzo_transfer_item.product_id} was not found In Repzo`
-        );
+        // console.log(
+        //   `Product with _id: ${repzo_transfer_item.product_id} was not found In Repzo`,
+        // );
         throw new Error(
           `Product with _id: ${repzo_transfer_item.product_id} was not found in Repzo`
         );
@@ -95,9 +103,9 @@ export const create_transfer = async (event: EVENT, options: Config) => {
       const repzo_measure_unit = repzo_product.sv_measureUnit;
 
       if (!repzo_measure_unit?._id) {
-        console.log(
-          `Measureunit with _id: ${repzo_product.sv_measureUnit?.toString()} was not found`
-        );
+        // console.log(
+        //   `Measureunit with _id: ${repzo_product.sv_measureUnit?.toString()} was not found`,
+        // );
         throw new Error(
           `Measureunit with _id: ${repzo_product.sv_measureUnit?.toString()} was not found`
         );
@@ -155,6 +163,14 @@ export const create_transfer = async (event: EVENT, options: Config) => {
     //@ts-ignore
     console.error(e?.response || e);
     await actionLog.setStatus("fail", e).setBody(body).commit();
+    if (options?.data?.transfers?.adjustInventoryInFailedTransfer) {
+      send_command_to_marketplace({
+        command: "adjust_inventory",
+        app_id: options.app_id,
+        env: options.env,
+        repzoApiKey: options.data?.repzoApiKey,
+      });
+    }
     throw e;
   }
 };

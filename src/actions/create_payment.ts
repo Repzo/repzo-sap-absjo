@@ -39,6 +39,7 @@ export const create_payment = async (event: EVENT, options: Config) => {
     const repzo_serial_number = body?.serial_number?.formatted;
 
     await actionLog
+      .addDetail(`Payment - ${repzo_serial_number} => ${body?.sync_id}`)
       .addDetail(
         `Repzo => SAP: Started Create Payment - ${repzo_serial_number}`
       )

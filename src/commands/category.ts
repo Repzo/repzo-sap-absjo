@@ -34,7 +34,7 @@ export const sync_category = async (commandEvent: CommandEvent) => {
     commandEvent.command
   );
   try {
-    console.log("sync_category");
+    // console.log("sync_category");
 
     const new_bench_time = new Date().toISOString();
     const bench_time_key = "bench_time_category";
@@ -95,7 +95,7 @@ export const sync_category = async (commandEvent: CommandEvent) => {
           );
           result.created++;
         } catch (e: any) {
-          console.log("Create Product Category Failed >> ", e?.response, body);
+          // console.log("Create Product Category Failed >> ", e?.response, body);
           failed_docs_report.push({
             method: "create",
             doc: body,
@@ -119,11 +119,11 @@ export const sync_category = async (commandEvent: CommandEvent) => {
           );
           result.updated++;
         } catch (e: any) {
-          console.log(
-            "Update Product Category Failed >> ",
-            e?.response?.data,
-            body
-          );
+          // console.log(
+          //   "Update Product Category Failed >> ",
+          //   e?.response?.data,
+          //   body
+          // );
           failed_docs_report.push({
             method: "update",
             doc_id: repzo_category?._id,

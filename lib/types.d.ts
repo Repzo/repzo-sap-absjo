@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import { Service } from "repzo/src/types";
 export interface Config {
+  app_id: string;
   data?: any;
   repzoEndPoint: string;
   serviceEndPoint: string;
@@ -29,11 +30,36 @@ export declare type EVENT = AWSLambda.APIGatewayEvent & {
 };
 export interface Action {
   name: string;
-  action: string;
+  action: ActionType;
   description: string;
 }
+export declare type ActionType =
+  | "create_invoice"
+  | "create_return_invoice"
+  | "create_proforma"
+  | "create_payment"
+  | "create_transfer";
+export declare type CommandType =
+  | "join"
+  | "basic"
+  | "warehouse"
+  | "rep"
+  | "tax"
+  | "tag"
+  | "measureunit"
+  | "measureunit_family"
+  | "category"
+  | "channel"
+  | "payment_term"
+  | "bank"
+  | "product"
+  | "disabled_product"
+  | "price_list"
+  | "client"
+  | "disabled_client"
+  | "adjust_inventory";
 export interface Command {
-  command: string;
+  command: CommandType;
   description: string;
   name: string;
 }
@@ -52,7 +78,7 @@ export interface AvailableApp {
 }
 export interface CommandEvent {
   app: Service.App.Schema_with_populated_AvailableApp;
-  command: string;
+  command: CommandType;
   nameSpace: NameSpaces;
   meta?: any;
   sync_id?: string;

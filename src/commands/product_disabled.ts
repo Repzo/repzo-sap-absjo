@@ -24,7 +24,7 @@ export const sync_disabled_product = async (commandEvent: CommandEvent) => {
     commandEvent.command
   );
   try {
-    console.log("sync_disabled_product");
+    // console.log("sync_disabled_product");
 
     const new_bench_time = new Date().toISOString();
     const bench_time_key = "bench_time_product_disabled";
@@ -98,9 +98,9 @@ export const sync_disabled_product = async (commandEvent: CommandEvent) => {
           );
           result.updated++;
         } catch (e: any) {
-          console.log("Disabled Product Failed >> ", e?.response?.data, {
-            ITEMCODE: sap_product.ITEMCODE,
-          });
+          // console.log("Disabled Product Failed >> ", e?.response?.data, {
+          //   ITEMCODE: sap_product.ITEMCODE,
+          // });
           failed_docs_report.push({
             method: "delete",
             doc_id: repzo_product?._id,

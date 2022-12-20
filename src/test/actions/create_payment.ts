@@ -99,6 +99,7 @@ Actions(
     isBase64Encoded: false,
   },
   {
+    app_id: "",
     repzoEndPoint: "",
     serviceEndPoint: "",
     env: "staging",

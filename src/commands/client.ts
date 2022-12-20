@@ -59,7 +59,7 @@ export const sync_client = async (commandEvent: CommandEvent) => {
     commandEvent.command
   );
   try {
-    console.log("sync_client");
+    // console.log("sync_client");
 
     const new_bench_time = new Date().toISOString();
     const bench_time_key = "bench_time_client";
@@ -231,7 +231,7 @@ export const sync_client = async (commandEvent: CommandEvent) => {
           );
           result.created++;
         } catch (e: any) {
-          console.log("Create Client Failed >> ", e?.response, body);
+          // console.log("Create Client Failed >> ", e?.response, body);
           failed_docs_report.push({
             method: "create",
             doc: body,
@@ -253,7 +253,7 @@ export const sync_client = async (commandEvent: CommandEvent) => {
           );
           result.updated++;
         } catch (e: any) {
-          console.log("Update Client Failed >> ", e?.response?.data, body);
+          // console.log("Update Client Failed >> ", e?.response?.data, body);
           failed_docs_report.push({
             method: "update",
             doc_id: repzo_client?._id,
@@ -329,7 +329,7 @@ const is_matched = (
       "formatted_address",
       "tags",
       "credit_limit",
-      "financials",
+      // "financials",
       "channel",
       "paymentTerm",
       "sv_priceList",
@@ -360,6 +360,12 @@ const is_matched = (
       ) {
         return false;
       }
+    }
+    if (
+      body_1?.integration_meta?.["financials"]?.credit_limit !==
+      body_2?.integration_meta?.["financials"]?.credit_limit
+    ) {
+      return false;
     }
     return true;
   } catch (e) {

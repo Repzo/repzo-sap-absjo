@@ -35,7 +35,7 @@ export const sync_bank = async (commandEvent: CommandEvent) => {
     commandEvent.command
   );
   try {
-    console.log("sync_bank");
+    // console.log("sync_bank");
 
     const new_bench_time = new Date().toISOString();
     const bench_time_key = "bench_time_bank";
@@ -124,7 +124,7 @@ export const sync_bank = async (commandEvent: CommandEvent) => {
           );
           result.created++;
         } catch (e: any) {
-          console.log("Create Bank Failed >> ", e?.response, body);
+          // console.log("Create Bank Failed >> ", e?.response, body);
           failed_docs_report.push({
             method: "create",
             doc: body,
@@ -149,7 +149,7 @@ export const sync_bank = async (commandEvent: CommandEvent) => {
           );
           result.updated++;
         } catch (e: any) {
-          console.log("Update Bank Failed >> ", e?.response?.data, body);
+          // console.log("Update Bank Failed >> ", e?.response?.data, body);
           failed_docs_report.push({
             method: "update",
             doc_id: repzo_bank?._id,
