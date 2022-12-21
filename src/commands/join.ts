@@ -75,6 +75,11 @@ export const join = async (commandEvent: CommandEvent) => {
     const result = await repzo.joinActionsWebHook.update(null, body);
     // console.log(result);
 
+    if (result?.status == "failure") {
+      await commandLog.setStatus("fail", result.error).setBody(result).commit();
+      return;
+    }
+
     await commandLog.setStatus("success").setBody(result).commit();
   } catch (e: any) {
     //@ts-ignore

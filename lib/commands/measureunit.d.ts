@@ -17,9 +17,7 @@ export declare const sync_measureunit: (
 ) => Promise<Result>;
 export declare const get_sap_UoMs: (
   serviceEndPoint: string,
-  query?:
-    | {
-        updateAt?: string | undefined;
-      }
-    | undefined
+  query?: {
+    updateAt?: string;
+  }
 ) => Promise<SAPUoM[]>;
