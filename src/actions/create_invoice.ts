@@ -1,6 +1,6 @@
 import Repzo from "repzo";
 import { EVENT, Config } from "../types";
-import { _fetch, _create, _update, _delete, get_data } from "../util.js";
+import { _fetch, _create, _update, _delete } from "../util.js";
 import { Service } from "repzo/src/types";
 import { v4 as uuid } from "uuid";
 import moment from "moment-timezone";
@@ -156,20 +156,46 @@ export const create_invoice = async (event: EVENT, options: Config) => {
       }
     });
 
-    const repzo_taxes = await get_data(
-      repzo.tax,
-      "_id",
-      Object.keys(repzo_tax_ids)
+    const repzo_taxes = await repzo.patchAction.create(
+      {
+        slug: "tax",
+        readQuery: [
+          {
+            key: "_id",
+            value: Object.keys(repzo_tax_ids),
+            operator: "in",
+          },
+        ],
+      },
+      { per_page: 50000 }
     );
-    const repzo_measureunits = await get_data(
-      repzo.measureunit,
-      "_id",
-      Object.keys(repzo_measureunit_ids)
+
+    const repzo_measureunits = await repzo.patchAction.create(
+      {
+        slug: "measureunits",
+        readQuery: [
+          {
+            key: "_id",
+            value: Object.keys(repzo_measureunit_ids),
+            operator: "in",
+          },
+        ],
+      },
+      { per_page: 50000 }
     );
-    const repzo_products = await get_data(
-      repzo.product,
-      "_id",
-      Object.keys(repzo_product_ids)
+
+    const repzo_products = await repzo.patchAction.create(
+      {
+        slug: "product",
+        readQuery: [
+          {
+            key: "_id",
+            value: Object.keys(repzo_product_ids),
+            operator: "in",
+          },
+        ],
+      },
+      { per_page: 50000 }
     );
 
     // Prepare SAP_invoice_items
@@ -179,20 +205,20 @@ export const create_invoice = async (event: EVENT, options: Config) => {
       const item = repzo_invoice.items[i];
 
       // Get Repzo Tax
-      const repzo_tax = repzo_taxes?.find(
+      const repzo_tax = repzo_taxes?.data?.find(
         (t) => t._id?.toString() == item.tax?._id?.toString()
       );
       if (!repzo_tax) throw `Tax with _id: ${item.tax._id} not found in Repzo`;
 
       // Get Repzo UoM
-      const repzo_measureunit = repzo_measureunits?.find(
+      const repzo_measureunit = repzo_measureunits?.data?.find(
         (m) => m._id?.toString() == item.measureunit?._id?.toString()
       );
       if (!repzo_measureunit)
         throw `Uom with _id: ${item.measureunit?._id} not found in Repzo`;
 
       // Get Repzo Product
-      const repzo_product = repzo_products?.find(
+      const repzo_product = repzo_products?.data?.find(
         (p) => p._id?.toString() == item.variant?.product_id?.toString()
       );
       if (!repzo_product)

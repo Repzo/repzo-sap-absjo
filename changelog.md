@@ -11,6 +11,7 @@
 - add detail with the action.sync_id
 - if create transfer was failed then send command: Adjust Inventory (optionals)
 - [join] if repzo.joinActionsWebHook.status = failure then commandLog.setStatus should be fail @maramalshen
+- update get data from repzo by using PatchAction @maramalshen
 
 ### Changed
 

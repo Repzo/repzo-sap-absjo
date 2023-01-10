@@ -5,7 +5,6 @@ import {
   _create,
   _update,
   _delete,
-  get_data,
   send_command_to_marketplace,
 } from "../util.js";
 import { Service } from "repzo/src/types";
@@ -74,11 +73,18 @@ export const create_transfer = async (event: EVENT, options: Config) => {
         }
       }
     );
-    const repzo_products = await get_data(
-      repzo.product,
-      "_id",
-      Object.keys(repzo_product_ids),
-      { populatedKeys: ["measureunit"] }
+    const repzo_products = await repzo.patchAction.create(
+      {
+        slug: "product",
+        readQuery: [
+          {
+            key: "_id",
+            value: Object.keys(repzo_product_ids),
+            operator: "in",
+          },
+        ],
+      },
+      { per_page: 50000, populatedKeys: ["measureunit"] }
     );
 
     // Prepare Transfer Items
@@ -87,7 +93,7 @@ export const create_transfer = async (event: EVENT, options: Config) => {
     for (let i = 0; i < repzo_transfer.variants?.length; i++) {
       const repzo_transfer_item = repzo_transfer.variants[i];
 
-      const repzo_product = repzo_products.find(
+      const repzo_product = repzo_products?.data?.find(
         //@ts-ignore
         (p) => p._id.toString() == repzo_transfer_item.product_id?.toString()
       );
