@@ -1,7 +1,5 @@
 # Release Notes
 
-# Release Notes
-
 ## [unreleased]()
 
 ### Added
