@@ -66,28 +66,29 @@ export const sync_disabled_client = async (commandEvent: CommandEvent) => {
       (client) => `${nameSpace}_${client.CLIENTID}`
     );
 
-    const repzo_disabled_clients = [];
-    const per_page = 200;
-    const pages = Math.ceil(sap_client_query.length / per_page);
-    for (let i = 0; i < pages; i += per_page) {
-      const repzo_clients_per_page = await repzo.client.find({
-        disabled: false,
-        project: ["_id", "integration_meta"],
-        per_page: 50000,
-        "integration_meta.id": sap_client_query.slice(i, i + per_page),
-      });
-      if (repzo_clients_per_page?.data?.length)
-        repzo_disabled_clients.push(...repzo_clients_per_page.data);
-    }
+    const repzo_disabled_clients = await repzo.patchAction.create(
+      {
+        slug: "client",
+        readQuery: [
+          { key: "disabled", value: [false], operator: "eq" },
+          {
+            key: "integration_meta.id",
+            value: sap_client_query,
+            operator: "in",
+          },
+        ],
+      },
+      { per_page: 50000, project: ["_id", "integration_meta"] }
+    );
 
-    result.repzo_total = repzo_disabled_clients?.length;
+    result.repzo_total = repzo_disabled_clients.data?.length;
     await commandLog
       .addDetail(`${result.repzo_total} Matched Active Clients in Repzo`)
       .commit();
 
     for (let i = 0; i < sap_disabled_clients?.length; i++) {
       const sap_client: SAPClient = sap_disabled_clients[i];
-      const repzo_client = repzo_disabled_clients?.find(
+      const repzo_client = repzo_disabled_clients.data?.find(
         (r_client) =>
           r_client.integration_meta?.id == `${nameSpace}_${sap_client.CLIENTID}`
       );
