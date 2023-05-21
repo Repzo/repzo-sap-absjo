@@ -1,5 +1,20 @@
 # Release Notes
 
+# Release Notes
+
+## [unreleased]()
+
+### Added
+
+### Changed
+
+- [commands/rep] delete hard code of rep.warehouse for reps start with: [WS, RET, MT] @maramalshen
+- [commands/client] decide if client is cash or credit depend on PAYMENTTERM instead of CLIENTGROUP @maramalshen
+
+### Fixed
+
+### Removed
+
 ## [v1.0.0 (2022-04-18)](https://github.com/Repzo/repzo-sap-absjo.git)
 
 ### Added

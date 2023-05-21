@@ -19,7 +19,7 @@ export interface SAPClient {
   CLIENTCOUNTRY?: string; // null;
   CLIENTCOUNTY?: string; // null;
   CLIENTGROUPCODE: number; // 123;
-  CLIENTGROUP: string; // "Cash Van";
+  CLIENTGROUP: string; // "Cash Van" | "Retail" | "Wholesale" | "HORECA" | "K-Accounts" | "HORECA - Van" | "Sub D - Wholesale" | "Petrol Stations" | "Pharmacy" | "GENERAL" | "Est. - MCE" | "Est. - CCE" | "E-commerce" | "Sub D - Pharmacy" | "Near to expire" | "Coops" | "Legal action customers";
   PAYMENTTERM: number; // 0;
   CLIENTCONTACTPERSON?: string; // null;
   CLIENTPHONE1?: string; // null;
@@ -204,21 +204,19 @@ export const sync_client = async (commandEvent: CommandEvent) => {
         comment: sap_client.CLIENTNOTE,
         formatted_address: sap_client.CLIENTADDRESSID,
         tags: tag ? [tag._id] : [],
-        credit_limit:
-          sap_client.CLIENTGROUP == "Cash Van"
+        credit_limit: sap_client.PAYMENTTERM // sap_client.CLIENTGROUP == "Cash Van"
+          ? 1000000000
+          : credit_limit && Math.round(credit_limit * 1000),
+        financials: {
+          credit_limit: sap_client.PAYMENTTERM // sap_client.CLIENTGROUP == "Cash Van"
             ? 1000000000
             : credit_limit && Math.round(credit_limit * 1000),
-        financials: {
-          credit_limit:
-            sap_client.CLIENTGROUP == "Cash Van"
-              ? 1000000000
-              : credit_limit && Math.round(credit_limit * 1000),
         },
         channel: channel ? channel._id : undefined,
         paymentTerm: paymentTerm ? paymentTerm._id : undefined,
         sv_priceList: priceList ? priceList._id : undefined,
         disabled: sap_client.ACTIVE == "Y" ? false : true,
-        payment_type: sap_client.CLIENTGROUP == "Cash Van" ? "cash" : "credit",
+        payment_type: sap_client.PAYMENTTERM ? "cash" : "credit", // sap_client.CLIENTGROUP == "Cash Van"
         integrated_client_balance:
           client_credit_consumed && Math.round(client_credit_consumed * 1000),
       };
