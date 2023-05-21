@@ -63,17 +63,17 @@ export const sync_rep = async (commandEvent: CommandEvent) => {
     await commandLog.addDetail(`${result.sap_total} reps in SAP`).commit();
 
     // hard code ************************************
-    sap_reps?.Users?.forEach((sap_rep) => {
-      if (
-        sap_rep.USERDESC.startsWith("WS ") ||
-        sap_rep.USERDESC.startsWith("RET ")
-      ) {
-        sap_rep.USERWHSCODE = "1";
-      }
-      if (sap_rep.USERDESC.startsWith("MT ")) {
-        sap_rep.USERWHSCODE = "K.A";
-      }
-    });
+    // sap_reps?.Users?.forEach((sap_rep) => {
+    //   if (
+    //     sap_rep.USERDESC.startsWith("WS ") ||
+    //     sap_rep.USERDESC.startsWith("RET ")
+    //   ) {
+    //     sap_rep.USERWHSCODE = "1";
+    //   }
+    //   if (sap_rep.USERDESC.startsWith("MT ")) {
+    //     sap_rep.USERWHSCODE = "K.A";
+    //   }
+    // });
     // **********************************************
 
     const db = new DataSet([], { autoIndex: false });
