@@ -152,7 +152,7 @@ export const sync_measureunit_family = async (commandEvent: CommandEvent) => {
       } else {
         if (
           repzo_family.name == body.name &&
-          !_.difference(
+          !_.xor(
             repzo_family?.measureunits?.map((m) => m?.toString()) || [],
             body?.measureunits || []
           )?.length
