@@ -11,6 +11,8 @@
 
 ### Fixed
 
+- [command/measureunit-family] use _.xor instead or _.difference @maramalshen
+
 ### Removed
 
 ## [v1.0.0 (2022-04-18)](https://github.com/Repzo/repzo-sap-absjo.git)
