@@ -123,6 +123,27 @@ export const sync_price_list = async (commandEvent: CommandEvent) => {
       sap_unique_UoMs[key] = doc.ALTQTY;
     });
 
+    // Get Repzo {Product_sku : product_default_measureunit_name}
+    const repzo_product_default_measureunit: {
+      [productSKU: string]: string | null;
+    } = {};
+    repzo_products.data.forEach((product) => {
+      if (!product.sku) return;
+      if (!product.sv_measureUnit) {
+        repzo_product_default_measureunit[product.sku] = null;
+      } else {
+        const default_measureunit = repzo_UoMs.data.find(
+          (m) => m._id == product.sv_measureUnit
+        );
+        if (default_measureunit) {
+          repzo_product_default_measureunit[product.sku] =
+            default_measureunit.name;
+        } else {
+          repzo_product_default_measureunit[product.sku] = null;
+        }
+      }
+    });
+
     // sort the data
     const priceLists_withItems: { [key: string]: SAPPriceListItem[] } = {};
     sap_price_lists.forEach((doc) => {
@@ -249,8 +270,18 @@ export const sync_price_list = async (commandEvent: CommandEvent) => {
           priceList_items[key] = doc;
         } else {
           const current_doc = priceList_items[key];
-          if (current_doc?.factor > doc?.factor) {
-            priceList_items[key] = doc;
+          if (
+            current_doc.PLITEMUNIT !=
+            repzo_product_default_measureunit[current_doc.PLITEMID]
+          ) {
+            if (
+              doc.PLITEMUNIT ==
+              repzo_product_default_measureunit[current_doc.PLITEMID]
+            ) {
+              priceList_items[key] = doc;
+            } else if (current_doc?.factor > doc?.factor) {
+              priceList_items[key] = doc;
+            }
           }
         }
       });
@@ -287,9 +318,14 @@ export const sync_price_list = async (commandEvent: CommandEvent) => {
           continue;
         }
 
-        const repzo_product_uom = repzo_UoMs?.data?.find(
+        const repzo_product_uoms = repzo_UoMs?.data?.filter(
           (uom) =>
-            uom?._id?.toString() == repzo_product?.sv_measureUnit?.toString()
+            uom?._id?.toString() == repzo_product?.sv_measureUnit?.toString() ||
+            repzo_product.measureunit_family?.includes(uom?._id?.toString())
+        );
+
+        const repzo_product_uom = repzo_product_uoms.find(
+          (uom) => uom.name == item.PLITEMUNIT
         );
 
         if (!repzo_product_uom) {

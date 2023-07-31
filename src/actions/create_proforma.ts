@@ -44,6 +44,23 @@ export const create_proforma = async (event: EVENT, options: Config) => {
     } catch (e) {}
 
     const repzo_serial_number = body?.serial_number?.formatted;
+    try {
+      if (body?._id) {
+        body.integration_meta = body?.integration_meta || {};
+        body.integration_meta.sync_to_sap_started = true;
+        body.integration_meta.sync_to_sap_succeeded = false;
+        await repzo.proforma.update(body._id, {
+          integration_meta: body.integration_meta,
+        });
+      }
+    } catch (e) {
+      console.error(e);
+      await actionLog
+        .addDetail(
+          `Failed updating integration_meta of SalesOrder: ${repzo_serial_number}`
+        )
+        .commit();
+    }
 
     await actionLog
       .addDetail(`SalesOrder - ${repzo_serial_number} => ${body?.sync_id}`)
@@ -196,6 +213,23 @@ export const create_proforma = async (event: EVENT, options: Config) => {
     const result = await _create(SAP_HOST_URL, "/AddOrder", sap_invoice);
 
     // console.log(result);
+
+    try {
+      if (body?._id) {
+        body.integration_meta = body?.integration_meta || {};
+        body.integration_meta.sync_to_sap_succeeded = true;
+        await repzo.proforma.update(body._id, {
+          integration_meta: body.integration_meta,
+        });
+      }
+    } catch (e) {
+      console.error(e);
+      await actionLog
+        .addDetail(
+          `Failed updating integration_meta of SalesOrder: ${repzo_serial_number}`
+        )
+        .commit();
+    }
 
     await actionLog
       .addDetail(`SAP Responded with `, result)
