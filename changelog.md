@@ -4,6 +4,8 @@
 
 ### Added
 
+- [actions/***] add 2 keys in integration_meta: sync_to_sap_started & sync_to_sap_succeeded @maramalshen
+
 ### Changed
 
 - [commands/rep] delete hard code of rep.warehouse for reps start with: [WS, RET, MT] @maramalshen
