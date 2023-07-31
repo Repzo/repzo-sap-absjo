@@ -12,6 +12,7 @@
 ### Fixed
 
 - [command/measureunit-family] use _.xor instead or _.difference @maramalshen
+- [command/price_list] fix bug in priceList-item @maramalshen
 
 ### Removed
 
