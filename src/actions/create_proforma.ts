@@ -48,7 +48,8 @@ export const create_proforma = async (event: EVENT, options: Config) => {
       if (body?._id) {
         body.integration_meta = body?.integration_meta || {};
         body.integration_meta.sync_to_sap_started = true;
-        body.integration_meta.sync_to_sap_succeeded = false;
+        body.integration_meta.sync_to_sap_succeeded =
+          body.integration_meta.sync_to_sap_succeeded || false;
         await repzo.proforma.update(body._id, {
           integration_meta: body.integration_meta,
         });
