@@ -74,11 +74,6 @@ export const create_invoice = async (event: EVENT, options: Config) => {
       }
     } catch (e) {
       console.error(e);
-      await actionLog
-        .addDetail(
-          `Failed updating integration_meta of Invoice: ${repzo_serial_number}`
-        )
-        .commit();
     }
 
     await actionLog
@@ -276,9 +271,10 @@ export const create_invoice = async (event: EVENT, options: Config) => {
 
     // console.dir(sap_invoice, { depth: null });
 
-    await actionLog
-      .addDetail(`Repzo => SAP: Invoice - ${repzo_serial_number}`, sap_invoice)
-      .commit();
+    actionLog.addDetail(
+      `Repzo => SAP: Invoice - ${repzo_serial_number}`,
+      sap_invoice
+    );
 
     const result = await _create(SAP_HOST_URL, "/AddInvoice", sap_invoice);
 
@@ -294,11 +290,6 @@ export const create_invoice = async (event: EVENT, options: Config) => {
       }
     } catch (e) {
       console.error(e);
-      await actionLog
-        .addDetail(
-          `Failed updating integration_meta of Invoice: ${repzo_serial_number}`
-        )
-        .commit();
     }
 
     await actionLog
