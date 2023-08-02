@@ -49,11 +49,6 @@ export const create_payment = async (event: EVENT, options: Config) => {
       }
     } catch (e) {
       console.error(e);
-      await actionLog
-        .addDetail(
-          `Failed updating integration_meta of Payment: ${repzo_serial_number}`
-        )
-        .commit();
     }
 
     await actionLog
@@ -133,9 +128,10 @@ export const create_payment = async (event: EVENT, options: Config) => {
 
     // console.dir(sap_payment, { depth: null });
 
-    await actionLog
-      .addDetail(`Repzo => SAP: Payment - ${repzo_serial_number}`, sap_payment)
-      .commit();
+    actionLog.addDetail(
+      `Repzo => SAP: Payment - ${repzo_serial_number}`,
+      sap_payment
+    );
 
     const result = await _create(SAP_HOST_URL, "/AddPayment", sap_payment);
 
@@ -151,11 +147,6 @@ export const create_payment = async (event: EVENT, options: Config) => {
       }
     } catch (e) {
       console.error(e);
-      await actionLog
-        .addDetail(
-          `Failed updating integration_meta of Payment: ${repzo_serial_number}`
-        )
-        .commit();
     }
 
     await actionLog
