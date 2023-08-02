@@ -33,13 +33,13 @@ export const create_transfer = async (event: EVENT, options: Config) => {
   let body: Service.Transfer.Schema | any;
   try {
     // console.log("create_transfer");
-    await actionLog.load(action_sync_id);
 
     body = event.body;
     try {
       if (body) body = JSON.parse(body);
     } catch (e) {}
-
+    if (body?.integration_meta?.sync_to_sap_started) return;
+    await actionLog.load(action_sync_id);
     const repzo_serial_number = body?.serial_number?.formatted;
     // try {
     //   if (body?._id) {
