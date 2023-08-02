@@ -41,24 +41,19 @@ export const create_transfer = async (event: EVENT, options: Config) => {
     } catch (e) {}
 
     const repzo_serial_number = body?.serial_number?.formatted;
-    try {
-      if (body?._id) {
-        body.integration_meta = body?.integration_meta || {};
-        body.integration_meta.sync_to_sap_started = true;
-        body.integration_meta.sync_to_sap_succeeded =
-          body.integration_meta.sync_to_sap_succeeded || false;
-        await repzo.transfer.update(body._id, {
-          integration_meta: body.integration_meta,
-        });
-      }
-    } catch (e) {
-      console.error(e);
-      await actionLog
-        .addDetail(
-          `Failed updating integration_meta of Transfer: ${repzo_serial_number}`
-        )
-        .commit();
-    }
+    // try {
+    //   if (body?._id) {
+    //     body.integration_meta = body?.integration_meta || {};
+    //     body.integration_meta.sync_to_sap_started = true;
+    //     body.integration_meta.sync_to_sap_succeeded =
+    //       body.integration_meta.sync_to_sap_succeeded || false;
+    //     await repzo.transfer.update(body._id, {
+    //       integration_meta: body.integration_meta,
+    //     });
+    //   }
+    // } catch (e) {
+    //   console.error(e);
+    // }
 
     await actionLog
       .addDetail(`Transfer - ${repzo_serial_number} => ${body?.sync_id}`)
@@ -161,12 +156,10 @@ export const create_transfer = async (event: EVENT, options: Config) => {
 
     // console.dir(sap_transfer, { depth: null });
 
-    await actionLog
-      .addDetail(
-        `Repzo => SAP: Transfer - ${repzo_serial_number}`,
-        sap_transfer
-      )
-      .commit();
+    actionLog.addDetail(
+      `Repzo => SAP: Transfer - ${repzo_serial_number}`,
+      sap_transfer
+    );
 
     const result = await _create(
       SAP_HOST_URL,
@@ -176,20 +169,15 @@ export const create_transfer = async (event: EVENT, options: Config) => {
 
     // console.log(result);
     try {
-      if (body?._id) {
-        body.integration_meta = body?.integration_meta || {};
-        body.integration_meta.sync_to_sap_succeeded = true;
-        await repzo.transfer.update(body._id, {
-          integration_meta: body.integration_meta,
-        });
-      }
+      // if (body?._id) {
+      //   body.integration_meta = body?.integration_meta || {};
+      //   body.integration_meta.sync_to_sap_succeeded = true;
+      //   await repzo.transfer.update(body._id, {
+      //     integration_meta: body.integration_meta,
+      //   });
+      // }
     } catch (e) {
       console.error(e);
-      await actionLog
-        .addDetail(
-          `Failed updating integration_meta of Transfer: ${repzo_serial_number}`
-        )
-        .commit();
     }
 
     await actionLog
