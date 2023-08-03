@@ -186,6 +186,7 @@ export const sync_product = async (commandEvent: CommandEvent) => {
           {
             active: true,
             name: sap_product.ITEMDESC,
+            local_name: sap_product.ITEMDESCF,
             barcode: sap_product.ITEMBARCODE,
             sku: sap_product.ITEMCODE,
             sv_tax: product_tax,
