@@ -11,6 +11,7 @@
 
 - [commands/rep] delete hard code of rep.warehouse for reps start with: [WS, RET, MT] @maramalshen
 - [commands/client] decide if client is cash or credit depend on PAYMENTTERM instead of CLIENTGROUP @maramalshen
+- [actions/**] update integration_meta using repzo.updateIntegrationMeta instead of using service.update method to avoid infinity looping @maramalshen
 
 ### Fixed
 

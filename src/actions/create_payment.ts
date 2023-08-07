@@ -38,15 +38,13 @@ export const create_payment = async (event: EVENT, options: Config) => {
 
     const repzo_serial_number = body?.serial_number?.formatted;
     try {
-      if (body?._id) {
-        body.integration_meta = body?.integration_meta || {};
-        body.integration_meta.sync_to_sap_started = true;
-        body.integration_meta.sync_to_sap_succeeded =
-          body.integration_meta.sync_to_sap_succeeded || false;
-        await repzo.payment.update(body._id, {
-          integration_meta: body.integration_meta,
-        });
-      }
+      await repzo.updateIntegrationMeta.create(
+        [
+          { key: "sync_to_sap_started", value: true },
+          { key: "sync_to_sap_succeeded", value: false },
+        ],
+        { _id: body._id, type: "payments" }
+      );
     } catch (e) {
       console.error(e);
     }
@@ -138,13 +136,10 @@ export const create_payment = async (event: EVENT, options: Config) => {
     // console.log(result);
 
     try {
-      if (body?._id) {
-        body.integration_meta = body?.integration_meta || {};
-        body.integration_meta.sync_to_sap_succeeded = true;
-        await repzo.payment.update(body._id, {
-          integration_meta: body.integration_meta,
-        });
-      }
+      await repzo.updateIntegrationMeta.create(
+        [{ key: "sync_to_sap_succeeded", value: true }],
+        { _id: body._id, type: "payments" }
+      );
     } catch (e) {
       console.error(e);
     }
