@@ -322,6 +322,7 @@ const is_matched = (
     const keys = [
       "active",
       "name",
+      "local_name",
       "barcode",
       "sku",
       "sv_tax",
