@@ -20,6 +20,7 @@ interface SAPPayment {
   ChequeNumber?: string | number;
   BankCode?: string;
   CountryCode?: string; // "JO";
+  UserId?: string;
 }
 
 export const create_payment = async (event: EVENT, options: Config) => {
@@ -76,6 +77,7 @@ export const create_payment = async (event: EVENT, options: Config) => {
       throw `Client with _id: ${repzo_payment.client_id} not found in Repzo`;
 
     const sap_payment: SAPPayment = {
+      UserId: repzo_rep?.integration_id,
       PaymentID: repzo_serial_number,
       ClientCode: repzo_client?.client_code,
       PaymentDate: moment(repzo_payment.paytime, "YYYY-MM-DD").format(
