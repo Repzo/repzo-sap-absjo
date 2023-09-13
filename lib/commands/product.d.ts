@@ -35,5 +35,6 @@ export declare const sync_product: (commandEvent: CommandEvent) => Promise<
   Result & {
     repzo_total_taxes: number;
     repzo_total_categories: number;
+    repzo_total_brands: number;
   }
 >;

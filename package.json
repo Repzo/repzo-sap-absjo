@@ -1,7 +1,7 @@
 {
   "name": "repzo-sap-absjo",
   "description": "repzo SAP ABS jo integration",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "homepage": "",
   "keywords": [],
   "author": {
@@ -21,7 +21,7 @@
     "lint": "npx prettier --write .",
     "build": "tsc && npm run lint",
     "test": "mocha",
-    "mac": "tsc && node ./lib/test/commands/basic.js"
+    "mac": "npm run build && node ./lib/test/commands/basic.js"
   },
   "repository": {
     "type": "git",
