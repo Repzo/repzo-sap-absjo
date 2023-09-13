@@ -350,6 +350,7 @@ const is_matched = (
       "category",
       "measureunit_family",
       "sv_measureUnit",
+      "brand",
     ];
     const integration_meta_keys = [
       "id",
