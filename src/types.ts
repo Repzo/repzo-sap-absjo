@@ -50,6 +50,7 @@ export type CommandType =
   | "measureunit"
   | "measureunit_family"
   | "category"
+  | "brand"
   | "channel"
   | "payment_term"
   | "bank"

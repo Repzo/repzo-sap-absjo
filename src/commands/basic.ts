@@ -27,6 +27,7 @@ export const basic = async (commandEvent: CommandEvent) => {
       "measureunit",
       "measureunit_family",
       "category",
+      "brand",
       "channel",
       "payment_term",
       "bank",

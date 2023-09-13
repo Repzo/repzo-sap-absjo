@@ -70,6 +70,7 @@ export const sync_product = async (commandEvent: CommandEvent) => {
     const result: Result & {
       repzo_total_taxes: number;
       repzo_total_categories: number;
+      repzo_total_brands: number;
     } = {
       sap_total: 0,
       repzo_total: 0,
@@ -78,6 +79,7 @@ export const sync_product = async (commandEvent: CommandEvent) => {
       failed: 0,
       repzo_total_taxes: 0,
       repzo_total_categories: 0,
+      repzo_total_brands: 0,
     };
     const failed_docs_report: FailedDocsReport = [];
 
@@ -125,6 +127,16 @@ export const sync_product = async (commandEvent: CommandEvent) => {
       .addDetail(`${result.repzo_total_categories} Product Categories in Repzo`)
       .commit();
 
+    // Brand
+    const repzo_brands = await repzo.brand.find({
+      per_page: 50000,
+      disabled: false,
+    });
+    result.repzo_total_brands = repzo_brands?.data?.length;
+    await commandLog
+      .addDetail(`${result.repzo_total_brands} Brands in Repzo`)
+      .commit();
+
     for (let i = 0; i < sap_products?.length; i++) {
       const sap_product: SAPProduct = sap_products[i];
       try {
@@ -157,6 +169,14 @@ export const sync_product = async (commandEvent: CommandEvent) => {
           continue;
         }
         const product_category = category?._id?.toString();
+
+        // Brand
+        const brand = repzo_brands?.data?.find(
+          (brand) =>
+            brand?.integration_meta?.id ==
+            `${nameSpace}_${sap_product["Parent Category"]}`
+        );
+        const product_brand = brand?._id?.toString();
 
         // measureUnit family
         const family = await repzo.measureunitFamily.find({
@@ -191,6 +211,7 @@ export const sync_product = async (commandEvent: CommandEvent) => {
             sku: sap_product.ITEMCODE,
             sv_tax: product_tax,
             category: product_category,
+            brand: product_brand,
             measureunit_family: product_family,
             sv_measureUnit: product_measureUnit,
             integration_meta: {

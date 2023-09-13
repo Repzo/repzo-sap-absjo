@@ -21,7 +21,7 @@
     "lint": "npx prettier --write .",
     "build": "tsc && npm run lint",
     "test": "mocha",
-    "mac": "tsc && node ./lib/test/commands/basic.js"
+    "mac": "npm run build && node ./lib/test/commands/basic.js"
   },
   "repository": {
     "type": "git",
