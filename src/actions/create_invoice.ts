@@ -15,6 +15,8 @@ interface SAPInvoiceItem {
   UomCode: number; // 3;
   Brand: null;
   Department: string; // "D6";
+  MEO_Serial: string; //"used_promotion_ref1 | used_promotion_ref2"
+  Promotion_Name: string; //"used_promotion_name1 | used_promotion_name2"
 }
 
 interface SAPInvoice {
@@ -236,6 +238,8 @@ export const create_invoice = async (event: EVENT, options: Config) => {
         throw `Product with _id: ${item.measureunit._id} not found in Repzo`;
 
       items.push({
+        MEO_Serial: getUniqueConcatenatedValues(item, "ref", " | "),
+        Promotion_Name: getUniqueConcatenatedValues(item, "name", " | "),
         ItemCode: item.variant.variant_name,
         Quantity: item.qty,
         TaxCode: repzo_tax.integration_meta.TaxCode,
@@ -321,3 +325,17 @@ export const get_invoice_from_sap = async (
     throw e;
   }
 };
+
+function getUniqueConcatenatedValues(
+  item: Service.Item.Schema,
+  key: "name" | "ref",
+  delimiter: string
+): string {
+  item.general_promotions = item.general_promotions || [];
+  item.used_promotions = item.used_promotions || [];
+  const allPromotions = [...item.general_promotions, ...item.used_promotions];
+  const uniqueValues = new Set(
+    allPromotions.map((promotion) => promotion[key]).filter((value) => value)
+  );
+  return [...uniqueValues].join(delimiter);
+}

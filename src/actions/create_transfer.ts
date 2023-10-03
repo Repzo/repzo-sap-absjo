@@ -47,7 +47,7 @@ export const create_transfer = async (event: EVENT, options: Config) => {
           { key: "sync_to_sap_started", value: true },
           { key: "sync_to_sap_succeeded", value: false },
         ],
-        { _id: body._id, type: "transfers" },
+        { _id: body._id, type: "transfers" }
       );
     } catch (e) {
       console.error(e);
@@ -56,7 +56,7 @@ export const create_transfer = async (event: EVENT, options: Config) => {
     await actionLog
       .addDetail(`Transfer - ${repzo_serial_number} => ${body?.sync_id}`)
       .addDetail(
-        `Repzo => SAP: Started Create Transfer - ${repzo_serial_number}`,
+        `Repzo => SAP: Started Create Transfer - ${repzo_serial_number}`
       )
       .commit();
 
@@ -82,7 +82,7 @@ export const create_transfer = async (event: EVENT, options: Config) => {
         if (item?.product_id) {
           repzo_product_ids[item.product_id.toString()] = true;
         }
-      },
+      }
     );
     const repzo_products = await repzo.patchAction.create(
       {
@@ -95,7 +95,7 @@ export const create_transfer = async (event: EVENT, options: Config) => {
           },
         ],
       },
-      { per_page: 50000, populatedKeys: ["measureunit"] },
+      { per_page: 50000, populatedKeys: ["measureunit"] }
     );
 
     // Prepare Transfer Items
@@ -106,14 +106,14 @@ export const create_transfer = async (event: EVENT, options: Config) => {
 
       const repzo_product = repzo_products?.data?.find(
         //@ts-ignore
-        (p) => p._id.toString() == repzo_transfer_item.product_id?.toString(),
+        (p) => p._id.toString() == repzo_transfer_item.product_id?.toString()
       );
       if (!repzo_product) {
         // console.log(
         //   `Product with _id: ${repzo_transfer_item.product_id} was not found In Repzo`,
         // );
         throw new Error(
-          `Product with _id: ${repzo_transfer_item.product_id} was not found in Repzo`,
+          `Product with _id: ${repzo_transfer_item.product_id} was not found in Repzo`
         );
       }
 
@@ -124,7 +124,7 @@ export const create_transfer = async (event: EVENT, options: Config) => {
         //   `Measureunit with _id: ${repzo_product.sv_measureUnit?.toString()} was not found`,
         // );
         throw new Error(
-          `Measureunit with _id: ${repzo_product.sv_measureUnit?.toString()} was not found`,
+          `Measureunit with _id: ${repzo_product.sv_measureUnit?.toString()} was not found`
         );
       }
 
@@ -156,20 +156,20 @@ export const create_transfer = async (event: EVENT, options: Config) => {
 
     actionLog.addDetail(
       `Repzo => SAP: Transfer - ${repzo_serial_number}`,
-      sap_transfer,
+      sap_transfer
     );
 
     const result = await _create(
       SAP_HOST_URL,
       "/AddStockTransfer",
-      sap_transfer,
+      sap_transfer
     );
 
     // console.log(result);
     try {
       await repzo.updateIntegrationMeta.create(
         [{ key: "sync_to_sap_succeeded", value: true }],
-        { _id: body._id, type: "transfers" },
+        { _id: body._id, type: "transfers" }
       );
     } catch (e) {
       console.error(e);
