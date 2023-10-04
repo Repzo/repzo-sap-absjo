@@ -333,7 +333,10 @@ function getUniqueConcatenatedValues(
 ): string {
   item.general_promotions = item.general_promotions || [];
   item.used_promotions = item.used_promotions || [];
-  const allPromotions = [...item.general_promotions, ...item.used_promotions];
+  const allPromotions: { name: string; [key: string]: any }[] = [
+    ...item.general_promotions,
+    ...item.used_promotions,
+  ];
   const uniqueValues = new Set(
     allPromotions.map((promotion) => promotion[key]).filter((value) => value)
   );
