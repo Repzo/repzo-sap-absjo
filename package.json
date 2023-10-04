@@ -1,7 +1,7 @@
 {
   "name": "repzo-sap-absjo",
   "description": "repzo SAP ABS jo integration",
-  "version": "1.0.17",
+  "version": "1.0.18",
   "homepage": "",
   "keywords": [],
   "author": {
@@ -45,7 +45,7 @@
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
     "moment-timezone": "^0.5.34",
-    "repzo": "^1.0.28",
+    "repzo": "^1.0.29",
     "uuid": "^8.3.2"
   }
 }
