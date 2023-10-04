@@ -62,18 +62,21 @@ export const sync_disabled_product = async (commandEvent: CommandEvent) => {
       (product) => `${nameSpace}_${product.ITEMCODE}`
     );
 
-    const repzo_products = [];
-    const per_page = 200;
-    const pages = Math.ceil(sap_product_query.length / per_page);
-    for (let i = 0; i < pages; i += per_page) {
-      const repzo_product_per_page = await repzo.product.find({
-        active: true,
-        per_page: 50000,
-        "integration_meta.id": sap_product_query.slice(i, i + per_page),
-      });
-      if (repzo_product_per_page?.data?.length)
-        repzo_products.push(...repzo_product_per_page.data);
-    }
+    const repzo_product_per_page = await repzo.patchAction.create(
+      {
+        slug: "product",
+        readQuery: [
+          { key: "active", value: [true], operator: "eq" },
+          {
+            key: "integration_meta.id",
+            value: sap_product_query,
+            operator: "in",
+          },
+        ],
+      },
+      { per_page: 50000 }
+    );
+    const repzo_products = repzo_product_per_page.data;
 
     result.repzo_total = repzo_products?.length;
     await commandLog
