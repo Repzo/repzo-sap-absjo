@@ -16,6 +16,7 @@ import { sync_bank } from "./bank.js";
 import { sync_product } from "./product.js";
 import { sync_disabled_product } from "./product_disabled.js";
 import { sync_price_list } from "./price_list.js";
+import { sync_price_list_disabled } from "./price_list_disabled.js";
 import { sync_client } from "./client.js";
 import { sync_disabled_client } from "./client_disabled.js";
 import { adjust_inventory } from "./adjust_inventory.js";
@@ -53,6 +54,8 @@ export const commands = async (CommandEvent: CommandEvent) => {
       return await sync_disabled_product(CommandEvent);
     case "price_list":
       return await sync_price_list(CommandEvent);
+    case "price_list_disabled":
+      return await sync_price_list_disabled(CommandEvent);
     case "client":
       return await sync_client(CommandEvent);
     case "disabled_client":

@@ -1,15 +1,18 @@
+import { CommandEvent, Result } from "../../types";
 import { Commands } from "../../index.js";
-let commandEvent = {
+
+let commandEvent: CommandEvent | any = {
   app: {
-    _id: "6391a53edb71ef6435719794",
+    _id: "639f0bf52070c5be595e955c",
     name: "SAP",
     disabled: false,
     available_app: {
       _id: "6391a268db71ef64357195da",
       name: "repzo-sap-absjo",
       title: "SAP ABS JO",
-      logo: "https://www.e2abs.com/wp-content/uploads/2021/03/Website-Main-Logo-1.svg",
-      description: "",
+      logo: "https://prod-repzo-media-service.s3.us-east-1.amazonaws.com/repzo/image/2022/12/18/3f73de7d-1920-4786-90db-57c76d18acci-SAP_EBS_JO.png",
+      description:
+        "SAP Jordan. We provide real value to SMEs by understanding their business and driving their vision forward with SAP Business One",
       disabled: false,
       JSONSchema: {
         title: "SAP Integration Settings",
@@ -110,6 +113,12 @@ let commandEvent = {
                 title: "Live Sync Approved Transfers from Repzo to SAP",
                 default: false,
               },
+              adjustInventoryInFailedTransfer: {
+                type: "boolean",
+                title:
+                  "Adjust Inventories in Repzo if creation Transfer Failed in SAP",
+                default: false,
+              },
             },
           },
         },
@@ -124,6 +133,41 @@ let commandEvent = {
             type: "string",
             format: "date",
           },
+          bench_time_channel: {
+            title: "Bench Time: Channels",
+            type: "string",
+            format: "date-time",
+          },
+          bench_time_payment_term: {
+            title: "Bench Time: Payment Terms",
+            type: "string",
+            format: "date-time",
+          },
+          bench_time_product: {
+            title: "Bench Time: Products",
+            type: "string",
+            format: "date-time",
+          },
+          bench_time_product_disabled: {
+            title: "Bench Time: Inactive Products",
+            type: "string",
+            format: "date-time",
+          },
+          bench_time_price_list: {
+            title: "Bench Time: Price List",
+            type: "string",
+            format: "date-time",
+          },
+          bench_time_client: {
+            title: "Bench Time: Clients",
+            type: "string",
+            format: "date-time",
+          },
+          bench_time_disabled_client: {
+            title: "Bench Time: Inactive Clients",
+            type: "string",
+            format: "date-time",
+          },
         },
       },
       app_settings: {
@@ -136,7 +180,7 @@ let commandEvent = {
         {
           command: "basic",
           name: "Full Sync",
-          description: "",
+          description: "Exclude Join & Adjust Inventories",
           _id: "6391a268db71ef64357195dc",
         },
         {
@@ -188,6 +232,12 @@ let commandEvent = {
           _id: "63984085edafde008af2f689",
         },
         {
+          command: "brand",
+          name: "Sync Product Brand",
+          description: "Sync Product Brands From SAP to Repzo",
+          _id: "63984085edafde008af2f689",
+        },
+        {
           command: "channel",
           name: "Sync Client's Channels",
           description: "Sync Client's Channels From SAP to Repzo",
@@ -225,9 +275,9 @@ let commandEvent = {
         },
         {
           command: "price_list_disabled",
-          name: "Sync Disabled Price List Items",
-          description: "Sync Disabled Price List Items From SAP to Repzo",
-          _id: "639972d6e8a1cfdd26deaa7e",
+          name: "Sync Disbaled Price List Items",
+          description: "Sync Disbaled Price List Items From SAP to Repzo",
+          _id: "656ed4098961a3f97182773f",
         },
         {
           command: "client",
@@ -281,31 +331,13 @@ let commandEvent = {
         },
       ],
       createdAt: "2022-12-08T08:38:00.915Z",
-      updatedAt: "2022-12-18T09:01:24.539Z",
+      updatedAt: "2022-12-20T11:09:00.384Z",
       __v: 0,
     },
-    company_namespace: ["unisap"],
+    company_namespace: ["unipaljo"],
     formData: {
-      invoices: {
-        createInvoiceHook: false,
-        createReturnInvoiceHook: false,
-      },
-      payments: {
-        createPaymentHook: false,
-      },
-      proformas: {
-        createApprovedProformaHook: false,
-      },
-      transfers: {
-        createApprovedTransferHook: false,
-      },
-      transfer: {
-        createApprovedTransferHook: true,
-      },
-      repzoApiKey: "L98_Pc8qZG2R5hZIIMjxLQNUgUzT3_0aX2BuLvkyh74",
+      repzoApiKey: "mUOvoIBiv9uIg4ur7-nVdVP4m21EXto4EnlgWgDqP2c",
       sapHostUrl: "http://unipal.b1pro.com:8083/api",
-      errorEmail: "maram.alshen@repzoapp.com",
-      serviceApiKey: "awdas",
       warehouseDefaultUpdateDate: "2015-01-01",
       DepartmentCode: "D2",
       return_reason:
@@ -313,34 +345,18 @@ let commandEvent = {
       SalPersCode: "111",
       SalesPersonCode: "111",
     },
-    options_formData: {
-      bench_time_warehouse: "2022-12-08",
-      bench_time_rep: "2022-12-12T11:43:07.899Z",
-      bench_time_tax: "2022-12-13T05:52:47.025Z",
-      bench_time_tag: "2022-12-13T06:00:22.724Z",
-      bench_time_measureunit: "2022-12-13T06:48:44.370Z",
-      bench_time_measureunit_family: "2022-12-13T08:27:26.562Z",
-      bench_time_category: "2022-12-13T09:14:26.572Z",
-      bench_time_channel: "2022-12-13T09:18:07.697Z",
-      bench_time_payment_term: "2022-12-13T09:19:50.316Z",
-      bench_time_bank: "2022-12-13T11:50:08.710Z",
-      bench_time_product: "2022-12-18T05:48:21.443Z",
-      bench_time_product_disabled: "2022-12-14T06:53:26.903Z",
-      bench_time_price_list: "2022-12-14T11:41:36.811Z",
-      bench_time_price_list_disabled: "2022-12-14T11:41:36.811Z",
-      bench_time_client: "2022-12-18T05:28:57.853Z",
-      bench_time_disabled_client: "2022-12-18T05:40:29.169Z",
-    },
-    createdAt: "2022-12-08T08:50:06.903Z",
-    updatedAt: "2022-12-18T09:02:48.580Z",
+    options_formData: {},
+    createdAt: "2022-12-18T12:47:49.096Z",
+    updatedAt: "2022-12-21T09:04:34.538Z",
     __v: 0,
   },
   end_of_day: "04:00",
-  nameSpace: ["unisap"],
+  nameSpace: ["unipaljo"],
   timezone: "Asia/Amman",
   meta: "",
   env: "staging",
-  sync_id: "47c9c804-e136-4d54-928a-000018",
-  command: "basic",
+  sync_id: "a7e620b6-c5a2-44f7-b44b-3599b3ea1b54", // should change
+  command: "price_list_disabled",
 };
+
 Commands(commandEvent);

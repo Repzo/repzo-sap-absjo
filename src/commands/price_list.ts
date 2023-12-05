@@ -240,7 +240,7 @@ export const sync_price_list = async (commandEvent: CommandEvent) => {
       }
 
       const repzo_price_list_items = await repzo.priceListItem.find({
-        disabled: false,
+        // disabled: false,
         pricelist_id: repzo_PriceList?._id,
         per_page: 50000,
       });
@@ -376,6 +376,7 @@ export const sync_price_list = async (commandEvent: CommandEvent) => {
           variant_id: variant._id,
           pricelist_id: repzo_PriceList._id,
           price: price,
+          disabled: false,
         };
 
         // console.log(data);
@@ -403,7 +404,11 @@ export const sync_price_list = async (commandEvent: CommandEvent) => {
             result.PL_items.failed++;
           }
         } else {
-          if (is_found_in_repzo_db.price == body.price) continue;
+          if (
+            is_found_in_repzo_db.price == body.price &&
+            !is_found_in_repzo_db.disabled
+          )
+            continue;
           // Update
           try {
             const updated_PL_item = await repzo.priceListItem.update(

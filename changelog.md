@@ -7,6 +7,7 @@
 - [actions/***] add 2 keys in integration_meta: sync_to_sap_started & sync_to_sap_succeeded @maramalshen
 - [commands/product] assign Foreign Name (ITEMDESCF) in SAP to local_name in Repzo @maramalshen
 - [actions/payment] add the field UserId where it equals USERID of the SAP API REP @maramalshen
+- [commands/price_list_disabled] new command: Disabled PriceListItems from Repzo if it is not found on SAP @maramalshen
 
 ### Changed
 
