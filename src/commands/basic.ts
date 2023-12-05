@@ -11,7 +11,7 @@ export const basic = async (commandEvent: CommandEvent) => {
   const commandLog = new Repzo.CommandLog(
     repzo,
     commandEvent.app,
-    commandEvent.command
+    commandEvent.command,
   );
   try {
     // console.log("basic sync");
@@ -34,6 +34,7 @@ export const basic = async (commandEvent: CommandEvent) => {
       "product",
       "disabled_product",
       "price_list",
+      "price_list_disabled",
       "client",
       "disabled_client",
     ];
