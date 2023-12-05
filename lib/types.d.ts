@@ -56,6 +56,7 @@ export type CommandType =
   | "product"
   | "disabled_product"
   | "price_list"
+  | "price_list_disabled"
   | "client"
   | "disabled_client"
   | "adjust_inventory";

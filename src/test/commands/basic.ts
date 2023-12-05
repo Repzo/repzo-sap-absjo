@@ -226,6 +226,12 @@ let commandEvent: CommandEvent | any = {
           _id: "639972d6e8a1cfdd26deaa7e",
         },
         {
+          command: "price_list_disabled",
+          name: "Sync Disabled Price List Items",
+          description: "Sync Disabled Price List Items From SAP to Repzo",
+          _id: "639972d6e8a1cfdd26deaa7e",
+        },
+        {
           command: "client",
           name: "Sync Clients",
           description: "Sync Clients From SAP to Repzo",
@@ -323,6 +329,7 @@ let commandEvent: CommandEvent | any = {
       bench_time_product: "2022-12-18T05:48:21.443Z",
       bench_time_product_disabled: "2022-12-14T06:53:26.903Z",
       bench_time_price_list: "2022-12-14T11:41:36.811Z",
+      bench_time_price_list_disabled: "2022-12-14T11:41:36.811Z",
       bench_time_client: "2022-12-18T05:28:57.853Z",
       bench_time_disabled_client: "2022-12-18T05:40:29.169Z",
     },

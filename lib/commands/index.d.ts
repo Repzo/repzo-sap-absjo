@@ -19,5 +19,14 @@ export declare const commands: (CommandEvent: CommandEvent) => Promise<
       sap_UoMs_total: number;
       repzo_products_total: number;
     }
+  | {
+      repzo_PL_total: number;
+      sap_PL_items_total: number;
+      repzo_PL_items_total: number;
+      repzo_PL_items: {
+        removed: number;
+        failed: number;
+      };
+    }
 >;
 export declare const commandsList: Command[];
