@@ -2,7 +2,7 @@ import axios from "axios";
 import Repzo from "repzo";
 import moment from "moment-timezone";
 import { CommandType } from "./types";
-
+import { Service } from "repzo/src/types";
 interface Params {
   [key: string]: any;
 }
@@ -240,4 +240,21 @@ export const send_command_to_marketplace = async ({
   } catch (e) {
     throw e;
   }
+};
+
+export const getUniqueConcatenatedValues = function (
+  item: Service.Item.Schema,
+  key: "name" | "ref",
+  delimiter: string
+): string {
+  item.general_promotions = item.general_promotions || [];
+  item.used_promotions = item.used_promotions || [];
+  const allPromotions: { name: string; ref?: string; [key: string]: any }[] = [
+    ...item.general_promotions,
+    ...item.used_promotions,
+  ];
+  const uniqueValues = new Set(
+    allPromotions.map((promotion) => promotion[key]).filter((value) => value)
+  );
+  return [...uniqueValues].join(delimiter);
 };

@@ -1,6 +1,12 @@
 import Repzo from "repzo";
 import { EVENT, Config } from "../types";
-import { _fetch, _create, _update, _delete } from "../util.js";
+import {
+  _fetch,
+  _create,
+  _update,
+  _delete,
+  getUniqueConcatenatedValues,
+} from "../util.js";
 import { Service } from "repzo/src/types";
 import { v4 as uuid } from "uuid";
 import moment from "moment-timezone";
@@ -325,20 +331,3 @@ export const get_invoice_from_sap = async (
     throw e;
   }
 };
-
-function getUniqueConcatenatedValues(
-  item: Service.Item.Schema,
-  key: "name" | "ref",
-  delimiter: string
-): string {
-  item.general_promotions = item.general_promotions || [];
-  item.used_promotions = item.used_promotions || [];
-  const allPromotions: { name: string; ref?: string; [key: string]: any }[] = [
-    ...item.general_promotions,
-    ...item.used_promotions,
-  ];
-  const uniqueValues = new Set(
-    allPromotions.map((promotion) => promotion[key]).filter((value) => value)
-  );
-  return [...uniqueValues].join(delimiter);
-}

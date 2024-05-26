@@ -35,7 +35,7 @@ export const sync_price_list_disabled = async (commandEvent: CommandEvent) => {
   const commandLog = new Repzo.CommandLog(
     repzo,
     commandEvent.app,
-    commandEvent.command,
+    commandEvent.command
   );
 
   try {
@@ -66,7 +66,7 @@ export const sync_price_list_disabled = async (commandEvent: CommandEvent) => {
     result.repzo_PL_total = repzo_price_lists?.data?.length;
     await commandLog
       .addDetail(
-        `${repzo_price_lists?.data?.length} Active Price Lists in Repzo`,
+        `${repzo_price_lists?.data?.length} Active Price Lists in Repzo`
       )
       .commit();
 
@@ -89,7 +89,7 @@ export const sync_price_list_disabled = async (commandEvent: CommandEvent) => {
         {
           updateAt: "20000101:000000",
           PLDID: sap_price_list_id,
-        },
+        }
       );
 
       result.sap_PL_items_total += sap_price_list_items?.length || 0;
@@ -140,7 +140,7 @@ export const sync_price_list_disabled = async (commandEvent: CommandEvent) => {
           console.log(
             "Disable Price List Item Failed >> ",
             e?.response?.data,
-            repzo_item,
+            repzo_item
           );
           failed_docs_report.push({
             method: "update",
@@ -159,12 +159,12 @@ export const sync_price_list_disabled = async (commandEvent: CommandEvent) => {
       repzo,
       commandEvent.app._id,
       bench_time_key,
-      new_bench_time,
+      new_bench_time
     );
     await commandLog
       .setStatus(
         "success",
-        failed_docs_report.length ? failed_docs_report : null,
+        failed_docs_report.length ? failed_docs_report : null
       )
       .setBody(result)
       .commit();
@@ -179,13 +179,13 @@ export const sync_price_list_disabled = async (commandEvent: CommandEvent) => {
 
 const get_sap_price_list = async (
   serviceEndPoint: string,
-  query?: { updateAt?: string; PLDID?: string },
+  query?: { updateAt?: string; PLDID?: string }
 ): Promise<SAPPriceListItem[]> => {
   try {
     const sap_price_lists: SAPPriceListItems = await _create(
       serviceEndPoint,
       "/PriceList",
-      { UpdateAt: query?.updateAt, PLDID: query?.PLDID },
+      { UpdateAt: query?.updateAt, PLDID: query?.PLDID }
     );
     return sap_price_lists.PriceList;
   } catch (e: any) {

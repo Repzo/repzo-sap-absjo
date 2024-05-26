@@ -1,11 +1,19 @@
 import Repzo from "repzo";
 import { EVENT, Config } from "../types";
-import { _fetch, _create, _update, _delete } from "../util.js";
+import {
+  _fetch,
+  _create,
+  _update,
+  _delete,
+  getUniqueConcatenatedValues,
+} from "../util.js";
 import { Service } from "repzo/src/types";
 import { v4 as uuid } from "uuid";
 import moment from "moment-timezone";
 
 interface SAPProformaItem {
+  MEO_Serial: string; // "INV-1021-4 | 010-LAG-PO0002";
+  Promotion_Name: string; // "INV-1021-4 | 010-LAG-PO0002";
   ItemCode: string; // "010-LAG-PO0002";
   Quantity: number; // 10;
   TaxCode: string; // "S16";
@@ -162,6 +170,8 @@ export const create_proforma = async (event: EVENT, options: Config) => {
         throw `Product with _id: ${item.measureunit._id} not found in Repzo`;
 
       items.push({
+        MEO_Serial: getUniqueConcatenatedValues(item, "ref", " | "),
+        Promotion_Name: getUniqueConcatenatedValues(item, "name", " | "),
         ItemCode: item.variant.variant_name,
         Quantity: item.qty,
         TaxCode: repzo_tax.integration_meta.TaxCode,
