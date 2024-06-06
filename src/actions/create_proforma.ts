@@ -143,6 +143,18 @@ export const create_proforma = async (event: EVENT, options: Config) => {
       { per_page: 50000 }
     );
 
+    const all_promotions: {
+      [promo_id: string]: { _id: string; name: string; ref?: string };
+    } = {};
+    repzo_proforma?.promotions?.forEach((promo) => {
+      if (!promo) return;
+      all_promotions[promo._id] = {
+        _id: promo._id,
+        name: promo.name,
+        ref: promo.ref,
+      };
+    });
+
     // Prepare SAP_invoice_items
     const items: SAPProformaItem[] = [];
 
@@ -170,8 +182,18 @@ export const create_proforma = async (event: EVENT, options: Config) => {
         throw `Product with _id: ${item.measureunit._id} not found in Repzo`;
 
       items.push({
-        MEO_Serial: getUniqueConcatenatedValues(item, "ref", " | "),
-        Promotion_Name: getUniqueConcatenatedValues(item, "name", " | "),
+        MEO_Serial: getUniqueConcatenatedValues(
+          item,
+          "ref",
+          " | ",
+          all_promotions
+        ),
+        Promotion_Name: getUniqueConcatenatedValues(
+          item,
+          "name",
+          " | ",
+          all_promotions
+        ),
         ItemCode: item.variant.variant_name,
         Quantity: item.qty,
         TaxCode: repzo_tax.integration_meta.TaxCode,

@@ -245,7 +245,10 @@ export const send_command_to_marketplace = async ({
 export const getUniqueConcatenatedValues = function (
   item: Service.Item.Schema,
   key: "name" | "ref",
-  delimiter: string
+  delimiter: string,
+  all_promos: {
+    [promo_id: string]: { _id: string; name: string; ref?: string };
+  }
 ): string {
   item.general_promotions = item.general_promotions || [];
   item.used_promotions = item.used_promotions || [];
@@ -253,6 +256,11 @@ export const getUniqueConcatenatedValues = function (
     ...item.general_promotions,
     ...item.used_promotions,
   ];
+  if (item.promotions?.isGet) {
+    const promo_id = item.promotions.bookings?.[0]?.promotion;
+    if (promo_id && all_promos[promo_id])
+      allPromotions.push(all_promos[promo_id]);
+  }
   const uniqueValues = new Set(
     allPromotions.map((promotion) => promotion[key]).filter((value) => value)
   );
