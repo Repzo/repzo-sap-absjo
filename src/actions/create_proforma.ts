@@ -1,11 +1,19 @@
 import Repzo from "repzo";
 import { EVENT, Config } from "../types";
-import { _fetch, _create, _update, _delete } from "../util.js";
+import {
+  _fetch,
+  _create,
+  _update,
+  _delete,
+  getUniqueConcatenatedValues,
+} from "../util.js";
 import { Service } from "repzo/src/types";
 import { v4 as uuid } from "uuid";
 import moment from "moment-timezone";
 
 interface SAPProformaItem {
+  MEO_Serial: string; // "INV-1021-4 | 010-LAG-PO0002";
+  Promotion_Name: string; // "INV-1021-4 | 010-LAG-PO0002";
   ItemCode: string; // "010-LAG-PO0002";
   Quantity: number; // 10;
   TaxCode: string; // "S16";
@@ -135,6 +143,18 @@ export const create_proforma = async (event: EVENT, options: Config) => {
       { per_page: 50000 }
     );
 
+    const all_promotions: {
+      [promo_id: string]: { _id: string; name: string; ref?: string };
+    } = {};
+    repzo_proforma?.promotions?.forEach((promo) => {
+      if (!promo) return;
+      all_promotions[promo._id] = {
+        _id: promo._id,
+        name: promo.name,
+        ref: promo.ref,
+      };
+    });
+
     // Prepare SAP_invoice_items
     const items: SAPProformaItem[] = [];
 
@@ -162,6 +182,18 @@ export const create_proforma = async (event: EVENT, options: Config) => {
         throw `Product with _id: ${item.measureunit._id} not found in Repzo`;
 
       items.push({
+        MEO_Serial: getUniqueConcatenatedValues(
+          item,
+          "ref",
+          " | ",
+          all_promotions
+        ),
+        Promotion_Name: getUniqueConcatenatedValues(
+          item,
+          "name",
+          " | ",
+          all_promotions
+        ),
         ItemCode: item.variant.variant_name,
         Quantity: item.qty,
         TaxCode: repzo_tax.integration_meta.TaxCode,

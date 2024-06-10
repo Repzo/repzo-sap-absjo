@@ -1,6 +1,12 @@
 import Repzo from "repzo";
 import { EVENT, Config } from "../types";
-import { _fetch, _create, _update, _delete } from "../util.js";
+import {
+  _fetch,
+  _create,
+  _update,
+  _delete,
+  getUniqueConcatenatedValues,
+} from "../util.js";
 import { Service } from "repzo/src/types";
 import { v4 as uuid } from "uuid";
 import moment from "moment-timezone";
@@ -211,6 +217,18 @@ export const create_invoice = async (event: EVENT, options: Config) => {
       { per_page: 50000 }
     );
 
+    const all_promotions: {
+      [promo_id: string]: { _id: string; name: string; ref?: string };
+    } = {};
+    repzo_invoice?.promotions?.forEach((promo) => {
+      if (!promo) return;
+      all_promotions[promo._id] = {
+        _id: promo._id,
+        name: promo.name,
+        ref: promo.ref,
+      };
+    });
+
     // Prepare SAP_invoice_items
     const items = [];
 
@@ -238,8 +256,18 @@ export const create_invoice = async (event: EVENT, options: Config) => {
         throw `Product with _id: ${item.measureunit._id} not found in Repzo`;
 
       items.push({
-        MEO_Serial: getUniqueConcatenatedValues(item, "ref", " | "),
-        Promotion_Name: getUniqueConcatenatedValues(item, "name", " | "),
+        MEO_Serial: getUniqueConcatenatedValues(
+          item,
+          "ref",
+          " | ",
+          all_promotions
+        ),
+        Promotion_Name: getUniqueConcatenatedValues(
+          item,
+          "name",
+          " | ",
+          all_promotions
+        ),
         ItemCode: item.variant.variant_name,
         Quantity: item.qty,
         TaxCode: repzo_tax.integration_meta.TaxCode,
@@ -325,20 +353,3 @@ export const get_invoice_from_sap = async (
     throw e;
   }
 };
-
-function getUniqueConcatenatedValues(
-  item: Service.Item.Schema,
-  key: "name" | "ref",
-  delimiter: string
-): string {
-  item.general_promotions = item.general_promotions || [];
-  item.used_promotions = item.used_promotions || [];
-  const allPromotions: { name: string; ref?: string; [key: string]: any }[] = [
-    ...item.general_promotions,
-    ...item.used_promotions,
-  ];
-  const uniqueValues = new Set(
-    allPromotions.map((promotion) => promotion[key]).filter((value) => value)
-  );
-  return [...uniqueValues].join(delimiter);
-}

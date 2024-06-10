@@ -1,5 +1,6 @@
 import Repzo from "repzo";
 import { CommandType } from "./types";
+import { Service } from "repzo/src/types";
 interface Params {
   [key: string]: any;
 }
@@ -79,4 +80,16 @@ export declare const send_command_to_marketplace: ({
   env: "production" | "staging" | "local";
   repzoApiKey: string;
 }) => Promise<void>;
+export declare const getUniqueConcatenatedValues: (
+  item: Service.Item.Schema,
+  key: "name" | "ref",
+  delimiter: string,
+  all_promos: {
+    [promo_id: string]: {
+      _id: string;
+      name: string;
+      ref?: string | undefined;
+    };
+  }
+) => string;
 export {};

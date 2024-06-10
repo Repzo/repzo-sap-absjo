@@ -11,7 +11,7 @@ export const basic = async (commandEvent: CommandEvent) => {
   const commandLog = new Repzo.CommandLog(
     repzo,
     commandEvent.app,
-    commandEvent.command,
+    commandEvent.command
   );
   try {
     // console.log("basic sync");
