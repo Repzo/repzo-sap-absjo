@@ -93,6 +93,12 @@ export const sync_rep = async (commandEvent: CommandEvent) => {
       .addDetail(`${repzo_reps?.data?.length} reps in Repzo`)
       .commit();
 
+    // Get Repzo Warehouse
+    const repzo_warehouses = await repzo.warehouse.find({
+      per_page: 50000,
+      disabled: false,
+    });
+
     for (let i = 0; i < sap_reps?.Users?.length; i++) {
       const sap_rep: SAPRep = sap_reps.Users[i];
       const repzo_rep = repzo_reps.data.find(
@@ -102,10 +108,11 @@ export const sync_rep = async (commandEvent: CommandEvent) => {
 
       let warehouse;
       if (sap_rep.USERWHSCODE && sap_rep.USERWHSCODE != "") {
-        const warehouse_res = await repzo.warehouse.find({
-          code: sap_rep.USERWHSCODE,
-        });
-        if (warehouse_res?.data?.length) warehouse = warehouse_res.data[0]._id;
+        const warehouse_res = repzo_warehouses?.data.find(
+          (w) => w.code == sap_rep.USERWHSCODE
+        );
+        // await repzo.warehouse.find({ code: sap_rep.USERWHSCODE });
+        if (warehouse_res) warehouse = warehouse_res._id;
       }
 
       const body: Service.Rep.Create.Body | Service.Rep.Update.Body = {
