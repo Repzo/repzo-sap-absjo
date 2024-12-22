@@ -260,6 +260,17 @@ export const getUniqueConcatenatedValues = function (
     const promo_id = item.promotions.bookings?.[0]?.promotion;
     if (promo_id && all_promos[promo_id])
       allPromotions.push(all_promos[promo_id]);
+  } else if (item.promotions?.bookings?.length) {
+    const promos: { [promo_id: string]: string } = {};
+    item.promotions?.bookings?.forEach((booking) => {
+      if (booking?.promotion) {
+        promos[booking?.promotion] = booking?.promotion;
+      }
+    });
+    for (let promo_id in promos) {
+      if (promo_id && all_promos[promo_id])
+        allPromotions.push(all_promos[promo_id]);
+    }
   }
   const uniqueValues = new Set(
     allPromotions.map((promotion) => promotion[key]).filter((value) => value)
