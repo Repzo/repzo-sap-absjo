@@ -368,7 +368,7 @@ const is_matched = (
       }
     }
     for (let i = 0; i < integration_meta_keys.length; i++) {
-      const key = keys[i];
+      const key = integration_meta_keys[i];
       if (
         body_1?.integration_meta?.[key]?.toString() !==
         body_2?.integration_meta?.[key]?.toString()

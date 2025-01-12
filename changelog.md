@@ -23,6 +23,7 @@
 - [command/price_list] fix bug in priceList-item @maramalshen
 - [actions/**] don't update integration_meta.sync_to_sap_succeeded if it is already true @maramalshen
 - [actions/create_invoice] include item.get_promotion in MEO_Serial & Promotion_Name @maramalshen
+- fix bug in is_matched in client & product @maramalshen
 
 ### Removed
 
