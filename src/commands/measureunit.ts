@@ -164,6 +164,7 @@ export const sync_measureunit = async (commandEvent: CommandEvent) => {
 
     const db = new DataSet([], { autoIndex: false });
     db.createIndex({
+      ITEMCODE: true,
       ALTUOMCODE: true,
       repzo_factor: true,
       UOMGROUPENTRY: true,
@@ -190,6 +191,7 @@ export const sync_measureunit = async (commandEvent: CommandEvent) => {
           id: `${nameSpace}_${sap_UoM.UOMGROUPENTRY}_${sap_UoM.ALTUOMID}`,
           UOMGROUPENTRY: sap_UoM.UOMGROUPENTRY,
           ALTUOMID: sap_UoM.ALTUOMID,
+          ITEMCODE: sap_UoM.ITEMCODE,
         },
         company_namespace: [nameSpace],
       };
@@ -212,6 +214,7 @@ export const sync_measureunit = async (commandEvent: CommandEvent) => {
         }
       } else {
         const found_identical_docs = db.search({
+          ITEMCODE: repzo_UoM.integration_meta?.ITEMCODE,
           ALTUOMCODE: repzo_UoM.name,
           repzo_factor: repzo_UoM.factor,
           UOMGROUPENTRY: repzo_UoM.integration_meta?.UOMGROUPENTRY,
