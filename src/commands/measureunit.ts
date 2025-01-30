@@ -156,7 +156,7 @@ export const sync_measureunit = async (commandEvent: CommandEvent) => {
 
     for (let i = 0; i < sap_UoMs?.length; i++) {
       const Uom = sap_UoMs[i];
-      const key = `${Uom.UOMGROUPENTRY}_${Uom.ALTUOMID}`;
+      const key = `${Uom.ITEMCODE}_${Uom.UOMGROUPENTRY}_${Uom.ALTUOMID}`;
       if (!unique_UoMs[key]) unique_UoMs[key] = Uom;
     }
 
@@ -164,6 +164,7 @@ export const sync_measureunit = async (commandEvent: CommandEvent) => {
 
     const db = new DataSet([], { autoIndex: false });
     db.createIndex({
+      ITEMCODE: true,
       ALTUOMCODE: true,
       repzo_factor: true,
       UOMGROUPENTRY: true,
@@ -176,7 +177,7 @@ export const sync_measureunit = async (commandEvent: CommandEvent) => {
       const repzo_UoM = repzo_UoMs.data.find(
         (r_UoM) =>
           r_UoM.integration_meta?.id ==
-          `${nameSpace}_${sap_UoM.UOMGROUPENTRY}_${sap_UoM.ALTUOMID}`,
+          `${nameSpace}_${sap_UoM.ITEMCODE}_${sap_UoM.UOMGROUPENTRY}_${sap_UoM.ALTUOMID}`,
       );
 
       const body:
@@ -187,9 +188,10 @@ export const sync_measureunit = async (commandEvent: CommandEvent) => {
         factor: sap_UoM.repzo_factor || 0, // ??????
         disabled: false,
         integration_meta: {
-          id: `${nameSpace}_${sap_UoM.UOMGROUPENTRY}_${sap_UoM.ALTUOMID}`,
+          id: `${nameSpace}_${sap_UoM.ITEMCODE}_${sap_UoM.UOMGROUPENTRY}_${sap_UoM.ALTUOMID}`,
           UOMGROUPENTRY: sap_UoM.UOMGROUPENTRY,
           ALTUOMID: sap_UoM.ALTUOMID,
+          ITEMCODE: sap_UoM.ITEMCODE,
         },
         company_namespace: [nameSpace],
       };
@@ -214,6 +216,7 @@ export const sync_measureunit = async (commandEvent: CommandEvent) => {
         const found_identical_docs = db.search({
           ALTUOMCODE: repzo_UoM.name,
           repzo_factor: repzo_UoM.factor,
+          ITEMCODE: repzo_UoM.integration_meta?.ITEMCODE,
           UOMGROUPENTRY: repzo_UoM.integration_meta?.UOMGROUPENTRY,
           ALTUOMID: repzo_UoM.integration_meta?.ALTUOMID,
         });

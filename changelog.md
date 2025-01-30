@@ -9,6 +9,7 @@
 - [commands/product] assign Foreign Name (ITEMDESCF) in SAP to local_name in Repzo @maramalshen
 - [actions/payment] add the field UserId where it equals USERID of the SAP API REP @maramalshen
 - [commands/price_list_disabled] new command: Disabled PriceListItems from Repzo if it is not found on SAP @maramalshen
+- [commands/measureunit] create unique measure-unit for each product, by inject ITEMCODE in integration_meta.id @maramalshen
 
 ### Changed
 
