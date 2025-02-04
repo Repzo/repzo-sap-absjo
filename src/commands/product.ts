@@ -195,6 +195,7 @@ export const sync_product = async (commandEvent: CommandEvent) => {
           name: sap_product.DEFAULTITEMUOM,
           company_namespace: nameSpace,
           disabled: false,
+          "integration_meta.ITEMCODE": sap_product.ITEMCODE,
         });
         if (!measureUnit.data || measureUnit.data.length != 1) {
           throw `MeasureUnit not found => UOMGROUPENTRY: ${sap_product.UOMGROUPENTRY}, ITEMCODE: ${sap_product.ITEMCODE}, DEFAULTITEMUOM: ${sap_product.DEFAULTITEMUOM}`;
