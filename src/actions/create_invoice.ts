@@ -35,6 +35,7 @@ interface SAPInvoice {
   Note?: string; // "",
   WarehouseCode?: string; // "VS21"; // Required
   LinesDetails: SAPInvoiceItem[];
+  U_ISTDQR?: string;
 }
 
 interface SAPOpenInvoice {
@@ -297,6 +298,11 @@ export const create_invoice = async (event: EVENT, options: Config) => {
       Note: repzo_invoice.comment,
       WarehouseCode: repzo_warehouse.code,
       LinesDetails: items,
+      U_ISTDQR: repzo_invoice.ubl_qr
+        ? repzo_invoice.ubl_qr
+        : repzo_invoice.ubl_clearance_qr
+        ? repzo_invoice.ubl_clearance_qr
+        : undefined,
     };
 
     // console.dir(sap_invoice, { depth: null });

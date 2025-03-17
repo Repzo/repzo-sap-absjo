@@ -28,6 +28,7 @@ interface SAPInvoice {
   Note?: string; // "",
   WarehouseCode?: string; //  "VS21"; // Required
   LinesDetails: SAPInvoiceItem[];
+  U_ISTDQR?: string;
 }
 
 interface ReturnReason {
@@ -220,6 +221,11 @@ export const create_return_invoice = async (event: EVENT, options: Config) => {
       Note: repzo_invoice.comment,
       WarehouseCode: repzo_warehouse.code,
       LinesDetails: return_items,
+      U_ISTDQR: repzo_invoice.ubl_qr
+        ? repzo_invoice.ubl_qr
+        : repzo_invoice.ubl_clearance_qr
+        ? repzo_invoice.ubl_clearance_qr
+        : undefined,
     };
 
     // console.dir(sap_return_invoice, { depth: null });
