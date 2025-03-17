@@ -10,6 +10,7 @@
 - [actions/payment] add the field UserId where it equals USERID of the SAP API REP @maramalshen
 - [commands/price_list_disabled] new command: Disabled PriceListItems from Repzo if it is not found on SAP @maramalshen
 - [commands/measureunit] create unique measure-unit for each product, by inject ITEMCODE in integration_meta.id @maramalshen
+- [actions/create_invoice, actions/create_return_invoice] add new key: U_ISTDQR = ubl_qr || ubl_clearance_qr @maramalshen
 
 ### Changed
 
