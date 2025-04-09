@@ -208,7 +208,9 @@ export const create_return_invoice = async (event: EVENT, options: Config) => {
     }
 
     const sap_return_invoice: SAPInvoice = {
-      RefNum: repzo_invoice.serial_number.formatted,
+      RefNum:
+        repzo_invoice.advanced_serial_number ||
+        repzo_invoice.serial_number.formatted,
       SalPersCode: repzo_rep?.integration_id,
       DocDate: moment(repzo_invoice.issue_date, "YYYY-MM-DD").format(
         "YYYYMMDD"
