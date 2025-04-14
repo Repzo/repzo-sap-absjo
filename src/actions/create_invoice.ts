@@ -38,7 +38,7 @@ interface SAPInvoice {
   U_ISTDQR?: string;
 }
 
-interface SAPOpenInvoice {
+export interface SAPOpenInvoice {
   CustomerNumber: string; // "400065-53";
   FatherCode: string; // "400065";
   DocDate: string; // "2022-12-14T21:00:00Z";
