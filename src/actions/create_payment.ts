@@ -96,7 +96,7 @@ export const create_payment = async (event: EVENT, options: Config) => {
         (inv) => inv.serial_number?.formatted == repzo_inv_serial_number
       );
       if (!repzo_invoice) {
-        throw `Invoice with serial number: ${repzo_payment.LinkedTxn.Txn_serial_number.formatted} was not found on Repzo`;
+        throw `Invoice with serial number: ${repzo_inv_serial_number} was not found on Repzo`;
       }
 
       let sap_open_invoices: SAPOpenInvoice[] = [];
@@ -115,7 +115,7 @@ export const create_payment = async (event: EVENT, options: Config) => {
         });
       }
       if (!sap_open_invoices?.length) {
-        throw `Invoice with serial number: ${repzo_payment.LinkedTxn.Txn_serial_number.formatted} was not found on SAP or was closed`;
+        throw `Invoice with serial number: ${repzo_inv_serial_number} & advance serial number: ${repzo_invoice.advanced_serial_number} was not found on SAP or was closed`;
       }
       sap_payment.InvoiceID = sap_open_invoices[0].InvoiceID;
       sap_payment.InvoiceTotal =
