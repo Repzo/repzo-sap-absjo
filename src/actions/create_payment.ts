@@ -4,7 +4,7 @@ import { _fetch, _create, _update, _delete } from "../util.js";
 import { Service } from "repzo/src/types";
 import { v4 as uuid } from "uuid";
 import moment from "moment-timezone";
-import { get_invoice_from_sap } from "./create_invoice.js";
+import { get_invoice_from_sap, SAPOpenInvoice } from "./create_invoice.js";
 
 interface SAPPayment {
   PaymentID: string; // "PAY-1041-3";
@@ -87,11 +87,33 @@ export const create_payment = async (event: EVENT, options: Config) => {
     };
 
     if (repzo_payment?.LinkedTxn) {
-      const sap_open_invoices = await get_invoice_from_sap(SAP_HOST_URL, {
-        updatedAt: "",
-        Status: "",
-        InvoiceId: repzo_payment?.LinkedTxn?.Txn_serial_number?.formatted,
+      const repzo_inv_serial_number =
+        repzo_payment?.LinkedTxn?.Txn_serial_number?.formatted;
+      const repzo_invoices = await repzo.invoice.find({
+        "serial_number.formatted": repzo_inv_serial_number,
       });
+      const repzo_invoice = repzo_invoices?.data?.find(
+        (inv) => inv.serial_number?.formatted == repzo_inv_serial_number
+      );
+      if (!repzo_invoice) {
+        throw `Invoice with serial number: ${repzo_payment.LinkedTxn.Txn_serial_number.formatted} was not found on Repzo`;
+      }
+
+      let sap_open_invoices: SAPOpenInvoice[] = [];
+      if (repzo_invoice.advanced_serial_number) {
+        sap_open_invoices = await get_invoice_from_sap(SAP_HOST_URL, {
+          updatedAt: "",
+          Status: "",
+          InvoiceId: repzo_invoice.advanced_serial_number,
+        });
+      }
+      if (!sap_open_invoices?.length) {
+        sap_open_invoices = await get_invoice_from_sap(SAP_HOST_URL, {
+          updatedAt: "",
+          Status: "",
+          InvoiceId: repzo_inv_serial_number,
+        });
+      }
       if (!sap_open_invoices?.length) {
         throw `Invoice with serial number: ${repzo_payment.LinkedTxn.Txn_serial_number.formatted} was not found on SAP or was closed`;
       }

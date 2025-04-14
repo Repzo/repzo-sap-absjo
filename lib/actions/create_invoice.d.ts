@@ -1,5 +1,5 @@
 import { EVENT, Config } from "../types";
-interface SAPOpenInvoice {
+export interface SAPOpenInvoice {
   CustomerNumber: string;
   FatherCode: string;
   DocDate: string;
@@ -23,4 +23,3 @@ export declare const get_invoice_from_sap: (
     InvoiceId: string;
   }
 ) => Promise<SAPOpenInvoice[]>;
-export {};
