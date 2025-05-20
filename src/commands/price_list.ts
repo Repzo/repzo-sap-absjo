@@ -344,13 +344,13 @@ export const sync_price_list = async (commandEvent: CommandEvent) => {
 
         const price =
           repzo_product_uom && repzo_product_uom?.factor == 1
-            ? Math.round(item.PLITEMPRICEVALUE * 1000)
-            : Math.round(
+            ? Math.ceil(item.PLITEMPRICEVALUE * 1000)
+            : Math.ceil(
                 (item.PLITEMPRICEVALUE * 1000) / repzo_product_uom.factor
               );
 
         const variant = repzo_product?.variants?.find(
-          (variant) =>
+          (variant:any) =>
             variant?.integration_meta?.id == `${nameSpace}_${item.PLITEMID}`
         );
         if (!variant) {
