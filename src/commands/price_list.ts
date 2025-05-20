@@ -350,7 +350,7 @@ export const sync_price_list = async (commandEvent: CommandEvent) => {
               );
 
         const variant = repzo_product?.variants?.find(
-          (variant:any) =>
+          (variant: any) =>
             variant?.integration_meta?.id == `${nameSpace}_${item.PLITEMID}`
         );
         if (!variant) {
