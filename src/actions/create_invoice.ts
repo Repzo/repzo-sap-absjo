@@ -26,7 +26,8 @@ interface SAPInvoiceItem {
 }
 
 interface SAPInvoice {
-  RefNum: string; // "INV-1021-4",
+  RepzoSerial: string; // serial_number.formatted: "INV-1021-4"
+  RefNum: string; // advanced_serial_number || serial_number.formatted: "INV-1021-4",
   SalPersCode?: string; // "106", // Required
   DocDate: string; // "20211229",
   DocDueDate: string; // "20211229",
@@ -38,7 +39,7 @@ interface SAPInvoice {
   U_ISTDQR?: string;
 }
 
-interface SAPOpenInvoice {
+export interface SAPOpenInvoice {
   CustomerNumber: string; // "400065-53";
   FatherCode: string; // "400065";
   DocDate: string; // "2022-12-14T21:00:00Z";
@@ -285,6 +286,7 @@ export const create_invoice = async (event: EVENT, options: Config) => {
     }
 
     const sap_invoice: SAPInvoice = {
+      RepzoSerial: repzo_invoice.serial_number.formatted,
       RefNum:
         repzo_invoice.advanced_serial_number ||
         repzo_invoice.serial_number.formatted,
