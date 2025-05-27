@@ -298,7 +298,7 @@ const get_sap_clients = async (
       {
         Active: "Y",
         Frozen: "N",
-        UpdateAt: date_formatting(query?.updateAt, "YYYYMMDD:HHmmss"),
+        UpdateAt: date_formatting(query?.updateAt, "YYYYMMDD:000000"),
         GroupCode: query?.GroupCode || "",
       }
     );

@@ -146,7 +146,7 @@ const get_sap_disabled_products = async (
   try {
     const sap_products: SAPProducts = await _create(serviceEndPoint, "/Items", {
       Active: "N",
-      UpdateAt: date_formatting(query?.updateAt, "YYYYMMDD:HHmmss"),
+      UpdateAt: date_formatting(query?.updateAt, "YYYYMMDD:000000"),
     });
     return sap_products.Items;
   } catch (e: any) {
