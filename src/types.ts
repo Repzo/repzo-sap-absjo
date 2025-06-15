@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken";
+import type * as jwt from "jsonwebtoken";
 import { Service } from "repzo/src/types";
 export interface Config {
   app_id: string;
