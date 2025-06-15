@@ -121,7 +121,8 @@ export const sync_measureunit = async (commandEvent: CommandEvent) => {
         const CARD = max_unit.sap_product_UoMs.find(
           (u) => u.ALTUOMCODE == "CARD"
         );
-        max_unit.default_unit = PC || POUCH || CARD;
+        const KG = max_unit.sap_product_UoMs.find((u) => u.ALTUOMCODE == "Kg");
+        max_unit.default_unit = PC || POUCH || CARD || KG;
 
         if (!max_unit.default_unit) {
           // console.log(
