@@ -1,0 +1,21 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 22 # Adjust to the Node version you require
+    commands:
+      - echo "Installing dependencies..."
+      - npm install
+  pre_build:
+    commands:
+      - echo "Setting up npm authentication..."
+      - echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
+  post_build:
+    commands:
+      - echo "Building the project then Publishing package to npm..."
+      - npm publish
+
+artifacts:
+  files:
+    - "**/*"
