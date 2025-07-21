@@ -204,9 +204,9 @@ export const sync_client = async (commandEvent: CommandEvent) => {
         comment: sap_client.CLIENTNOTE,
         formatted_address: sap_client.CLIENTADDRESSID,
         tags: tag ? [tag._id] : [],
-        credit_limit: sap_client.PAYMENTTERM // sap_client.CLIENTGROUP == "Cash Van"
-          ? credit_limit && Math.round(credit_limit * 1000)
-          : 1000000000,
+        // credit_limit: sap_client.PAYMENTTERM // sap_client.CLIENTGROUP == "Cash Van"
+        //   ? credit_limit && Math.round(credit_limit * 1000)
+        //   : 1000000000,
         financials: {
           credit_limit: sap_client.PAYMENTTERM // sap_client.CLIENTGROUP == "Cash Van"
             ? credit_limit && Math.round(credit_limit * 1000)
@@ -219,6 +219,7 @@ export const sync_client = async (commandEvent: CommandEvent) => {
         payment_type: sap_client.PAYMENTTERM ? "credit" : "cash", // sap_client.CLIENTGROUP == "Cash Van"
         integrated_client_balance:
           client_credit_consumed && Math.round(client_credit_consumed * 1000),
+        company_namespace: [nameSpace],
       };
 
       if (!repzo_client) {

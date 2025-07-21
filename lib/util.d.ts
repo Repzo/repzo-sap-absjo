@@ -51,7 +51,7 @@ export declare const updateAt_query: (
 ) => string;
 export declare const get_data_from_sap: (
   _path: string,
-  default_res: any,
+  default_res: any, // if no data was found
   serviceEndPoint: string,
   serviceApiKey: string,
   query?: string
@@ -88,7 +88,7 @@ export declare const getUniqueConcatenatedValues: (
     [promo_id: string]: {
       _id: string;
       name: string;
-      ref?: string | undefined;
+      ref?: string;
     };
   }
 ) => string;
