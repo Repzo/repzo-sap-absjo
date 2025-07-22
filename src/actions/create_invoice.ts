@@ -173,7 +173,7 @@ export const create_invoice = async (event: EVENT, options: Config) => {
       if (item) {
         repzo_tax_ids[item.tax?._id] = true;
         repzo_measureunit_ids[item.measureunit?._id] = true;
-        repzo_product_ids[item.variant?.product_id] = true;
+        repzo_product_ids[item.variant?.product_id as string] = true;
       }
     });
 
