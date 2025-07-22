@@ -86,6 +86,17 @@ export const create_proforma = async (event: EVENT, options: Config) => {
       if (!repzo_rep)
         throw `Rep with _id: ${repzo_proforma.creator._id} not found in Repzo`;
     }
+    let rep_warehouse_code:
+      | Service.Warehouse.WarehouseSchema["code"]
+      | undefined;
+    if (repzo_rep && repzo_rep?.assigned_warehouse) {
+      rep_warehouse_code = (
+        repzo_rep?.assigned_warehouse as Pick<
+          Service.Warehouse.WarehouseSchema,
+          "_id" | "code"
+        >
+      )?.code;
+    }
 
     // Get Repzo Client
     const repzo_client = await repzo.client.get(repzo_proforma?.client_id);
@@ -225,14 +236,8 @@ export const create_proforma = async (event: EVENT, options: Config) => {
       ClientCode: repzo_client.client_code,
       DiscountPerc: "0",
       Note: repzo_proforma.comment,
-      WarehouseCode: repzo_rep
-        ? (
-            repzo_rep.assigned_warehouse as Pick<
-              Service.Warehouse.WarehouseSchema,
-              "_id" | "name" | "code" | "type" | "integration_meta"
-            >
-          )?.code
-        : undefined, //  options.data?.SalPersCode, // "1",
+      WarehouseCode:
+        rep_warehouse_code || options.data?.defaultWarehouseForSalesOrder, // "1",
       LinesDetails: items,
     };
 
