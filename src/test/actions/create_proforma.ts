@@ -238,6 +238,7 @@ Actions(
         '[{sap_id:1,sap_name:"BarcodeIssue",repzo_name:"Barcodeissue",repzo_id:"62b074972b332895edf114fc"},{sap_id:2,sap_name:"Damaged",repzo_name:"Damaged",repzo_id:"62b074ace96258fb745982e4"},{sap_id:3,sap_name:"Nearexpiry",repzo_name:"Nearexpiry",repzo_id:"62b074c0a066173bd1c1ea0d"},{sap_id:4,sap_name:"Wrongprinting",repzo_name:"Wrongprinting",repzo_id:"62b074d79e7f41f306a4cb42"},{sap_id:5,sap_name:"experied",repzo_name:"Experied",repzo_id:"62b074faa066173bd1c1eec0"}]',
       SalPersCode: "111",
       SalesPersonCode: "111",
+      defaultWarehouseForSalesOrder: "1",
     },
   }
 );
