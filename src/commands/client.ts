@@ -244,6 +244,25 @@ export const sync_client = async (commandEvent: CommandEvent) => {
         if (is_matched(body, repzo_original_doc)) {
           continue;
         }
+
+        if (
+          body.hasOwnProperty("integrated_client_balance") &&
+          body.integrated_client_balance !=
+            repzo_original_doc.integrated_client_balance
+        ) {
+          // inject all children to update their balance
+          const client_children = sap_all_clients.filter(
+            (c) => c.PARENTCODE == sap_client.CLIENTID
+          );
+          if (sap_clients.length) {
+            sap_clients.push(
+              ...client_children.filter(
+                (c) => !sap_clients.find((sc) => sc.CLIENTID == c.CLIENTID)
+              )
+            );
+          }
+        }
+
         // Update
         try {
           const updated_client = await repzo.client.update(
