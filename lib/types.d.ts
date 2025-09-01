@@ -78,8 +78,68 @@ export interface AvailableApp {
   };
   app_category: string;
 }
+export interface FormData {
+  repzoApiKey: string;
+  sapHostUrl: string;
+  warehouseDefaultUpdateDate?: string;
+  DepartmentCode?: string;
+  GroupCode?: string;
+  return_reasons?:
+    | {
+        sap_id: number;
+        sap_name: string;
+        repzo_name: string;
+        repzo_id: StringId;
+      }[]
+    | string;
+  defaultWarehouseForSalesOrder?: string;
+  SalPersCode?: string;
+  SalesPersonCode?: string;
+  measureUnitInjections?: {
+    itemCode: string;
+    uom: string;
+  }[];
+  invoices?: {
+    createInvoiceHook?: boolean;
+    createReturnInvoiceHook?: boolean;
+  };
+  payments?: {
+    createPaymentHook?: boolean;
+  };
+  proformas?: {
+    createApprovedProformaHook?: boolean;
+  };
+  transfers?: {
+    createApprovedTransferHook?: boolean;
+    adjustInventoryInFailedTransfer?: boolean;
+  };
+}
+interface OptionsFormData {
+  bench_time_warehouse?: string;
+  bench_time_channel?: string;
+  bench_time_payment_term?: string;
+  bench_time_product?: string;
+  bench_time_product_disabled?: string;
+  bench_time_price_list?: string;
+  bench_time_client?: string;
+  bench_time_disabled_client?: string;
+  bench_time_rep?: string;
+  bench_time_tax?: string;
+  bench_time_tag?: string;
+  bench_time_measureunit?: string;
+  bench_time_measureunit_family?: string;
+  bench_time_category?: string;
+  bench_time_bank?: string;
+  bench_time_brand?: string;
+  bench_time_price_list_disabled?: string;
+}
+interface AppWithCustomFormData
+  extends Service.App.Schema_with_populated_AvailableApp {
+  formData: FormData;
+  options_formData: OptionsFormData;
+}
 export interface CommandEvent {
-  app: Service.App.Schema_with_populated_AvailableApp;
+  app: AppWithCustomFormData;
   command: CommandType | string;
   nameSpace: NameSpaces;
   meta?: any;

@@ -1,7 +1,7 @@
 {
   "name": "repzo-sap-absjo",
   "description": "repzo SAP ABS jo integration",
-  "version": "1.0.38",
+  "version": "1.0.39",
   "homepage": "",
   "keywords": [],
   "author": {
@@ -21,7 +21,7 @@
     "lint": "npx --yes prettier --write .",
     "build": "tsc && npm run lint",
     "test": "mocha",
-    "mac": "npm run build && node ./lib/test/commands/***.js",
+    "mac": "npm run build && node ./lib/test/commands/test.js",
     "prepublishOnly": "npm run build"
   },
   "repository": {
@@ -45,7 +45,7 @@
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
     "moment-timezone": "^0.5.34",
-    "repzo": "^1.0.152",
+    "repzo": "^1.0.182",
     "uuid": "^8.3.2"
   }
 }

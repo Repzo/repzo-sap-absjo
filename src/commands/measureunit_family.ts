@@ -28,6 +28,21 @@ export const sync_measureunit_family = async (commandEvent: CommandEvent) => {
   try {
     // console.log("sync_measureunit_family");
 
+    if (commandEvent.app.formData?.measureUnitInjections) {
+      try {
+        if (typeof commandEvent.app.formData?.measureUnitInjections == "string")
+          commandEvent.app.formData.measureUnitInjections = JSON.parse(
+            commandEvent.app.formData.measureUnitInjections
+          );
+        if (!Array.isArray(commandEvent.app.formData?.measureUnitInjections)) {
+          delete commandEvent.app.formData.measureUnitInjections;
+        }
+      } catch (e) {
+        console.error(e);
+        delete commandEvent.app.formData.measureUnitInjections;
+      }
+    }
+
     const new_bench_time = new Date().toISOString();
     const bench_time_key = "bench_time_measureunit_family";
 
@@ -107,7 +122,7 @@ export const sync_measureunit_family = async (commandEvent: CommandEvent) => {
         (r_family) => r_family.integration_meta?.id == `${nameSpace}_${key}`
       );
 
-      let measureunits: string[] = [];
+      const measureunits: string[] = [];
       Object.keys(sap_family).forEach((unit) => {
         {
           const UoM = repzo_UoMs?.data?.find(
@@ -118,6 +133,25 @@ export const sync_measureunit_family = async (commandEvent: CommandEvent) => {
           }
         }
       });
+
+      if (commandEvent.app.formData?.measureUnitInjections?.length) {
+        const related_uom_s =
+          commandEvent.app.formData.measureUnitInjections.filter(
+            (doc) => doc?.itemCode == key
+          );
+        related_uom_s.forEach((related_uom) => {
+          const UoM = repzo_UoMs?.data?.find(
+            (repzo_uom) =>
+              repzo_uom?.name == related_uom?.uom &&
+              repzo_uom?.integration_meta?.ITEMCODE == key
+          );
+          if (UoM) {
+            if (!measureunits.includes(UoM._id.toString())) {
+              measureunits.push(UoM._id.toString());
+            }
+          }
+        });
+      }
 
       const body:
         | Service.MeasureUnitFamily.Create.Body
