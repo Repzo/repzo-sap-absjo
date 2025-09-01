@@ -64,14 +64,14 @@ export const sync_price_list = async (commandEvent: CommandEvent) => {
     // Get SAP Price Lists
     const sap_price_lists: SAPPriceListItem[] = await get_sap_price_list(
       commandEvent.app.formData.sapHostUrl,
-      { updateAt: commandEvent.app.options_formData[bench_time_key] }
+      { updateAt: commandEvent.app.options_formData?.[bench_time_key] }
     );
     result.sap_total = sap_price_lists?.length;
 
     await commandLog
       .addDetail(
         `${result.sap_total} Price Lists in SAP changed since ${
-          commandEvent.app.options_formData[bench_time_key] || "ever"
+          commandEvent.app.options_formData?.[bench_time_key] || "ever"
         }`
       )
       .commit();

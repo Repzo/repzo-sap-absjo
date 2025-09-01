@@ -46,14 +46,14 @@ export const sync_disabled_product = async (commandEvent: CommandEvent) => {
 
     const sap_products: SAPProduct[] = await get_sap_disabled_products(
       commandEvent.app.formData.sapHostUrl,
-      { updateAt: commandEvent.app.options_formData[bench_time_key] }
+      { updateAt: commandEvent.app.options_formData?.[bench_time_key] }
     );
     result.sap_total = sap_products?.length;
 
     await commandLog
       .addDetail(
         `${result.sap_total} Disabled Products in SAP changed since ${
-          commandEvent.app.options_formData[bench_time_key] || "ever"
+          commandEvent.app.options_formData?.[bench_time_key] || "ever"
         }`
       )
       .commit();

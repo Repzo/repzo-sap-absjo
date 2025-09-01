@@ -68,7 +68,7 @@ export const sync_warehouse = async (commandEvent: CommandEvent) => {
       {
         updateAt:
           commandEvent.app.formData.warehouseDefaultUpdateDate ||
-          commandEvent.app.options_formData[bench_time_key],
+          commandEvent.app.options_formData?.[bench_time_key],
       }
     );
     result.sap_total = sap_warehouses?.Warehouses?.length;
@@ -77,7 +77,7 @@ export const sync_warehouse = async (commandEvent: CommandEvent) => {
       .addDetail(
         `${sap_warehouses?.Warehouses?.length} warehouses changed since ${
           commandEvent.app.formData.warehouseDefaultUpdateDate ||
-          commandEvent.app.options_formData[bench_time_key] ||
+          commandEvent.app.options_formData?.[bench_time_key] ||
           "ever"
         }`
       )

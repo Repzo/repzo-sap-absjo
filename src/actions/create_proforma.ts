@@ -6,6 +6,7 @@ import {
   _update,
   _delete,
   getUniqueConcatenatedValues,
+  set_error,
 } from "../util.js";
 import { Service } from "repzo/src/types";
 import { v4 as uuid } from "uuid";
@@ -248,7 +249,19 @@ export const create_proforma = async (event: EVENT, options: Config) => {
       sap_invoice
     ); // .commit();
 
-    const result = await _create(SAP_HOST_URL, "/AddOrder", sap_invoice);
+    let result;
+    try {
+      result = await _create(SAP_HOST_URL, "/AddOrder", sap_invoice);
+    } catch (e: any) {
+      if (
+        typeof set_error(e)?.message === "string" &&
+        set_error(e)?.message?.includes("this Sales Order is allready existed")
+      ) {
+        result = { success: true, message: "Sales Order already exists" };
+      } else {
+        throw e;
+      }
+    }
 
     // console.log(result);
 

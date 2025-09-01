@@ -131,7 +131,7 @@ interface OptionsFormData {
 interface AppWithCustomFormData
   extends Service.App.Schema_with_populated_AvailableApp {
   formData: FormData;
-  options_formData: OptionsFormData;
+  options_formData?: OptionsFormData;
 }
 
 export interface CommandEvent {

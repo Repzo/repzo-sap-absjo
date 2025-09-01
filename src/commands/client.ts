@@ -81,7 +81,7 @@ export const sync_client = async (commandEvent: CommandEvent) => {
     const sap_clients: SAPClient[] = await get_sap_clients(
       commandEvent.app.formData.sapHostUrl,
       {
-        updateAt: commandEvent.app.options_formData[bench_time_key],
+        updateAt: commandEvent.app.options_formData?.[bench_time_key],
         GroupCode: commandEvent.app.formData.GroupCode,
       }
     );
@@ -89,7 +89,7 @@ export const sync_client = async (commandEvent: CommandEvent) => {
     await commandLog
       .addDetail(
         `${result.sap_total} Customers in SAP changed since ${
-          commandEvent.app.options_formData[bench_time_key] || "ever"
+          commandEvent.app.options_formData?.[bench_time_key] || "ever"
         }`
       )
       .commit();
