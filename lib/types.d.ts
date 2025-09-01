@@ -95,6 +95,10 @@ export interface FormData {
   defaultWarehouseForSalesOrder?: string;
   SalPersCode?: string;
   SalesPersonCode?: string;
+  measureUnitInjections?: {
+    itemCode: string;
+    uom: string;
+  }[];
   invoices?: {
     createInvoiceHook?: boolean;
     createReturnInvoiceHook?: boolean;
