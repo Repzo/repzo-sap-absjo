@@ -19,6 +19,7 @@ interface SAPRep {
   USERCASHACCOUNT: string; // "124020002";
   USERCHECKACCTCODE: string; // "124020003";
   USERWHSCODE: string; // "MToffers";
+  INVOICESTATUS: "Y" | "N";
 }
 
 interface SAPReps {
@@ -36,7 +37,7 @@ export const sync_rep = async (commandEvent: CommandEvent) => {
     commandEvent.command
   );
   try {
-    // console.log("sync_rep");
+    console.log("sync_rep");
 
     const new_bench_time = new Date().toISOString();
     const bench_time_key = "bench_time_rep";
@@ -84,6 +85,7 @@ export const sync_rep = async (commandEvent: CommandEvent) => {
       USERCASHACCOUNT: true,
       USERCHECKACCTCODE: true,
       USERWHSCODE: true,
+      INVOICESTATUS: true,
     });
     db.load(sap_reps?.Users);
 
@@ -125,10 +127,13 @@ export const sync_rep = async (commandEvent: CommandEvent) => {
           USERCASHACCOUNT: sap_rep.USERCASHACCOUNT,
           USERCHECKACCTCODE: sap_rep.USERCHECKACCTCODE,
           USERWHSCODE: sap_rep.USERWHSCODE,
+          INVOICESTATUS: sap_rep.INVOICESTATUS,
           id: `${nameSpace}_${sap_rep.USERID}`,
         },
         assigned_warehouse: warehouse,
         company_namespace: [nameSpace],
+        "settings.treating_invoice_as_proforma_for_etax":
+          sap_rep.INVOICESTATUS === "N" ? true : false,
       };
 
       if (!repzo_rep) {
@@ -155,6 +160,7 @@ export const sync_rep = async (commandEvent: CommandEvent) => {
           USERCASHACCOUNT: repzo_rep.integration_meta?.USERCASHACCOUNT,
           USERCHECKACCTCODE: repzo_rep.integration_meta?.USERCHECKACCTCODE,
           USERWHSCODE: repzo_rep.integration_meta?.USERWHSCODE,
+          INVOICESTATUS: repzo_rep.integration_meta?.INVOICESTATUS,
         });
         if (found_identical_docs.length) continue;
         // Update
