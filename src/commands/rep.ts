@@ -133,7 +133,7 @@ export const sync_rep = async (commandEvent: CommandEvent) => {
         assigned_warehouse: warehouse,
         company_namespace: [nameSpace],
         "settings.treating_invoice_as_proforma_for_etax":
-          sap_rep.INVOICESTATUS === "N" ? true : false,
+          sap_rep.INVOICESTATUS === "Y" ? true : false,
       };
 
       if (!repzo_rep) {
