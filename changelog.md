@@ -4,6 +4,18 @@
 
 ### Added
 
+- [RDT-3412/RDT-3415] Update invoice processing to send as sales order to SAP when setting enabled @maramalshen
+
+### Changed
+
+### Fixed
+
+### Removed
+
+## [v1.0.41 (2025-09-01)](https://github.com/Repzo/repzo-sap-absjo.git)
+
+### Added
+
 - [util] in method: getUniqueConcatenatedValues, also add the promotions for items.buy @maramalshen
 - [actions/***] add 2 keys in integration_meta: sync_to_sap_started & sync_to_sap_succeeded @maramalshen
 - [commands/product] assign Foreign Name (ITEMDESCF) in SAP to local_name in Repzo @maramalshen
