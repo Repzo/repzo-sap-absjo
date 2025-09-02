@@ -337,7 +337,6 @@ export const create_invoice = async (event: EVENT, options: Config) => {
         `Repzo => SAP: Invoice - ${repzo_serial_number} - Treat Invoice as SalesOrder for eTax`,
         sap_invoice,
       );
-      // result = await _create(SAP_HOST_URL, "/AddOrder", sap_invoice);
       try {
         result = await _create(SAP_HOST_URL, "/AddOrder", sap_invoice);
       } catch (e: any) {
