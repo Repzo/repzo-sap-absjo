@@ -30,6 +30,14 @@ export const join = async (commandEvent: CommandEvent) => {
           join:
             commandEvent?.app?.formData?.invoices?.createInvoiceHook || false,
         },
+        {
+          app: "repzo-sap-absjo",
+          app_id: commandEvent?.app?._id,
+          action: "create_invoice",
+          event: "invoiceItems.report",
+          join:
+            commandEvent?.app?.formData?.invoices?.createInvoiceHook || false,
+        },
         // return_invoice
         {
           app: "repzo-sap-absjo",
