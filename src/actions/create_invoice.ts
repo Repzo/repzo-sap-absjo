@@ -5,6 +5,7 @@ import {
   _create,
   _update,
   _delete,
+  set_error,
   getUniqueConcatenatedValues,
 } from "../util.js";
 import { Service } from "repzo/src/types";
@@ -336,7 +337,23 @@ export const create_invoice = async (event: EVENT, options: Config) => {
         `Repzo => SAP: Invoice - ${repzo_serial_number} - Treat Invoice as SalesOrder for eTax`,
         sap_invoice,
       );
-      result = await _create(SAP_HOST_URL, "/AddOrder", sap_invoice);
+      try {
+        result = await _create(SAP_HOST_URL, "/AddOrder", sap_invoice);
+      } catch (e: any) {
+        if (
+          typeof set_error(e)?.message === "string" &&
+          set_error(e)?.message?.includes(
+            "this Sales Order is allready existed",
+          )
+        ) {
+          result = {
+            success: true,
+            message: `Sales Order ${repzo_serial_number} already exists`,
+          };
+        } else {
+          throw e;
+        }
+      }
     } else {
       result = await _create(SAP_HOST_URL, "/AddInvoice", sap_invoice);
     }
