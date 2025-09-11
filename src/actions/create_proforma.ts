@@ -27,6 +27,7 @@ interface SAPProformaItem {
 }
 
 interface SAPProforma {
+  RepzoSerial: string; // "INV-1021-4",
   RefNum: string; // "INV-1021-4",
   SalPersCode: string; // "106",
   DocDate: string; // "20211229",
@@ -224,6 +225,7 @@ export const create_proforma = async (event: EVENT, options: Config) => {
     }
 
     const sap_invoice: SAPProforma = {
+      RepzoSerial: repzo_proforma.serial_number.formatted,
       RefNum: repzo_proforma.serial_number.formatted,
       SalPersCode: repzo_rep
         ? repzo_rep.integration_id
