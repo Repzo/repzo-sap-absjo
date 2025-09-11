@@ -317,22 +317,22 @@ export const create_invoice = async (event: EVENT, options: Config) => {
       sap_invoice,
     );
 
-    let treating_invoice_as_proforma_for_etax: boolean = false;
-    if (
-      body?.creator?.type == "rep" &&
-      repzo_rep?.settings?.treating_invoice_as_proforma_for_etax
-    ) {
-      const company = await repzo.safeCrud.create({
-        collection: "company",
-        filters: { name_space: repzo_invoice.company_namespace },
-      });
-      if (company?.data?.[0]?.allow_treating_invoice_as_proforma_for_etax) {
-        treating_invoice_as_proforma_for_etax = true;
-      }
-    }
+    // let treat_invoice_as_proforma_for_etax: boolean = false;
+    // if (
+    //   body?.creator?.type == "rep" &&
+    //   repzo_rep?.settings?.treat_invoice_as_proforma_for_etax
+    // ) {
+    //   const company = await repzo.safeCrud.create({
+    //     collection: "company",
+    //     filters: { name_space: repzo_invoice.company_namespace },
+    //   });
+    //   if (company?.data?.[0]?.allow_treat_invoice_as_proforma_for_etax) {
+    //     treat_invoice_as_proforma_for_etax = true;
+    //   }
+    // }
 
     let result;
-    if (treating_invoice_as_proforma_for_etax) {
+    if (repzo_invoice.treat_invoice_as_proforma_for_etax) {
       actionLog.addDetail(
         `Repzo => SAP: Invoice - ${repzo_serial_number} - Treat Invoice as SalesOrder for eTax`,
         sap_invoice,
