@@ -21,7 +21,6 @@ interface SAPPayment {
   BankCode?: string;
   CountryCode?: string; // "JO";
   UserId?: string;
-  payment_method?: "1" | "10" | "30" | "42" | "48"; // 10 => Cash, 30 => Credit, 42 => Payment to bank account, 48 => Bank Card, 1 => Not defined
 }
 
 export const create_payment = async (event: EVENT, options: Config) => {
@@ -85,7 +84,6 @@ export const create_payment = async (event: EVENT, options: Config) => {
         "YYYYMMDD"
       ),
       Amount: repzo_payment.amount / 1000,
-      payment_method: repzo_payment.payment_type == "cash" ? "10" : "1",
     };
 
     if (repzo_payment?.LinkedTxn) {
