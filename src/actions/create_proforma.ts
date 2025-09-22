@@ -15,6 +15,7 @@ import moment from "moment-timezone";
 interface SAPProformaItem {
   MEO_Serial: string; // "INV-1021-4 | 010-LAG-PO0002";
   Promotion_Name: string; // "INV-1021-4 | 010-LAG-PO0002";
+  PromotionCode?: string; // String, Promotion _id
   ItemCode: string; // "010-LAG-PO0002";
   Quantity: number; // 10;
   TaxCode: string; // "S16";
@@ -37,6 +38,8 @@ interface SAPProforma {
   Note?: string; // "",
   WarehouseCode?: string; // "VS21";
   LinesDetails: SAPProformaItem[];
+  ExpectedDeliveryDate?: string; // DateTime => "20211229",
+  ExternalSerial?: string; // String
 }
 
 export const create_proforma = async (event: EVENT, options: Config) => {
@@ -209,6 +212,12 @@ export const create_proforma = async (event: EVENT, options: Config) => {
           " | ",
           all_promotions
         ),
+        PromotionCode: getUniqueConcatenatedValues(
+          item,
+          "_id",
+          " | ",
+          all_promotions
+        ),
         ItemCode: item.variant.variant_name,
         Quantity: item.qty,
         TaxCode: repzo_tax.integration_meta.TaxCode,
@@ -227,6 +236,7 @@ export const create_proforma = async (event: EVENT, options: Config) => {
     const sap_invoice: SAPProforma = {
       RepzoSerial: repzo_proforma.serial_number.formatted,
       RefNum: repzo_proforma.serial_number.formatted,
+      ExternalSerial: repzo_proforma.external_serial_number,
       SalPersCode: repzo_rep
         ? repzo_rep.integration_id
         : options.data?.SalPersCode, // "111",
@@ -236,6 +246,9 @@ export const create_proforma = async (event: EVENT, options: Config) => {
       DocDueDate: moment(repzo_proforma.issue_date, "YYYY-MM-DD").format(
         "YYYYMMDD"
       ),
+      ExpectedDeliveryDate:
+        repzo_proforma.delivery_date &&
+        moment(repzo_proforma.delivery_date, "YYYY-MM-DD").format("YYYYMMDD"),
       ClientCode: repzo_client.client_code,
       DiscountPerc: "0",
       Note: repzo_proforma.comment,

@@ -244,7 +244,7 @@ export const send_command_to_marketplace = async ({
 
 export const getUniqueConcatenatedValues = function (
   item: Service.Item.Schema,
-  key: "name" | "ref",
+  key: "name" | "ref" | "_id",
   delimiter: string,
   all_promos: {
     [promo_id: string]: { _id: string; name: string; ref?: string };
