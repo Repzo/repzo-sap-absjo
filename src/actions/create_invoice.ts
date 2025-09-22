@@ -24,6 +24,7 @@ interface SAPInvoiceItem {
   Department: string; // "D6";
   MEO_Serial: string; //"used_promotion_ref1 | used_promotion_ref2"
   Promotion_Name: string; //"used_promotion_name1 | used_promotion_name2"
+  PromotionCode?: string; // String, Promotion _id
 }
 
 interface SAPInvoice {
@@ -38,6 +39,8 @@ interface SAPInvoice {
   WarehouseCode?: string; // "VS21"; // Required
   LinesDetails: SAPInvoiceItem[];
   U_ISTDQR?: string;
+  ExpectedDeliveryDate?: string; // DateTime => "20211229",
+  ExternalSerial?: string; // String
 }
 
 export interface SAPOpenInvoice {
@@ -271,6 +274,12 @@ export const create_invoice = async (event: EVENT, options: Config) => {
           " | ",
           all_promotions,
         ),
+        PromotionCode: getUniqueConcatenatedValues(
+          item,
+          "_id",
+          " | ",
+          all_promotions,
+        ),
         ItemCode: item.variant.variant_name,
         Quantity: item.qty,
         TaxCode: repzo_tax.integration_meta.TaxCode,
@@ -291,6 +300,7 @@ export const create_invoice = async (event: EVENT, options: Config) => {
       RefNum:
         repzo_invoice.advanced_serial_number ||
         repzo_invoice.serial_number.formatted,
+      ExternalSerial: repzo_invoice.external_serial_number,
       SalPersCode: repzo_rep?.integration_id,
       DocDate: moment(repzo_invoice.issue_date, "YYYY-MM-DD").format(
         "YYYYMMDD",
@@ -298,6 +308,9 @@ export const create_invoice = async (event: EVENT, options: Config) => {
       DocDueDate: moment(repzo_invoice.due_date, "YYYY-MM-DD").format(
         "YYYYMMDD",
       ),
+      ExpectedDeliveryDate:
+        repzo_invoice.delivery_date &&
+        moment(repzo_invoice.delivery_date, "YYYY-MM-DD").format("YYYYMMDD"),
       ClientCode: repzo_client.client_code,
       DiscountPerc: "0",
       Note: repzo_invoice.comment,
