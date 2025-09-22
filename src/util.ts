@@ -256,6 +256,9 @@ export const getUniqueConcatenatedValues = function (
     ...item.general_promotions,
     ...item.used_promotions,
   ];
+  allPromotions.forEach((promo) => {
+    promo._id = promo._id || promo.id;
+  });
   if (item.promotions?.isGet) {
     const promo_id = item.promotions.bookings?.[0]?.promotion;
     if (promo_id && all_promos[promo_id])
