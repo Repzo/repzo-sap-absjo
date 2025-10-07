@@ -105,7 +105,7 @@ export const sync_measureunit = async (commandEvent: CommandEvent) => {
         default_unit: null,
       };
       units.forEach((unit) => {
-        if (max_unit.value == null || unit.BASEQTY < max_unit.value) {
+        if (max_unit.value == null || unit.BASEQTY > max_unit.value) {
           max_unit.value = unit.BASEQTY;
           max_unit.sap_product_UoMs.push(unit);
         } else if (unit.BASEQTY == max_unit.value) {
