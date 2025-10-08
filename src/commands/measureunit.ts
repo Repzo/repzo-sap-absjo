@@ -11,6 +11,7 @@ import {
   date_formatting,
   set_error,
 } from "../util.js";
+import _ from "lodash";
 
 export interface SAPUoM {
   ITEMCODE: string; // "010-BIC-RA0001",
@@ -104,7 +105,7 @@ export const sync_measureunit = async (commandEvent: CommandEvent) => {
         value: null,
         default_unit: null,
       };
-      units.forEach((unit) => {
+      _.reverse(_.sortBy(units, "BASEQTY")).forEach((unit) => {
         if (max_unit.value == null || unit.BASEQTY > max_unit.value) {
           max_unit.value = unit.BASEQTY;
           max_unit.sap_product_UoMs.push(unit);
