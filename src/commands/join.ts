@@ -11,7 +11,7 @@ export const join = async (commandEvent: CommandEvent) => {
   const commandLog = new Repzo.CommandLog(
     repzo,
     commandEvent.app,
-    commandEvent.command
+    commandEvent.command,
   );
   try {
     // console.log("join");
@@ -76,6 +76,14 @@ export const join = async (commandEvent: CommandEvent) => {
           join:
             commandEvent?.app?.formData?.transfers
               ?.createApprovedTransferHook || false,
+        },
+        // client
+        {
+          app: "repzo-sap-absjo",
+          app_id: commandEvent?.app?._id,
+          action: "create_client",
+          event: "client.create",
+          join: commandEvent?.app?.formData?.client?.createClientHook || false,
         },
       ],
     };
