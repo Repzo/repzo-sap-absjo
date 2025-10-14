@@ -106,6 +106,7 @@ export interface FormData {
     createApprovedTransferHook?: boolean;
     adjustInventoryInFailedTransfer?: boolean;
   };
+  client?: { createClientHook?: boolean };
 }
 
 interface OptionsFormData {
