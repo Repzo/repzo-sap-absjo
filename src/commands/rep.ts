@@ -214,7 +214,7 @@ const get_sap_reps = async (
   query?: { updateAt?: string }
 ): Promise<SAPReps> => {
   try {
-    const sap_reps: SAPReps = await _create(serviceEndPoint, "/Users", {});
+    const sap_reps = (await _create(serviceEndPoint, "/Users", {})) as SAPReps;
     return sap_reps;
   } catch (e: any) {
     throw e;

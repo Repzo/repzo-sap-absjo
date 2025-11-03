@@ -188,7 +188,7 @@ const get_sap_warehouses = async (
   query?: { updateAt?: string }
 ): Promise<SAPWarehouses> => {
   try {
-    const sap_warehouses: SAPWarehouses = await _create(
+    const sap_warehouses: SAPWarehouses = (await _create(
       serviceEndPoint,
       "/Warehouses",
       {
@@ -196,7 +196,7 @@ const get_sap_warehouses = async (
         Inactive: "N",
         Locked: "N",
       }
-    );
+    )) as SAPWarehouses;
     return sap_warehouses;
   } catch (e: any) {
     throw e;

@@ -279,10 +279,10 @@ export const get_sap_UoMs = async (
   query?: { updateAt?: string }
 ): Promise<SAPUoM[]> => {
   try {
-    const sap_UoMs: SAPUoMs = await _create(serviceEndPoint, "/Uom", {
+    const sap_UoMs: SAPUoMs = (await _create(serviceEndPoint, "/Uom", {
       Inactive: "N",
       Locked: "N",
-    });
+    })) as SAPUoMs;
     return sap_UoMs?.UoM;
   } catch (e: any) {
     throw e;

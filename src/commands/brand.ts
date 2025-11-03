@@ -158,11 +158,11 @@ const get_sap_brands = async (
   query?: { updateAt?: string }
 ): Promise<SAPBrand[]> => {
   try {
-    const sap_brands: SAPBrands = await _create(
+    const sap_brands: SAPBrands = (await _create(
       serviceEndPoint,
       "/ParentCategory",
       { UpdateAt: "20201230:000000", Active: "Y" }
-    );
+    )) as SAPBrands;
     return sap_brands.ItemSubGroup;
   } catch (e: any) {
     throw e;

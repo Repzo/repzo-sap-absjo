@@ -163,9 +163,9 @@ const get_sap_tags = async (
   query?: { updateAt?: string }
 ): Promise<SAPTags> => {
   try {
-    const sap_tags: SAPTags = await _create(serviceEndPoint, "/Territories", {
+    const sap_tags: SAPTags = (await _create(serviceEndPoint, "/Territories", {
       Inactive: "N",
-    });
+    })) as SAPTags;
     return sap_tags;
   } catch (e: any) {
     throw e;

@@ -6,7 +6,7 @@ import { v4 as uuid } from "uuid";
 
 interface SAPCustomer {
   AdditionalID: string; // "68eb85af0a28bf5038627c91";
-  CardName?: string; // "ÄBD";
+  CardName: string; // "ÄBD";
   Phone1?: string; // "0788877776";
   cellular?: string; // "234567";
   CLIENTID?: string; // "CL01483";
@@ -55,7 +55,7 @@ export const create_client = async (event: EVENT, options: Config) => {
           { key: "sync_to_sap_started", value: true },
           { key: "sync_to_sap_succeeded", value: false },
         ],
-        { _id: body._id, type: "clients" },
+        { _id: body._id, type: "clients" }
       );
     } catch (e) {
       console.error(e);
@@ -91,11 +91,11 @@ export const create_client = async (event: EVENT, options: Config) => {
       ? await repzo.tag.find({ _id: repzo_client.tags, type: "area" })
       : null;
     const area_tags = tags?.data?.filter(
-      (t) =>
-        t.type === "area" && !t.disabled && t.integration_meta?.TerritoryID,
+      (t) => t.type === "area" && !t.disabled && t.integration_meta?.TerritoryID
     );
 
     const sap_customer: SAPCustomer = {
+      CardName: repzo_client.name,
       AdditionalID: repzo_client._id,
       CLIENTID: repzo_client.client_code,
       CLIENTDESCF: repzo_client.local_name,
@@ -137,7 +137,7 @@ export const create_client = async (event: EVENT, options: Config) => {
     const result: {
       result: "Success";
       message: string | "The Customer already Exists in SAP";
-    } = await _create(SAP_HOST_URL, "/AddCustomer", sap_customer);
+    } = (await _create(SAP_HOST_URL, "/AddCustomer", sap_customer)) as any;
 
     // console.log(result);
 
@@ -154,7 +154,7 @@ export const create_client = async (event: EVENT, options: Config) => {
 
       const updated_repzo_client = await repzo.client.update(
         repzo_client._id,
-        update_repzo_client_body,
+        update_repzo_client_body
       );
 
       actionLog.addDetail(`Update Client Code: ${body?.name} in Repzo`);
@@ -164,7 +164,7 @@ export const create_client = async (event: EVENT, options: Config) => {
     try {
       await repzo.updateIntegrationMeta.create(
         [{ key: "sync_to_sap_succeeded", value: true }],
-        { _id: body._id, type: "clients" },
+        { _id: body._id, type: "clients" }
       );
     } catch (e) {
       console.error(e);

@@ -326,10 +326,14 @@ const get_sap_products = async (
   query?: { updateAt?: string }
 ): Promise<SAPProduct[]> => {
   try {
-    const sap_products: SAPProducts = await _create(serviceEndPoint, "/Items", {
-      Active: "Y",
-      UpdateAt: date_formatting(query?.updateAt, "YYYYMMDD:000000"),
-    });
+    const sap_products: SAPProducts = (await _create(
+      serviceEndPoint,
+      "/Items",
+      {
+        Active: "Y",
+        UpdateAt: date_formatting(query?.updateAt, "YYYYMMDD:000000"),
+      }
+    )) as SAPProducts;
     return sap_products.Items;
   } catch (e: any) {
     throw e;

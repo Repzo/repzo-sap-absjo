@@ -235,7 +235,11 @@ const get_sap_banks = async (
   query?: { updateAt?: string }
 ): Promise<SAPBank[]> => {
   try {
-    const sap_banks: SAPBanks = await _create(serviceEndPoint, "/Banks", {});
+    const sap_banks: SAPBanks = (await _create(
+      serviceEndPoint,
+      "/Banks",
+      {}
+    )) as SAPBanks;
     return sap_banks.Banks;
   } catch (e: any) {
     throw e;

@@ -164,11 +164,11 @@ const get_sap_categories = async (
   query?: { updateAt?: string }
 ): Promise<SAPCategory[]> => {
   try {
-    const sap_categories: SAPCategories = await _create(
+    const sap_categories: SAPCategories = (await _create(
       serviceEndPoint,
       "/ItemGroup",
       {}
-    );
+    )) as SAPCategories;
     return sap_categories.ItemGroup;
   } catch (e: any) {
     throw e;
