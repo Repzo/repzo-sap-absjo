@@ -168,9 +168,9 @@ const get_sap_taxes = async (
   query?: { updateAt?: string }
 ): Promise<SAPTaxes> => {
   try {
-    const sap_taxes: SAPTaxes = await _create(serviceEndPoint, "/Taxes", {
+    const sap_taxes: SAPTaxes = (await _create(serviceEndPoint, "/Taxes", {
       Inactive: "N",
-    });
+    })) as SAPTaxes;
     return sap_taxes;
   } catch (e: any) {
     throw e;

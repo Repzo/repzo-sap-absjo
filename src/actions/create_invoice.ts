@@ -402,15 +402,15 @@ export const get_invoice_from_sap = async (
   query?: { updatedAt: string; Status: string; InvoiceId: string },
 ): Promise<SAPOpenInvoice[]> => {
   try {
-    const sap_openInvoices: SAPOpenInvoices = await _create(
+    const sap_openInvoices: SAPOpenInvoices = (await _create(
       serviceEndPoint,
       "/OpenInvoices",
       {
         updatedAt: query?.updatedAt,
         Status: query?.Status,
         InvoiceId: query?.InvoiceId,
-      },
-    );
+      }
+    )) as SAPOpenInvoices;
     return sap_openInvoices?.OpenInvoices;
   } catch (e: any) {
     throw e;

@@ -312,7 +312,7 @@ const get_sap_clients = async (
   query?: { updateAt?: string; GroupCode?: string }
 ): Promise<SAPClient[]> => {
   try {
-    const sap_clients: SAPClients = await _create(
+    const sap_clients: SAPClients = (await _create(
       serviceEndPoint,
       "/Customers",
       {
@@ -321,7 +321,7 @@ const get_sap_clients = async (
         UpdateAt: date_formatting(query?.updateAt, "YYYYMMDD:000000"),
         GroupCode: query?.GroupCode || "",
       }
-    );
+    )) as SAPClients;
     return sap_clients.Customers;
   } catch (e: any) {
     throw e;

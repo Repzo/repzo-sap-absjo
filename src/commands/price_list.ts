@@ -463,11 +463,11 @@ const get_sap_price_list = async (
   query?: { updateAt?: string }
 ): Promise<SAPPriceListItem[]> => {
   try {
-    const sap_price_lists: SAPPriceListItems = await _create(
+    const sap_price_lists: SAPPriceListItems = (await _create(
       serviceEndPoint,
       "/PriceList",
       { UpdateAt: query?.updateAt }
-    );
+    )) as SAPPriceListItems;
     return sap_price_lists.PriceList;
   } catch (e: any) {
     throw e;

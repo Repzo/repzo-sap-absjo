@@ -238,11 +238,11 @@ const get_sap_inventories = async (
   query?: { updateAt?: string }
 ): Promise<SAPStoresBalance[]> => {
   try {
-    const sap_inventories: SAPStoresBalances = await _create(
+    const sap_inventories: SAPStoresBalances = (await _create(
       serviceEndPoint,
       "/StoresBalance",
       {}
-    );
+    )) as SAPStoresBalances;
     return sap_inventories.StoresBalance;
   } catch (e: any) {
     throw e;
