@@ -208,6 +208,15 @@ export const create_return_invoice = async (event: EVENT, options: Config) => {
       });
     }
 
+    let WarehouseCode = repzo_warehouse.code;
+    if (options.data?.virtualWarehouses?.consider_virtual_warehouse) {
+      if (repzo_warehouse.integration_meta?.is_virtual_warehouse) {
+        if (repzo_rep?.integration_meta?.USERWHSCODE) {
+          WarehouseCode = repzo_rep.integration_meta.USERWHSCODE;
+        }
+      }
+    }
+
     const sap_return_invoice: SAPInvoice = {
       RepzoSerial: repzo_invoice.serial_number.formatted,
       RefNum:
@@ -223,7 +232,7 @@ export const create_return_invoice = async (event: EVENT, options: Config) => {
       ClientCode: repzo_client.client_code,
       DiscountPerc: "0",
       Note: repzo_invoice.comment,
-      WarehouseCode: repzo_warehouse.code,
+      WarehouseCode: WarehouseCode || repzo_warehouse.code,
       LinesDetails: return_items,
       U_ISTDQR: repzo_invoice.ubl_qr
         ? repzo_invoice.ubl_qr

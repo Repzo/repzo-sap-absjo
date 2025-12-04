@@ -99,6 +99,10 @@ export interface FormData {
     itemCode: string;
     uom: string;
   }[];
+  virtualWarehouses?: {
+    consider_virtual_warehouse: boolean;
+    absolute_qty_for_virtual_warehouses_before_accumulation: boolean;
+  };
   invoices?: {
     createInvoiceHook?: boolean;
     createReturnInvoiceHook?: boolean;
@@ -112,6 +116,9 @@ export interface FormData {
   transfers?: {
     createApprovedTransferHook?: boolean;
     adjustInventoryInFailedTransfer?: boolean;
+  };
+  client?: {
+    createClientHook?: boolean;
   };
 }
 interface OptionsFormData {
@@ -136,7 +143,7 @@ interface OptionsFormData {
 interface AppWithCustomFormData
   extends Service.App.Schema_with_populated_AvailableApp {
   formData: FormData;
-  options_formData: OptionsFormData;
+  options_formData?: OptionsFormData;
 }
 export interface CommandEvent {
   app: AppWithCustomFormData;

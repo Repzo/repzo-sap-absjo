@@ -82,7 +82,7 @@ export declare const send_command_to_marketplace: ({
 }) => Promise<void>;
 export declare const getUniqueConcatenatedValues: (
   item: Service.Item.Schema,
-  key: "name" | "ref",
+  key: "name" | "ref" | "_id",
   delimiter: string,
   all_promos: {
     [promo_id: string]: {
