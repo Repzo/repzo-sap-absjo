@@ -216,6 +216,173 @@ export const adjust_inventory = async (commandEvent: CommandEvent) => {
       }
     }
 
+    const consider_virtual_warehouse =
+      commandEvent.app.formData?.virtualWarehouses
+        ?.consider_virtual_warehouse || false;
+
+    if (consider_virtual_warehouse) {
+      const absolute_qty_for_virtual_warehouses_before_accumulation =
+        commandEvent.app.formData?.virtualWarehouses
+          ?.consider_virtual_warehouse || true;
+      const repzo_virtual_warehouses = repzo_warehouses?.data.filter(
+        (wh) =>
+          wh.integration_meta?.is_virtual_warehouse &&
+          wh.integration_meta?.main_warehouses_codes?.length > 0
+      );
+      await commandLog
+        .addDetail(
+          `${repzo_virtual_warehouses?.length} Virtual Warehouse(s) in Repzo`
+        )
+        .commit();
+
+      for (let i = 0; i < repzo_virtual_warehouses.length; i++) {
+        try {
+          const repzo_warehouse = repzo_virtual_warehouses[i];
+          const sap_related_inventories = sap_inventories.filter((inventory) =>
+            repzo_warehouse.integration_meta?.main_warehouses_codes?.includes(
+              inventory.STOREID
+            )
+          );
+
+          // Get Repzo Inventory
+          const repzo_inventory = await repzo.inventory.find({
+            warehouse_id: repzo_warehouse._id,
+            per_page: 50000,
+          });
+
+          const shared_inventory: { [key: string]: SAPStoresBalance } = {};
+          sap_related_inventories.forEach((sap_inventory) => {
+            sap_inventory.items.forEach((item) => {
+              const key = `${item.ITEMID}__${item.UNITID}__${item.UNITNAME}`;
+              const QTY = item.QTY;
+              if (!shared_inventory[key]) {
+                shared_inventory[key] = item;
+                shared_inventory[key].QTY = 0;
+              }
+              if (absolute_qty_for_virtual_warehouses_before_accumulation) {
+                shared_inventory[key].QTY += QTY > 0 ? QTY : 0;
+              } else {
+                shared_inventory[key].QTY += QTY;
+              }
+            });
+          });
+
+          let variants = Object.values(shared_inventory).map((sap_item) => {
+            try {
+              const variant = repzo_variants?.data?.find(
+                (variant) =>
+                  variant.integration_meta?.ITEMCODE == sap_item.ITEMID
+              );
+              if (!variant) {
+                // console.log(
+                //   `Variant with ITEMCODE: ${sap_item.ITEMID} was not found`
+                // );
+                throw `Variant with ITEMCODE: ${sap_item.ITEMID} was not found`;
+              }
+
+              const measureUnit = repzo_measureunits?.data?.find(
+                (measure_unit) =>
+                  measure_unit._id.toString() ==
+                  (
+                    variant.product as Service.Product.ProductSchema
+                  )?.sv_measureUnit?.toString()
+              );
+              if (!measureUnit) {
+                // console.log(
+                //   `MeasureUnit with UNITNAME: ${sap_item.UNITNAME} & ALTUOMID: ${sap_item.UNITID} was not found`
+                // );
+                throw `MeasureUnit with UNITNAME: ${sap_item.UNITNAME} & ALTUOMID: ${sap_item.UNITID} was not found`;
+              }
+
+              const qty = measureUnit.factor * sap_item.QTY;
+
+              const match_item_in_repzo_inventory = repzo_inventory?.data?.find(
+                (repzo_item) =>
+                  repzo_item.variant_id.toString() == variant._id.toString()
+              );
+
+              if (match_item_in_repzo_inventory) {
+                //@ts-ignore
+                match_item_in_repzo_inventory.has_match_in_SAP = true;
+              }
+
+              // const diff_qty = match_item_in_repzo_inventory
+              //   ? qty - match_item_in_repzo_inventory.qty
+              //   : qty;
+
+              return {
+                variant: variant._id,
+                qty: qty,
+                match_item_in_repzo_inventory,
+              };
+            } catch (e) {
+              // console.log(e);
+              failed_docs_report.push({
+                method: "fetchingData",
+                doc_id: sap_item.UNITNAME,
+                doc: {
+                  ...sap_item,
+                  virtual_repzo_warehouse: repzo_warehouse.code,
+                },
+                error_message: set_error(e),
+              });
+              result.items_failed++;
+            }
+          });
+
+          const unit_variants: { [variant_id: string]: any } = {};
+          variants
+            .filter((i) => i)
+            .forEach((item: any) => {
+              if (!unit_variants[item.variant]) {
+                unit_variants[item.variant] = item;
+              } else {
+                unit_variants[item.variant].qty += item.qty;
+              }
+            });
+
+          variants = Object.values(unit_variants)
+            .map((item) => {
+              item.qty = item.match_item_in_repzo_inventory
+                ? item.qty - item.match_item_in_repzo_inventory.qty
+                : item.qty;
+              return item;
+            })
+            .concat(
+              ...repzo_inventory?.data
+                //@ts-ignore
+                ?.filter((item) => !item.has_match_in_SAP)
+                .map((item) => {
+                  return { variant: item.variant_id, qty: -1 * item.qty };
+                })
+            )
+            .filter((item) => item && item.qty);
+
+          const body: Service.AdjustInventory.Create.Body = {
+            time: Date.now(),
+            sync_id: uuid(),
+            to: repzo_warehouse._id,
+            //@ts-ignore
+            variants: variants,
+          };
+          // console.log(body);
+          if (!body.variants.length) continue;
+
+          const res = await repzo.adjustInventory.create(body);
+          result.created++;
+        } catch (e) {
+          // console.log(e);
+          failed_docs_report.push({
+            method: "fetchingData",
+            doc_id: repzo_virtual_warehouses[i]._id,
+            doc: { virtual_repzo_warehouse: repzo_virtual_warehouses[i].code },
+            error_message: set_error(e),
+          });
+          result.failed++;
+        }
+      }
+    }
+
     // console.log(result);
     await commandLog
       .setStatus(

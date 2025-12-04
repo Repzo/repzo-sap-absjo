@@ -150,7 +150,7 @@ export const create_invoice = async (event: EVENT, options: Config) => {
     }
 
     // Get Repzo Rep
-    let repzo_rep;
+    let repzo_rep: Service.Rep.Data | undefined;
     if (repzo_invoice.creator.type == "rep") {
       repzo_rep = await repzo.rep.get(repzo_invoice?.creator?._id);
       if (!repzo_rep)
@@ -295,6 +295,15 @@ export const create_invoice = async (event: EVENT, options: Config) => {
       });
     }
 
+    let WarehouseCode = repzo_warehouse.code;
+    if (options.data?.virtualWarehouses?.consider_virtual_warehouse) {
+      if (repzo_warehouse.integration_meta?.is_virtual_warehouse) {
+        if (repzo_rep?.integration_meta?.USERWHSCODE) {
+          WarehouseCode = repzo_rep.integration_meta.USERWHSCODE;
+        }
+      }
+    }
+
     const sap_invoice: SAPInvoice = {
       RepzoSerial: repzo_invoice.serial_number.formatted,
       RefNum:
@@ -314,7 +323,7 @@ export const create_invoice = async (event: EVENT, options: Config) => {
       ClientCode: repzo_client.client_code,
       DiscountPerc: "0",
       Note: repzo_invoice.comment,
-      WarehouseCode: repzo_warehouse.code,
+      WarehouseCode: WarehouseCode || repzo_warehouse.code,
       LinesDetails: items,
       U_ISTDQR: repzo_invoice.ubl_qr
         ? repzo_invoice.ubl_qr
@@ -409,7 +418,7 @@ export const get_invoice_from_sap = async (
         updatedAt: query?.updatedAt,
         Status: query?.Status,
         InvoiceId: query?.InvoiceId,
-      }
+      },
     )) as SAPOpenInvoices;
     return sap_openInvoices?.OpenInvoices;
   } catch (e: any) {

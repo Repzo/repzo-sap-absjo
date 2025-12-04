@@ -20,6 +20,8 @@ interface SAPRep {
   USERCHECKACCTCODE: string; // "124020003";
   USERWHSCODE: string; // "MToffers";
   INVOICESTATUS: "Y" | "N";
+  VIRTUALWAREHOUSECODE: null | number;
+  VIRTUALWAREHOUSENAME: null | string;
 }
 
 interface SAPReps {
@@ -41,6 +43,9 @@ export const sync_rep = async (commandEvent: CommandEvent) => {
 
     const new_bench_time = new Date().toISOString();
     const bench_time_key = "bench_time_rep";
+    const consider_virtual_warehouse =
+      commandEvent.app.formData?.virtualWarehouses
+        ?.consider_virtual_warehouse || false;
 
     await commandLog.load(commandEvent.sync_id);
     await commandLog.addDetail("Repzo SAP: Started Syncing Reps").commit();
@@ -86,6 +91,8 @@ export const sync_rep = async (commandEvent: CommandEvent) => {
       USERCHECKACCTCODE: true,
       USERWHSCODE: true,
       INVOICESTATUS: true,
+      VIRTUALWAREHOUSECODE: true,
+      VIRTUALWAREHOUSENAME: true,
     });
     db.load(sap_reps?.Users);
 
@@ -117,6 +124,17 @@ export const sync_rep = async (commandEvent: CommandEvent) => {
         if (warehouse_res) warehouse = warehouse_res._id;
       }
 
+      let virtual_warehouse;
+      if (consider_virtual_warehouse && sap_rep.VIRTUALWAREHOUSECODE) {
+        const virtual_warehouse_res = repzo_warehouses?.data.find(
+          (w) =>
+            w.integration_meta?.is_virtual_warehouse &&
+            w.code == `Virtual ${sap_rep.VIRTUALWAREHOUSECODE}`
+        );
+        if (virtual_warehouse_res)
+          virtual_warehouse = virtual_warehouse_res._id;
+      }
+
       const body: Service.Rep.Create.Body | Service.Rep.Update.Body = {
         name: sap_rep.USERDESC,
         password: Math.round(Math.random() * (9999 - 1000) + 1000).toString(),
@@ -128,9 +146,11 @@ export const sync_rep = async (commandEvent: CommandEvent) => {
           USERCHECKACCTCODE: sap_rep.USERCHECKACCTCODE,
           USERWHSCODE: sap_rep.USERWHSCODE,
           INVOICESTATUS: sap_rep.INVOICESTATUS,
+          VIRTUALWAREHOUSECODE: sap_rep.VIRTUALWAREHOUSECODE,
+          VIRTUALWAREHOUSENAME: sap_rep.VIRTUALWAREHOUSENAME,
           id: `${nameSpace}_${sap_rep.USERID}`,
         },
-        assigned_warehouse: warehouse,
+        assigned_warehouse: virtual_warehouse || warehouse,
         company_namespace: [nameSpace],
         "settings.treating_invoice_as_proforma_for_etax":
           sap_rep.INVOICESTATUS === "Y" ? true : false,
@@ -161,6 +181,10 @@ export const sync_rep = async (commandEvent: CommandEvent) => {
           USERCHECKACCTCODE: repzo_rep.integration_meta?.USERCHECKACCTCODE,
           USERWHSCODE: repzo_rep.integration_meta?.USERWHSCODE,
           INVOICESTATUS: repzo_rep.integration_meta?.INVOICESTATUS,
+          VIRTUALWAREHOUSECODE:
+            repzo_rep.integration_meta?.VIRTUALWAREHOUSECODE,
+          VIRTUALWAREHOUSENAME:
+            repzo_rep.integration_meta?.VIRTUALWAREHOUSENAME,
         });
         if (found_identical_docs.length) continue;
         // Update
