@@ -95,12 +95,18 @@ export const create_proforma = async (event: EVENT, options: Config) => {
       | Service.Warehouse.WarehouseSchema["code"]
       | undefined;
     if (repzo_rep && repzo_rep?.assigned_warehouse) {
-      rep_warehouse_code = (
-        repzo_rep?.assigned_warehouse as Pick<
-          Service.Warehouse.WarehouseSchema,
-          "_id" | "code"
-        >
-      )?.code;
+      const warehouse = repzo_rep?.assigned_warehouse as Pick<
+        Service.Warehouse.WarehouseSchema,
+        "_id" | "code" | "name" | "integration_meta"
+      >;
+      rep_warehouse_code = warehouse?.code;
+      if (options.data?.virtualWarehouses?.consider_virtual_warehouse) {
+        if (warehouse.integration_meta?.is_virtual_warehouse) {
+          if (repzo_rep?.integration_meta?.USERWHSCODE) {
+            rep_warehouse_code = repzo_rep.integration_meta.USERWHSCODE;
+          }
+        }
+      }
     }
 
     // Get Repzo Client
