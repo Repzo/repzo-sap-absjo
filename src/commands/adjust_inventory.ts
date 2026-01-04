@@ -160,7 +160,7 @@ export const adjust_inventory = async (commandEvent: CommandEvent) => {
                   throw `MeasureUnit with UNITNAME: ${sap_item.UNITNAME} & ALTUOMID: ${sap_item.UNITID} was not found`;
                 }
 
-                const qty = measureUnit.factor * sap_item.QTY;
+                const qty = sap_item.QTY; //* measureUnit.factor *;
 
                 const match_item_in_repzo_inventory =
                   repzo_inventory?.data?.find(
@@ -294,7 +294,7 @@ export const adjust_inventory = async (commandEvent: CommandEvent) => {
                 throw `MeasureUnit with UNITNAME: ${sap_item.UNITNAME} & ALTUOMID: ${sap_item.UNITID} was not found`;
               }
 
-              const qty = measureUnit.factor * sap_item.QTY;
+              const qty = sap_item.QTY; //* measureUnit.factor
 
               const match_item_in_repzo_inventory = repzo_inventory?.data?.find(
                 (repzo_item) =>
