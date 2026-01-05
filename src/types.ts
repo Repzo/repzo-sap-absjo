@@ -96,6 +96,7 @@ export interface FormData {
   SalPersCode?: string; // "111";
   SalesPersonCode?: string; // "111";
   measureUnitInjections?: { itemCode: string; uom: string }[];
+  skipMeasureUnitConversion?: boolean;
   virtualWarehouses?: {
     consider_virtual_warehouse: boolean;
     absolute_qty_for_virtual_warehouses_before_accumulation: boolean;
