@@ -346,7 +346,7 @@ export const sync_price_list = async (commandEvent: CommandEvent) => {
           repzo_product_uom && repzo_product_uom?.factor == 1
             ? Math.ceil(item.PLITEMPRICEVALUE * 1000)
             : Math.ceil(
-                (item.PLITEMPRICEVALUE * 1000) / repzo_product_uom.factor
+                item.PLITEMPRICEVALUE * 1000 // / repzo_product_uom.factor // @changed to unipal
               );
 
         const variant = repzo_product?.variants?.find(
