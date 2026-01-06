@@ -79,10 +79,14 @@ export const create_transfer = async (event: EVENT, options: Config) => {
     // Get Repzo Products with its own Populated MeasureUnit
 
     const repzo_product_ids: { [id: string]: true } = {};
+    const measureunit_ids: { [id: string]: true } = {};
     repzo_transfer.variants?.forEach(
       (item: Service.Transfer.VariantTransfer) => {
         if (item?.product_id) {
           repzo_product_ids[item.product_id.toString()] = true;
+        }
+        if (item?.measure_unit_id) {
+          measureunit_ids[item.measure_unit_id] = true;
         }
       }
     );
@@ -99,6 +103,11 @@ export const create_transfer = async (event: EVENT, options: Config) => {
       },
       { per_page: 50000, populatedKeys: ["measureunit"] }
     );
+
+    const measureUnits = await repzo.measureunit.find({
+      _id: Object.keys(measureunit_ids),
+      per_page: 50000,
+    });
 
     // Prepare Transfer Items
     const variants: SAPTransferItem[] = [];
@@ -124,6 +133,14 @@ export const create_transfer = async (event: EVENT, options: Config) => {
         );
       }
 
+      let item_measure_unit: Service.MeasureUnit.Data | undefined;
+      if (repzo_transfer_item.measure_unit_id) {
+        item_measure_unit = measureUnits?.data?.find(
+          (mu) =>
+            mu._id.toString() == repzo_measure_unit.measure_unit_id.toString()
+        );
+      }
+
       variants.push({
         //@ts-ignore
         ItemCode: repzo_transfer_item.variant_name,
@@ -135,8 +152,9 @@ export const create_transfer = async (event: EVENT, options: Config) => {
         //@ts-ignore
         ToWarehouse: (repzo_transfer.to as Service.Warehouse.WarehouseSchema)
           ?.code,
-        UoMEntry: repzo_measure_unit.integration_meta?.ALTUOMID, // (read from Uoms UoMID)
-        UoMCode: repzo_measure_unit.name, // (read from Uoms UoMCode)
+        UoMEntry: item_measure_unit?.integration_meta?.ALTUOMID, // (read from Uoms UoMID)
+        UoMCode:
+          item_measure_unit?.name || repzo_transfer_item.measure_unit_name, // (read from Uoms UoMCode)
       });
     }
 
