@@ -16,6 +16,8 @@ interface SAPTransferItem {
   Quantity: string | number; // "1";
   FromWarehouse: string | number; // "1";
   ToWarehouse: string | number; // "12";
+  UoMEntry?: string | number; // "2";
+  UoMCode?: string; // "PCS";
 }
 
 interface SAPTransfer {
@@ -109,9 +111,6 @@ export const create_transfer = async (event: EVENT, options: Config) => {
         (p) => p._id.toString() == repzo_transfer_item.product_id?.toString()
       );
       if (!repzo_product) {
-        // console.log(
-        //   `Product with _id: ${repzo_transfer_item.product_id} was not found In Repzo`,
-        // );
         throw new Error(
           `Product with _id: ${repzo_transfer_item.product_id} was not found in Repzo`
         );
@@ -120,9 +119,6 @@ export const create_transfer = async (event: EVENT, options: Config) => {
       const repzo_measure_unit = repzo_product.sv_measureUnit;
 
       if (!repzo_measure_unit?._id) {
-        // console.log(
-        //   `Measureunit with _id: ${repzo_product.sv_measureUnit?.toString()} was not found`,
-        // );
         throw new Error(
           `Measureunit with _id: ${repzo_product.sv_measureUnit?.toString()} was not found`
         );
@@ -139,6 +135,8 @@ export const create_transfer = async (event: EVENT, options: Config) => {
         //@ts-ignore
         ToWarehouse: (repzo_transfer.to as Service.Warehouse.WarehouseSchema)
           ?.code,
+        UoMEntry: repzo_measure_unit.integration_meta?.ALTUOMID, // (read from Uoms UoMID)
+        UoMCode: repzo_measure_unit.name, // (read from Uoms UoMCode)
       });
     }
 
