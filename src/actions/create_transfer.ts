@@ -144,7 +144,9 @@ export const create_transfer = async (event: EVENT, options: Config) => {
       variants.push({
         //@ts-ignore
         ItemCode: repzo_transfer_item.variant_name,
-        Quantity: repzo_transfer_item.qty / Number(repzo_measure_unit.factor),
+        Quantity:
+          repzo_transfer_item.qty /
+          Number(repzo_transfer_item.measure_unit_factor || 1),
         //@ts-ignore
         FromWarehouse: (
           repzo_transfer.from as Service.Warehouse.WarehouseSchema
