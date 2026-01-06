@@ -318,36 +318,45 @@ export const sync_price_list = async (commandEvent: CommandEvent) => {
           continue;
         }
 
-        const repzo_product_uoms = repzo_UoMs?.data?.filter(
-          (uom) =>
-            uom?._id?.toString() == repzo_product?.sv_measureUnit?.toString() ||
-            repzo_product.measureunit_family?.includes(uom?._id?.toString())
-        );
+        let price: number;
+        if (
+          commandEvent.app.formData?.usePiecesAndIgnoreMeasureunitFactor
+            ?.usePcsForPriceList
+        ) {
+          price = Math.ceil(item.PLITEMPRICEVALUE * 1000);
+        } else {
+          const repzo_product_uoms = repzo_UoMs?.data?.filter(
+            (uom) =>
+              uom?._id?.toString() ==
+                repzo_product?.sv_measureUnit?.toString() ||
+              repzo_product.measureunit_family?.includes(uom?._id?.toString())
+          );
 
-        const repzo_product_uom = repzo_product_uoms.find(
-          (uom) => uom.name == item.PLITEMUNIT
-        );
+          const repzo_product_uom = repzo_product_uoms.find(
+            (uom) => uom.name == item.PLITEMUNIT
+          );
 
-        if (!repzo_product_uom) {
-          failed_docs_report.push({
-            method: "create",
-            // doc: priceLists_withItems[priceList_name],
-            error_message: set_error(
-              `Price List: ${
-                item.PLDID
-              } of MeasureUnit with _id: ${repzo_product?.sv_measureUnit?.toString()} was not found or disabled`
-            ),
-          });
-          result.PL_items.failed++;
-          continue;
+          if (!repzo_product_uom) {
+            failed_docs_report.push({
+              method: "create",
+              // doc: priceLists_withItems[priceList_name],
+              error_message: set_error(
+                `Price List: ${
+                  item.PLDID
+                } of MeasureUnit with _id: ${repzo_product?.sv_measureUnit?.toString()} was not found or disabled`
+              ),
+            });
+            result.PL_items.failed++;
+            continue;
+          }
+
+          price =
+            repzo_product_uom && repzo_product_uom?.factor == 1
+              ? Math.ceil(item.PLITEMPRICEVALUE * 1000)
+              : Math.ceil(
+                  (item.PLITEMPRICEVALUE * 1000) / repzo_product_uom.factor
+                );
         }
-
-        const price =
-          repzo_product_uom && repzo_product_uom?.factor == 1
-            ? Math.ceil(item.PLITEMPRICEVALUE * 1000)
-            : Math.ceil(
-                item.PLITEMPRICEVALUE * 1000 // / repzo_product_uom.factor // @changed to unipal
-              );
 
         const variant = repzo_product?.variants?.find(
           (variant: any) =>
