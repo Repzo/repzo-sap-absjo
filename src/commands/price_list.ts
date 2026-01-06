@@ -319,7 +319,10 @@ export const sync_price_list = async (commandEvent: CommandEvent) => {
         }
 
         let price: number;
-        if (commandEvent.app.formData?.skipMeasureUnitConversion) {
+        if (
+          commandEvent.app.formData?.usePiecesAndIgnoreMeasureunitFactor
+            ?.usePcsForPriceList
+        ) {
           price = Math.ceil(item.PLITEMPRICEVALUE * 1000);
         } else {
           const repzo_product_uoms = repzo_UoMs?.data?.filter(

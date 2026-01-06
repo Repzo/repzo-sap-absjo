@@ -161,7 +161,10 @@ export const adjust_inventory = async (commandEvent: CommandEvent) => {
                 }
 
                 let qty: number;
-                if (commandEvent.app.formData?.skipMeasureUnitConversion) {
+                if (
+                  commandEvent.app.formData?.usePiecesAndIgnoreMeasureunitFactor
+                    ?.usePcsForAdjustInventory
+                ) {
                   qty = sap_item.QTY;
                 } else {
                   qty = measureUnit.factor * sap_item.QTY;
@@ -300,7 +303,10 @@ export const adjust_inventory = async (commandEvent: CommandEvent) => {
               }
 
               let qty: number;
-              if (commandEvent.app.formData?.skipMeasureUnitConversion) {
+              if (
+                commandEvent.app.formData?.usePiecesAndIgnoreMeasureunitFactor
+                  ?.usePcsForAdjustInventory
+              ) {
                 qty = sap_item.QTY;
               } else {
                 qty = measureUnit.factor * sap_item.QTY;
