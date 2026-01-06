@@ -134,10 +134,10 @@ export const create_transfer = async (event: EVENT, options: Config) => {
       }
 
       let item_measure_unit: Service.MeasureUnit.Data | undefined;
-      if (repzo_transfer_item.measure_unit_id) {
+      const transfer_item_measure_unit_id = repzo_transfer_item.measure_unit_id;
+      if (transfer_item_measure_unit_id) {
         item_measure_unit = measureUnits?.data?.find(
-          (mu) =>
-            mu._id.toString() == repzo_transfer_item.measure_unit_id.toString()
+          (mu) => mu._id.toString() == transfer_item_measure_unit_id.toString()
         );
       }
 
