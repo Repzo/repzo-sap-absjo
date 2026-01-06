@@ -137,7 +137,7 @@ export const create_transfer = async (event: EVENT, options: Config) => {
       if (repzo_transfer_item.measure_unit_id) {
         item_measure_unit = measureUnits?.data?.find(
           (mu) =>
-            mu._id.toString() == repzo_measure_unit.measure_unit_id.toString()
+            mu._id.toString() == repzo_transfer_item.measure_unit_id.toString()
         );
       }
 
