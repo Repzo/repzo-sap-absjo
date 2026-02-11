@@ -49,6 +49,16 @@ export const create_client = async (event: EVENT, options: Config) => {
       if (body) body = JSON.parse(body);
     } catch (e) {}
 
+    const client = await repzo.client.get(body._id);
+    if (client?.integration_meta?.id || body?.integration_meta?.id) {
+      await actionLog
+        .addDetail(`Client - ${body?.name} => ${body?.sync_id}`)
+        .addDetail(
+          `Repzo => SAP: Client already synced with SAP, skipping sync - ${body?.name}`
+        )
+        .commit();
+    }
+
     try {
       await repzo.updateIntegrationMeta.create(
         [
