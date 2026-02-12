@@ -126,7 +126,13 @@ export const sync_measureunit = async (commandEvent: CommandEvent) => {
         const BAG = max_unit.sap_product_UoMs.find(
           (u) => u.ALTUOMCODE == "Bag"
         );
-        max_unit.default_unit = PC || POUCH || CARD || KG || BAG;
+        const Carton = max_unit.sap_product_UoMs.find(
+          (u) => u.ALTUOMCODE == "Carton"
+        );
+        const Gram = max_unit.sap_product_UoMs.find(
+          (u) => u.ALTUOMCODE == "Gram"
+        );
+        max_unit.default_unit = PC || POUCH || CARD || KG || BAG || Carton || Gram;
 
         if (!max_unit.default_unit) {
           // console.log(
