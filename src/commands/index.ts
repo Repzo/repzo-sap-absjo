@@ -8,6 +8,7 @@ import { sync_rep } from "./rep.js";
 import { sync_tax } from "./tax.js";
 import { sync_tag } from "./tag.js";
 import { sync_measureunit } from "./measureunit.js";
+import { sync_measureunit_disabled } from "./measureunit_disabled.js";
 import { sync_measureunit_family } from "./measureunit_family.js";
 import { sync_category } from "./category.js";
 import { sync_channel } from "./channel.js";
@@ -38,6 +39,8 @@ export const commands = async (CommandEvent: CommandEvent) => {
       return await sync_tag(CommandEvent);
     case "measureunit":
       return await sync_measureunit(CommandEvent);
+    case "measureunit_disabled":
+      return await sync_measureunit_disabled(CommandEvent);
     case "measureunit_family":
       return await sync_measureunit_family(CommandEvent);
     case "category":

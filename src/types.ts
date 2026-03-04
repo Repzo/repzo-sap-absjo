@@ -48,6 +48,7 @@ export type CommandType =
   | "tax"
   | "tag"
   | "measureunit"
+  | "measureunit_disabled"
   | "measureunit_family"
   | "category"
   | "brand"
@@ -130,6 +131,7 @@ interface OptionsFormData {
   bench_time_tax?: string;
   bench_time_tag?: string;
   bench_time_measureunit?: string;
+  bench_time_measureunit_disabled?: string;
   bench_time_measureunit_family?: string;
   bench_time_category?: string;
   bench_time_bank?: string;
