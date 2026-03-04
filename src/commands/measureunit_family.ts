@@ -13,7 +13,7 @@ import {
   set_error,
 } from "../util.js";
 
-import { get_sap_UoMs, SAPUoM } from "./measureunit.js";
+import { get_sap_UoMs, SAPUoM, get_uom_integration_id } from "./measureunit.js";
 
 export const sync_measureunit_family = async (commandEvent: CommandEvent) => {
   const repzo = new Repzo(commandEvent.app.formData?.repzoApiKey, {
@@ -107,7 +107,7 @@ export const sync_measureunit_family = async (commandEvent: CommandEvent) => {
       const sap_UoM = sap_UoMs[i];
       const key = sap_UoM.ITEMCODE;
       if (!sap_unique_family[key]) sap_unique_family[key] = {};
-      const uom_key = `${nameSpace}_${sap_UoM.ITEMCODE}_${sap_UoM.UOMGROUPENTRY}_${sap_UoM.ALTUOMID}`;
+      const uom_key = get_uom_integration_id(nameSpace, sap_UoM);
       sap_unique_family[key][uom_key] = 1;
     }
 
@@ -129,7 +129,9 @@ export const sync_measureunit_family = async (commandEvent: CommandEvent) => {
             (repzo_uom) => repzo_uom?.integration_meta?.id == unit
           );
           if (UoM) {
-            measureunits.push(UoM._id.toString());
+            if (!measureunits.includes(UoM._id.toString())) {
+              measureunits.push(UoM._id.toString());
+            }
           }
         }
       });

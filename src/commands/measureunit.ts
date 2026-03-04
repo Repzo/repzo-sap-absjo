@@ -24,8 +24,18 @@ export interface SAPUoM {
   ALTUOMID: number; // 67;
   ALTUOMCODE: string; // "BOX",
   ALTQTY: number; // 1.0;
+  PkgCodeDft?: number;
+  PkgCode?: number;
+  PkgType?: "Integration UOM" | "Return UOM";
   repzo_factor?: number;
 }
+
+export const get_uom_integration_id = (
+  nameSpace: string,
+  uom: Pick<SAPUoM, "ITEMCODE" | "UOMGROUPENTRY" | "ALTUOMID">
+) => {
+  return `${nameSpace}_${uom.ITEMCODE}_${uom.UOMGROUPENTRY}_${uom.ALTUOMID}`;
+};
 
 interface SAPUoMs {
   result: "Success";
@@ -132,7 +142,8 @@ export const sync_measureunit = async (commandEvent: CommandEvent) => {
         const Gram = max_unit.sap_product_UoMs.find(
           (u) => u.ALTUOMCODE == "Gram"
         );
-        max_unit.default_unit = PC || POUCH || CARD || KG || BAG || Carton || Gram;
+        max_unit.default_unit =
+          PC || POUCH || CARD || KG || BAG || Carton || Gram;
 
         if (!max_unit.default_unit) {
           // console.log(
@@ -163,15 +174,15 @@ export const sync_measureunit = async (commandEvent: CommandEvent) => {
       });
     });
 
-    let unique_UoMs: { [key: string]: SAPUoM } | SAPUoM[] = {};
+    const unique_UoMs_map: { [key: string]: SAPUoM } = {};
 
     for (let i = 0; i < sap_UoMs?.length; i++) {
       const Uom = sap_UoMs[i];
       const key = `${Uom.ITEMCODE}_${Uom.UOMGROUPENTRY}_${Uom.ALTUOMID}`;
-      if (!unique_UoMs[key]) unique_UoMs[key] = Uom;
+      if (!unique_UoMs_map[key]) unique_UoMs_map[key] = Uom;
     }
 
-    unique_UoMs = Object.values(unique_UoMs);
+    const unique_UoMs = Object.values(unique_UoMs_map);
 
     const db = new DataSet([], { autoIndex: false });
     db.createIndex({
@@ -180,11 +191,13 @@ export const sync_measureunit = async (commandEvent: CommandEvent) => {
       repzo_factor: true,
       UOMGROUPENTRY: true,
       ALTUOMID: true,
+      PkgType: true,
     });
     db.load(unique_UoMs);
 
     for (let i = 0; i < unique_UoMs?.length; i++) {
       const sap_UoM: SAPUoM = unique_UoMs[i];
+      const integration_id = get_uom_integration_id(nameSpace, sap_UoM);
       const repzo_UoM = repzo_UoMs.data.find(
         (r_UoM) =>
           r_UoM.integration_meta?.id ==
@@ -196,15 +209,17 @@ export const sync_measureunit = async (commandEvent: CommandEvent) => {
         | Service.MeasureUnit.Update.Body = {
         parent: repzo_parent_id,
         name: sap_UoM.ALTUOMCODE,
-        factor: sap_UoM.repzo_factor || 0, // ??????
+        factor: sap_UoM.repzo_factor || 0,
         disabled: false,
         integration_meta: {
-          id: `${nameSpace}_${sap_UoM.ITEMCODE}_${sap_UoM.UOMGROUPENTRY}_${sap_UoM.ALTUOMID}`,
+          id: integration_id,
           UOMGROUPENTRY: sap_UoM.UOMGROUPENTRY,
           ALTUOMID: sap_UoM.ALTUOMID,
           ITEMCODE: sap_UoM.ITEMCODE,
+          PkgType: sap_UoM.PkgType,
         },
         company_namespace: [nameSpace],
+        sellable: sap_UoM.PkgType === "Return UOM" ? false : true,
       };
 
       if (!repzo_UoM) {
@@ -230,6 +245,7 @@ export const sync_measureunit = async (commandEvent: CommandEvent) => {
           ITEMCODE: repzo_UoM.integration_meta?.ITEMCODE,
           UOMGROUPENTRY: repzo_UoM.integration_meta?.UOMGROUPENTRY,
           ALTUOMID: repzo_UoM.integration_meta?.ALTUOMID,
+          PkgType: repzo_UoM.integration_meta?.PkgType,
         });
         if (found_identical_docs.length) continue;
         // Update
