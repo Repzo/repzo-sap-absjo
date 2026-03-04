@@ -25,6 +25,7 @@ export const basic = async (commandEvent: CommandEvent) => {
       "tax",
       "tag",
       "measureunit",
+      "measureunit_disabled",
       "measureunit_family",
       "category",
       "brand",

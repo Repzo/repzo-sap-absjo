@@ -199,9 +199,7 @@ export const sync_measureunit = async (commandEvent: CommandEvent) => {
       const sap_UoM: SAPUoM = unique_UoMs[i];
       const integration_id = get_uom_integration_id(nameSpace, sap_UoM);
       const repzo_UoM = repzo_UoMs.data.find(
-        (r_UoM) =>
-          r_UoM.integration_meta?.id ==
-          `${nameSpace}_${sap_UoM.ITEMCODE}_${sap_UoM.UOMGROUPENTRY}_${sap_UoM.ALTUOMID}`
+        (r_UoM) => r_UoM.integration_meta?.id == integration_id
       );
 
       const body:
