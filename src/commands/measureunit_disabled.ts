@@ -11,11 +11,9 @@ export const sync_measureunit_disabled = async (commandEvent: CommandEvent) => {
   const commandLog = new Repzo.CommandLog(
     repzo,
     commandEvent.app,
-    commandEvent.command
+    commandEvent.command,
   );
   try {
-    // console.log("sync_measureunit_disabled");
-
     const new_bench_time = new Date().toISOString();
     const bench_time_key = "bench_time_measureunit_disabled";
 
@@ -36,7 +34,7 @@ export const sync_measureunit_disabled = async (commandEvent: CommandEvent) => {
 
     const sap_UoMs: SAPUoM[] = await get_sap_UoMs(
       commandEvent.app.formData.sapHostUrl,
-      {}
+      {},
     );
     result.sap_total = sap_UoMs?.length;
 
@@ -52,7 +50,7 @@ export const sync_measureunit_disabled = async (commandEvent: CommandEvent) => {
     result.repzo_total = repzo_active_uom_docs.length;
     await commandLog
       .addDetail(
-        `${repzo_active_uom_docs.length} Active Measure Units in Repzo`
+        `${repzo_active_uom_docs.length} Active Measure Units in Repzo`,
       )
       .commit();
 
@@ -101,12 +99,12 @@ export const sync_measureunit_disabled = async (commandEvent: CommandEvent) => {
       repzo,
       commandEvent.app._id,
       bench_time_key,
-      new_bench_time
+      new_bench_time,
     );
     await commandLog
       .setStatus(
         "success",
-        failed_docs_report.length ? failed_docs_report : null
+        failed_docs_report.length ? failed_docs_report : null,
       )
       .setBody(result)
       .commit();
