@@ -135,6 +135,44 @@ export const sync_client = async (commandEvent: CommandEvent) => {
       .addDetail(`${repzo_clients?.data?.length} Clients in Repzo`)
       .commit();
 
+    // Get Enforce Credit for Client Group from formData and parse it to array if it's string
+    let enforce_credit_for_client_group: string[] | undefined;
+    try {
+      if (commandEvent.app.formData?.enforce_credit_for_client_group) {
+        if (
+          typeof commandEvent.app.formData.enforce_credit_for_client_group ===
+          "string"
+        ) {
+          enforce_credit_for_client_group = JSON.parse(
+            commandEvent.app.formData.enforce_credit_for_client_group
+          );
+        } else if (
+          Array.isArray(
+            commandEvent.app.formData.enforce_credit_for_client_group
+          )
+        ) {
+          enforce_credit_for_client_group =
+            commandEvent.app.formData.enforce_credit_for_client_group;
+        }
+      }
+    } catch (e) {
+      console.error(
+        "Failed to parse enforce_credit_for_client_group:",
+        commandEvent.app.formData?.enforce_credit_for_client_group,
+        e
+      );
+      await commandLog
+        .addDetail(
+          `Failed to parse Enforce Credit for Client Group: ${commandEvent.app.formData?.enforce_credit_for_client_group}`,
+          {
+            enforce_credit_for_client_group:
+              commandEvent.app.formData?.enforce_credit_for_client_group,
+            error_message: set_error(e),
+          }
+        )
+        .commit();
+    }
+
     for (let i = 0; i < sap_clients?.length; i++) {
       const sap_client: SAPClient = sap_clients[i];
       const repzo_client = repzo_clients.data.find(
@@ -216,7 +254,13 @@ export const sync_client = async (commandEvent: CommandEvent) => {
         paymentTerm: paymentTerm ? paymentTerm._id : undefined,
         sv_priceList: priceList ? priceList._id : undefined,
         disabled: sap_client.ACTIVE == "Y" ? false : true,
-        payment_type: sap_client.PAYMENTTERM ? "credit" : "cash", // sap_client.CLIENTGROUP == "Cash Van"
+        payment_type: enforce_credit_for_client_group?.includes(
+          sap_client.CLIENTGROUP
+        )
+          ? "credit"
+          : sap_client.PAYMENTTERM
+          ? "credit"
+          : "cash", // sap_client.CLIENTGROUP == "Cash Van"
         integrated_client_balance:
           client_credit_consumed && Math.round(client_credit_consumed * 1000),
         company_namespace: [nameSpace],

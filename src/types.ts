@@ -93,6 +93,7 @@ export interface FormData {
         repzo_id: StringId;
       }[]
     | string;
+  enforce_credit_for_client_group?: string[] | string;
   defaultWarehouseForSalesOrder?: string; // "1";
   SalPersCode?: string; // "111";
   SalesPersonCode?: string; // "111";
