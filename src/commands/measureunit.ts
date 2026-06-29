@@ -142,8 +142,17 @@ export const sync_measureunit = async (commandEvent: CommandEvent) => {
         const Gram = max_unit.sap_product_UoMs.find(
           (u) => u.ALTUOMCODE == "Gram"
         );
+        // Balkan SAP uses alternate base-unit codes (Pcs, Lit) instead of the
+        // standard ones above. Appended LAST so they only act as a fallback and
+        // never override an existing match for tenants that already work.
+        const Pcs = max_unit.sap_product_UoMs.find(
+          (u) => u.ALTUOMCODE == "Pcs"
+        );
+        const Lit = max_unit.sap_product_UoMs.find(
+          (u) => u.ALTUOMCODE == "Lit"
+        );
         max_unit.default_unit =
-          PC || POUCH || CARD || KG || BAG || Carton || Gram;
+          PC || POUCH || CARD || KG || BAG || Carton || Gram || Pcs || Lit;
 
         if (!max_unit.default_unit) {
           // console.log(
