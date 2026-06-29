@@ -190,15 +190,31 @@ export const sync_product = async (commandEvent: CommandEvent) => {
         const product_family = family.data[0]?._id?.toString();
 
         // measureUnit
-        const measureUnit = await repzo.measureunit.find({
+        // Primary: match the product's default unit by its SAP UoM name (DEFAULTITEMUOM).
+        let measureUnit = await repzo.measureunit.find({
           "integration_meta.UOMGROUPENTRY": sap_product.UOMGROUPENTRY,
           name: sap_product.DEFAULTITEMUOM,
           company_namespace: nameSpace,
           disabled: false,
           "integration_meta.ITEMCODE": sap_product.ITEMCODE,
         });
+        // Fallback: some tenants' SAP reports the default unit under a different
+        // label in /Items (DEFAULTITEMUOM, e.g. "Pieces"/"Carton"/"NA") than in
+        // /Uom (ALTUOMCODE, e.g. "Pcs"/"Ctn"), so the name match misses. The UoM
+        // *id* is consistent across both endpoints, so fall back to matching the
+        // unit by DEFAULTSALEUOMID === integration_meta.ALTUOMID. Only runs when
+        // the name match found nothing, so tenants that already match are unaffected.
+        if (!measureUnit?.data?.length && sap_product.DEFAULTSALEUOMID) {
+          measureUnit = await repzo.measureunit.find({
+            "integration_meta.UOMGROUPENTRY": sap_product.UOMGROUPENTRY,
+            "integration_meta.ITEMCODE": sap_product.ITEMCODE,
+            "integration_meta.ALTUOMID": sap_product.DEFAULTSALEUOMID,
+            company_namespace: nameSpace,
+            disabled: false,
+          });
+        }
         if (!measureUnit.data || measureUnit.data.length != 1) {
-          throw `MeasureUnit not found => UOMGROUPENTRY: ${sap_product.UOMGROUPENTRY}, ITEMCODE: ${sap_product.ITEMCODE}, DEFAULTITEMUOM: ${sap_product.DEFAULTITEMUOM}`;
+          throw `MeasureUnit not found => UOMGROUPENTRY: ${sap_product.UOMGROUPENTRY}, ITEMCODE: ${sap_product.ITEMCODE}, DEFAULTITEMUOM: ${sap_product.DEFAULTITEMUOM}, DEFAULTSALEUOMID: ${sap_product.DEFAULTSALEUOMID}`;
           continue;
         }
         const product_measureUnit = measureUnit.data[0]._id?.toString();
