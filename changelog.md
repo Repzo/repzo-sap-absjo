@@ -10,6 +10,8 @@
 
 ### Fixed
 
+- [commands/measureunit] add `Pcs` and `Lit` as fallback base-unit codes (appended last) so products whose SAP UoM codes are not in the standard list (e.g. balkan) can resolve a base unit instead of failing with "Could not found the base_unit" / "factor: 0" @mkhamis
+
 ### Removed
 
 ## [v1.0.41 (2025-09-01)](https://github.com/Repzo/repzo-sap-absjo.git)
