@@ -11,6 +11,7 @@
 ### Fixed
 
 - [commands/measureunit] add `Pcs` and `Lit` as fallback base-unit codes (appended last) so products whose SAP UoM codes are not in the standard list (e.g. balkan) can resolve a base unit instead of failing with "Could not found the base_unit" / "factor: 0" @mkhamis
+- [commands/product] when the default measure-unit name match fails, fall back to matching by SAP UoM id (`DEFAULTSALEUOMID` === `integration_meta.ALTUOMID`); handles tenants where `/Items` DEFAULTITEMUOM labels (e.g. "Pieces"/"Carton") differ from `/Uom` ALTUOMCODE (e.g. "Pcs"/"Ctn"). Name match stays primary so existing tenants are unaffected @mkhamis
 
 ### Removed
 
