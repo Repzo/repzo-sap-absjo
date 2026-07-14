@@ -57,6 +57,14 @@ export const join = async (commandEvent: CommandEvent) => {
           join:
             commandEvent?.app?.formData?.payments?.createPaymentHook || false,
         },
+        // refund
+        {
+          app: "repzo-sap-absjo",
+          app_id: commandEvent?.app?._id,
+          action: "create_refund",
+          event: "refund.create",
+          join: commandEvent?.app?.formData?.refunds?.createRefundHook || false,
+        },
         // proforma
         {
           app: "repzo-sap-absjo",
