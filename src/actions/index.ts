@@ -5,6 +5,7 @@ import { create_invoice } from "./create_invoice.js";
 import { create_return_invoice } from "./create_return_invoice.js";
 import { create_proforma } from "./create_proforma.js";
 import { create_payment } from "./create_payment.js";
+import { create_refund } from "./create_refund.js";
 import { create_transfer } from "./create_transfer.js";
 import { create_client } from "./create_client.js";
 
@@ -18,6 +19,8 @@ export const actions = async (event: any, options: Config) => {
       return await create_proforma(event, options);
     case "create_payment":
       return await create_payment(event, options);
+    case "create_refund":
+      return await create_refund(event, options);
     case "create_transfer":
       return await create_transfer(event, options);
     case "create_client":

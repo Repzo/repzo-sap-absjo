@@ -38,6 +38,7 @@ export type ActionType =
   | "create_return_invoice"
   | "create_proforma"
   | "create_payment"
+  | "create_refund"
   | "create_transfer";
 
 export type CommandType =
@@ -111,6 +112,7 @@ export interface FormData {
     createReturnInvoiceHook?: boolean;
   };
   payments?: { createPaymentHook?: boolean };
+  refunds?: { createRefundHook?: boolean };
   proformas?: { createApprovedProformaHook?: boolean };
   transfers?: {
     createApprovedTransferHook?: boolean;
