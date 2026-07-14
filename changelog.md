@@ -4,6 +4,8 @@
 
 ### Added
 
+- [actions/create_refund] new action: sync Repzo refunds to SAP `/OutgoingPayment` for both cash (`PaymentType` 1, `CashAccount` from rep `USERCASHACCOUNT`) and cheque (`PaymentType` 2, `ChequeAccount` from rep `USERCHECKACCTCODE` + `ChequeNumber`/`ChequeDate` looked up from the `checks` collection by refund/linked-payment serial, since refunds don't store the cheque inline). When the cheque record isn't synced yet the action throws a clear error and the svix retry picks it up next attempt @mkhamis
+- [commands/join] register the `refund.create` svix hook for `create_refund`, gated on the `refunds.createRefundHook` setting @mkhamis
 - [RDT-3412/RDT-3415] Update invoice processing to send as sales order to SAP when setting enabled @maramalshen
 
 ### Changed
