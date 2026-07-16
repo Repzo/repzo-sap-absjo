@@ -162,18 +162,23 @@ export const sync_price_list = async (commandEvent: CommandEvent) => {
         : "PLDID";
 
     // create priceLists
-    const priceLists_names = Object.keys(priceLists_withItems);
-    for (let i = 0; i < priceLists_names.length; i++) {
-      const price_list_name = priceLists_names[i]; // PLDID
-      // Fall back to PL_<PLDID> when using PLDID, or when PLDNAME is missing.
-      const pldname = priceLists_withItems[price_list_name]?.[0]?.PLDNAME;
+    const priceListIds = Object.keys(priceLists_withItems);
+    for (const priceListId of priceListIds) {
+      // SAP repeats PLDNAME on price-list item rows. Use the first non-blank
+      // value so one incomplete row cannot hide a valid name on another row.
+      const pldname = priceLists_withItems[priceListId].find(
+        ({ PLDNAME }) =>
+          typeof PLDNAME === "string" && PLDNAME.trim().length > 0
+      )?.PLDNAME;
+      // Fall back to the existing PL_<PLDID> name when PLDNAME is not selected
+      // or SAP does not provide a usable PLDNAME for this list.
       const name =
         price_list_name_key === "PLDNAME" && pldname
           ? pldname
-          : `PL_${price_list_name}`;
+          : `PL_${priceListId}`;
       const body = {
         name,
-        integration_meta: { id: `${nameSpace}_${price_list_name}` },
+        integration_meta: { id: `${nameSpace}_${priceListId}` },
       };
 
       const repzo_price_list = repzo_price_lists?.data?.find(
