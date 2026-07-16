@@ -16,6 +16,7 @@ import { SAPUoM, get_sap_UoMs } from "./measureunit.js";
 
 interface SAPPriceListItem {
   PLDID: number; // 31,
+  PLDNAME?: string; // "Wholesale Price List" (used as Repzo name when price_list_name_key = "PLDNAME")
   PLITEMID: string; // "010-HEI-HE0088",
   PLITEMPRICEVALUE: number; // 6.5864;
   PLITEMUNIT: string; // "CRTN",
@@ -152,13 +153,32 @@ export const sync_price_list = async (commandEvent: CommandEvent) => {
       priceLists_withItems[doc.PLDID].push(doc);
     });
 
+    // Which SAP field to use as the Repzo price-list name. Defaults to PLDID
+    // (backward compatible) and only uses PLDNAME when explicitly configured.
+    // The stable identity (integration_meta.id) always stays PLDID-based.
+    const price_list_name_key =
+      commandEvent.app.formData?.price_list_name_key === "PLDNAME"
+        ? "PLDNAME"
+        : "PLDID";
+
     // create priceLists
-    const priceLists_names = Object.keys(priceLists_withItems);
-    for (let i = 0; i < priceLists_names.length; i++) {
-      const price_list_name = priceLists_names[i];
+    const priceListIds = Object.keys(priceLists_withItems);
+    for (const priceListId of priceListIds) {
+      // SAP repeats PLDNAME on price-list item rows. Use the first non-blank
+      // value so one incomplete row cannot hide a valid name on another row.
+      const pldname = priceLists_withItems[priceListId].find(
+        ({ PLDNAME }) =>
+          typeof PLDNAME === "string" && PLDNAME.trim().length > 0
+      )?.PLDNAME;
+      // Fall back to the existing PL_<PLDID> name when PLDNAME is not selected
+      // or SAP does not provide a usable PLDNAME for this list.
+      const name =
+        price_list_name_key === "PLDNAME" && pldname
+          ? pldname
+          : `PL_${priceListId}`;
       const body = {
-        name: `PL_${price_list_name}`,
-        integration_meta: { id: `${nameSpace}_${price_list_name}` },
+        name,
+        integration_meta: { id: `${nameSpace}_${priceListId}` },
       };
 
       const repzo_price_list = repzo_price_lists?.data?.find(
