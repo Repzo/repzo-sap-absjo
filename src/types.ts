@@ -98,6 +98,7 @@ export interface FormData {
   defaultWarehouseForSalesOrder?: string; // "1";
   SalPersCode?: string; // "111";
   SalesPersonCode?: string; // "111";
+  price_list_name_key?: "PLDID" | "PLDNAME"; // Repzo price-list name source; defaults to PLDID
   measureUnitInjections?: { itemCode: string; uom: string }[];
   usePiecesAndIgnoreMeasureunitFactor?: {
     usePcsForPriceList: boolean;
